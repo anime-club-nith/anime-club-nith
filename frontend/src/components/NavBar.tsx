@@ -142,14 +142,12 @@ export default function Navbar() {
           <div className="h-5 w-[4px] bg-black dark:bg-white mx-1" />
 
           {/* Get the App Link */}
-          <a
-            href="https://github.com/anime-club-nith"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/download"
             className="font-black uppercase text-xs tracking-widest text-pink-500 hover:text-pink-600 transition-colors"
           >
             Get the App
-          </a>
+          </Link>
 
           {/* GitHub Link */}
           <a
@@ -235,9 +233,9 @@ export default function Navbar() {
               </Link>
             </>
           )}
-          <a href="https://github.com/anime-club-nith" target="_blank" rel="noopener noreferrer" className="font-black uppercase text-xs tracking-widest text-pink-500 hover:text-pink-600 py-2" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link to="/download" className="font-black uppercase text-xs tracking-widest text-pink-500 hover:text-pink-600 py-2" onClick={() => setIsMobileMenuOpen(false)}>
             Get the App
-          </a>
+          </Link>
           <div className="h-[4px] bg-black dark:bg-white w-full my-2" />
           <div className="flex items-center gap-6 pt-2">
             <a href="https://github.com/anime-club-nith" target="_blank" rel="noopener noreferrer" className="font-black uppercase text-xs text-black dark:text-white hover:text-pink-500 flex items-center gap-2">

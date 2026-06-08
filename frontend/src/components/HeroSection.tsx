@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, Download } from 'lucide-react';
 
 export default function HeroSection() {
@@ -52,15 +52,13 @@ export default function HeroSection() {
                                     <ArrowRight size={18} />
                                 </button>
 
-                                <a
-                                    href="https://github.com/anime-club-nith"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                <Link
+                                    to="/download"
                                     className="px-10 py-4 bg-white dark:bg-[#161822] border-4 border-black dark:border-white font-black uppercase shadow-[6px_6px_0px_#000] dark:shadow-[6px_6px_0px_#E56DB1] hover:bg-gray-50 dark:hover:bg-[#1e2030] active:translate-x-[2px] active:translate-y-[2px] transition text-center text-black dark:text-white flex items-center justify-center gap-2"
                                 >
                                     Get the App
                                     <Download size={18} />
-                                </a>
+                                </Link>
                             </div>
                         </div>
 

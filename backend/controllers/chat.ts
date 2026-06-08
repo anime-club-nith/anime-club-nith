@@ -130,3 +130,68 @@ export const getChatHistory = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Error fetching chat history" });
     }
 }
+
+export const askSenpai = async (req: Request, res: Response) => {
+    const { message } = req.body;
+    if (!message) {
+        return res.status(400).json({ message: "message cannot be empty" });
+    }
+
+    try {
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            console.error("GEMINI_API_KEY is not configured on the backend");
+            return res.status(500).json({ message: "Gemini API key is not configured" });
+        }
+
+        const prompt = message;
+        const systemInstruction = 
+            "You are 'Senpai', a friendly, enthusiastic, and knowledgeable senior member of the Anime Club NITH (NIT Hamirpur Anime Club). " +
+            "You love talking about anime, manga, and watch parties at the campus OAT (Open Air Theatre). " +
+            "Keep your replies friendly, conversational, and use anime-style expressions/emojis (like 🌸, Sugoi!, Nani?, etc.). " +
+            "Keep your responses concise (1-3 sentences) and engaging. Speak as a real student club senior.";
+
+        const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            parts: [
+                                {
+                                    text: prompt
+                                }
+                            ]
+                        }
+                    ],
+                    systemInstruction: {
+                        parts: [
+                            {
+                                text: systemInstruction
+                            }
+                        ]
+                    }
+                }),
+            }
+        );
+
+        if (!response.ok) {
+            const errData = await response.json();
+            console.error("Gemini API error:", errData);
+            return res.status(400).json({ message: "Error from AI assistant API" });
+        }
+
+        const data = await response.json();
+        const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || 
+            "Sorry, I got a bit distracted thinking about my favorite anime. What did you say? 🌸";
+
+        return res.status(200).json({ reply: replyText });
+    } catch (error) {
+        console.error("Error calling Gemini API:", error);
+        return res.status(500).json({ message: "An internal server error occurred." });
+    }
+};

@@ -26,54 +26,45 @@ export default function ShowCase() {
     e.preventDefault();
     if (!input.trim()) return;
 
+    const messageText = input.trim();
+
     // 1. Add User Message
-    const userMsg: MockMessage = { id: Date.now(), text: input, sender: 'user' };
+    const userMsg: MockMessage = { id: Date.now(), text: messageText, sender: 'user' };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsTyping(true);
 
-    // 2. Simulate Senpai response delay
-    setTimeout(() => {
-      setIsTyping(false);
-      
-      const userText = input.toLowerCase();
-      let replyText = "";
-      
-      if (userText.includes("hello") || userText.includes("hi") || userText.includes("hey") || userText.includes("konnichiwa")) {
-        replyText = "Konnichiwa! Hope you are having a subarashii day! What anime are you currently watching? 🇯🇵";
-      } else if (userText.includes("watch") || userText.includes("party") || userText.includes("event") || userText.includes("oat")) {
-        replyText = "We host watch parties almost every week at the campus OAT or in our online streaming rooms! Keep an eye on the #announcements channel in the chat! 🎬";
-      } else if (userText.includes("recommend") || userText.includes("suggest") || userText.includes("best")) {
-        const recs = [
-          "Steins;Gate (a masterpiece of sci-fi and time travel!)",
-          "Frieren: Beyond Journey's End (beautiful storytelling and pacing)",
-          "Attack on Titan (epic scale and mystery)",
-          "Jujutsu Kaisen (insane animation and fight choreography)"
-        ];
-        const randomRec = recs[Math.floor(Math.random() * recs.length)];
-        replyText = `You should definitely check out ${randomRec}! Tell me what genres you like for more suggestions! 🌸`;
-      } else if (userText.includes("cosplay") || userText.includes("dress")) {
-        replyText = "Oh! Cosplay planning is in full swing! Several members are preparing outfits for Hillffair. Check out the #cosplay room once you sign in! 🎭";
-      } else if (userText.includes("join") || userText.includes("member") || userText.includes("register")) {
-        replyText = "Just click on 'Sign Up' at the top of this page! You can create an account using your email or sign in instantly with Google! 🚀";
-      } else {
-        const defaultReplies = [
-          "Sugoi! That sounds awesome! You should definitely share that in our general chatroom! 💬",
-          "Aha! A fellow person of culture! What is your top 3 favorite anime of all time? 🇯🇵",
-          "Don't forget, the first rule of Anime Club is: You DO talk about Anime! See you at the next watch party! 🎬",
-          "Nani?! That's interesting! Let's discuss it in the seasonal chat channel once you sign in! 🌸",
-          "El Psy Congroo! That conversation is destined by Steins;Gate. See you in the chat room!"
-        ];
-        replyText = defaultReplies[Math.floor(Math.random() * defaultReplies.length)];
-      }
-
-      const botMsg: MockMessage = { 
-        id: Date.now() + 1, 
-        text: replyText, 
-        sender: 'bot' 
-      };
-      setMessages(prev => [...prev, botMsg]);
-    }, 800);
+    // 2. Call backend ask-senpai endpoint
+    fetch("/api/chat/ask-senpai", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: messageText }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("API error");
+        return res.json();
+      })
+      .then((data) => {
+        setIsTyping(false);
+        const botMsg: MockMessage = {
+          id: Date.now() + 1,
+          text: data.reply,
+          sender: 'bot',
+        };
+        setMessages((prev) => [...prev, botMsg]);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch Senpai response:", err);
+        setIsTyping(false);
+        const botMsg: MockMessage = {
+          id: Date.now() + 1,
+          text: "Gomen! My brain is on offline mode right now (backend connection issue). Let's chat again in a bit! 🌸",
+          sender: 'bot',
+        };
+        setMessages((prev) => [...prev, botMsg]);
+      });
   };
 
   return (

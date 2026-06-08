@@ -15,6 +15,7 @@ import ReadBlog from "./Pages/ReadBlog";
 import MyBlogsPage from "./Pages/MyBlogsPage";
 import EditBlog from "./Pages/EditBlog";
 import GoogleCallback from "./Pages/GoogleCallback";
+import DownloadPage from "./Pages/DownloadPage";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<{ _id: string } | null>(null);
@@ -40,6 +41,7 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/google-callback" element={<GoogleCallback />} />
+        <Route path="/download" element={<DownloadPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/join-room" element={<JoinActiveRoom />} />
         <Route path="/room" element={<ChatInterface setCurrentRoom={setCurrentRoom} />} />
