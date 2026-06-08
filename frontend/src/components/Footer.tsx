@@ -9,13 +9,13 @@ export default function Footer() {
         <div className="flex flex-col items-center md:items-start gap-4">
           <div className="flex items-center gap-3">
             <img
-              src="/logo-dark.svg"
+              src="/logo-dark.png"
               alt="Anime Club NITH"
               className="h-8 w-auto dark:hidden"
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
             <img
-              src="/logo-light.svg"
+              src="/logo-light.png"
               alt="Anime Club NITH"
               className="h-8 w-auto hidden dark:block"
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}

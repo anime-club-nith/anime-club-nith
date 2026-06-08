@@ -1,5 +1,5 @@
 import express from "express";
-import { handleUserSignUp, handleUserLogIn, handlerForgetPassViaEmail, handleForgetPassViaOld, changeUserPass, handleVerifyEmail, handleUserLogOut } from "../controllers/auth";
+import { handleUserSignUp, handleUserLogIn, handlerForgetPassViaEmail, handleForgetPassViaOld, changeUserPass, handleVerifyEmail, handleUserLogOut, handleGoogleConfig, handleGoogleLoginSuccess } from "../controllers/auth";
 import { savePushToken } from "../controllers/notification";
 import { allowOnlyAuthenticatedUser } from "../middlewares/auth";
 
@@ -13,3 +13,5 @@ authRoute.post('/reset-password', changeUserPass);
 authRoute.get('/verify-acc', handleVerifyEmail);
 authRoute.post('/save-token', allowOnlyAuthenticatedUser, savePushToken);
 authRoute.post('/logout', allowOnlyAuthenticatedUser, handleUserLogOut);
+authRoute.get('/google-config', handleGoogleConfig);
+authRoute.post('/google-login-success', handleGoogleLoginSuccess);

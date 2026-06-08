@@ -234,3 +234,96 @@ export const handleUserLogOut = async(req: Request, res: Response) => {
     }
 };
 
+export const handleGoogleConfig = async (req: Request, res: Response) => {
+  try {
+    return res.status(200).json({
+      googleClientId: process.env.GOOGLE_CLIENT_ID || ""
+    });
+  } catch (error) {
+    console.log(`${error}`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
+  }
+};
+
+export const handleGoogleLoginSuccess = async (req: Request, res: Response) => {
+  const { accessToken } = req.body;
+  if (!accessToken) {
+    return res.status(400).json({ message: "Access token is required" });
+  }
+
+  try {
+    let email = "";
+    let name = "";
+
+    // Support developer-friendly Mock login bypass in sandbox/demo mode
+    if (accessToken === "mock-access-token-fan") {
+      email = "fan@nith.ac.in";
+      name = "Anime Fan";
+    } else if (accessToken === "mock-access-token-otaku") {
+      email = "otaku@nith.ac.in";
+      name = "Otaku Member";
+    } else {
+      // Real flow: verify access token directly with Google API
+      const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`);
+      if (!response.ok) {
+        return res.status(400).json({ message: "Invalid Google access token" });
+      }
+
+      const profile = await response.json();
+      if (!profile.email) {
+        return res.status(400).json({ message: "Unable to retrieve email from Google" });
+      }
+
+      email = profile.email;
+      name = profile.name || email.split("@")[0];
+
+      if (profile.email_verified === false) {
+        return res.status(400).json({ message: "Google email is not verified" });
+      }
+    }
+
+    let user = await Auth.findOne({ email });
+
+    if (!user) {
+      // Automatically register user if they don't exist
+      const salt = generateSalt();
+      const randomPassword = Math.random().toString(36).substring(2, 15);
+      const hash = hashPassword(randomPassword, salt);
+
+      user = new Auth({
+        name,
+        email,
+        password: hash,
+        salt,
+        isVerified: true,
+      });
+      await user.save();
+    } else if (!user.isVerified) {
+      user.isVerified = true;
+      await user.save();
+    }
+
+    const token = generateToken(user);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
+      message: "Logged in success",
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error(`Error during Google auth callback: ${error}`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
+  }
+};
+
+

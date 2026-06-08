@@ -89,13 +89,13 @@ export default function Navbar() {
           className="flex items-center gap-3 group"
         >
           <img
-            src="/logo-dark.svg"
+            src="/logo-dark.png"
             alt="Anime Club NITH"
             className="h-9 w-auto dark:hidden"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
           <img
-            src="/logo-light.svg"
+            src="/logo-light.png"
             alt="Anime Club NITH"
             className="h-9 w-auto hidden dark:block"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}

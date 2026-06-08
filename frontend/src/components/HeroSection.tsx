@@ -68,15 +68,9 @@ export default function HeroSection() {
                         <div className="relative flex justify-center lg:justify-end">
                             <div className="relative w-[350px] h-[350px] md:w-[400px] md:h-[400px] border-4 border-black dark:border-white shadow-[10px_10px_0px_#000] dark:shadow-[10px_10px_0px_#E56DB1] bg-white dark:bg-[#161822] flex items-center justify-center p-8 transition-all">
                                 <img
-                                    src="/logo-dark.svg"
+                                    src="/logo-vertical.png"
                                     alt="Anime Club NITH Logo"
-                                    className="object-contain w-full h-full dark:hidden"
-                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                                />
-                                <img
-                                    src="/logo-light.svg"
-                                    alt="Anime Club NITH Logo"
-                                    className="object-contain w-full h-full hidden dark:block"
+                                    className="object-contain w-full h-full"
                                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                                 />
                             </div>

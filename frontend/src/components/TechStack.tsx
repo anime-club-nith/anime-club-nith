@@ -1,5 +1,5 @@
 import { 
-  Database, Server, Wind, Lock, Mail, Cloud, Cpu, Radio 
+  MessageSquare, Film, Palette, Sparkles, Star
 } from 'lucide-react';
 
 export default function TechStack() {
@@ -10,115 +10,89 @@ export default function TechStack() {
         {/* Header */}
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 px-3 py-1 border-4 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-black dark:text-white font-black uppercase text-xs shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1] mb-6">
-            <Cpu size={14} />
-            <span>Architecture Overview</span>
+            <Star size={14} className="text-pink-500 fill-pink-500" />
+            <span>Club Activities</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-black dark:text-white mb-6">
-            Built for <span className="text-pink-500">Scale & Speed</span>
+            Dive into the <span className="text-pink-500">Otaku Circle</span>
           </h1>
           <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-             A deep dive into the modern stack powering Anime Club NITH's real-time capabilities, security protocols, and cloud infrastructure.
+            Anime Club NITH is the premier space at NIT Hamirpur for fans to connect, discuss seasonal anime, share fanart/cosplays, and organize club events.
           </p>
         </div>
 
-        {/* 1. HERO: Real-time Architecture */}
+        {/* 1. HERO: Real-time Community Discussions */}
         <div className="mb-8">
            <div className="p-8 md:p-12 border-4 border-black dark:border-white bg-white dark:bg-[#161822] shadow-[8px_8px_0px_#000] dark:shadow-[8px_8px_0px_#E56DB1] relative overflow-hidden group">
               <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center">
                  <div className="w-16 h-16 border-4 border-black dark:border-white bg-pink-500 text-black flex items-center justify-center flex-shrink-0 shadow-[4px_4px_0px_#000] dark:shadow-[4px_4px_0px_#E56DB1]">
-                    <Radio className="text-black w-8 h-8" />
+                    <MessageSquare className="text-black w-8 h-8" />
                  </div>
                  
                  <div className="flex-1">
-                    <h3 className="text-2xl font-black uppercase text-black dark:text-white mb-3">Event-Driven Real-time Engine</h3>
+                    <h3 className="text-2xl font-black uppercase text-black dark:text-white mb-3">Real-time Chat & Discussions</h3>
                     <p className="text-gray-700 dark:text-gray-300 font-semibold leading-relaxed mb-6">
-                       The core communication layer is built on <span className="text-pink-600 font-black">Node.js</span> and <span className="text-pink-600 font-black">Socket.io</span>. 
-                       This enables bidirectional, low-latency communication where the server pushes events (new messages, typing indicators) instantly to the client.
-                       On the frontend, the <span className="text-pink-600 font-black">React.js</span> client uses <code>socket.io-client</code> to maintain persistent connections, ensuring the UI updates in milliseconds without page reloads.
+                       Connect instantly with other otaku on campus. Share your immediate reactions to weekly episode drops, discuss manga plot twists, ask for recommendations, and organize local meetups. Our clean chat channels bring the NITH anime community right to your fingertips.
                     </p>
                     
-                    {/* Tech Badges */}
+                    {/* Club Channel Badges */}
                     <div className="flex flex-wrap gap-3">
-                       <span className="px-3 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-xs font-mono font-black uppercase text-black dark:text-white shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">Node.js</span>
-                       <span className="px-3 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-xs font-mono font-black uppercase text-black dark:text-white shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">Socket.io</span>
-                       <span className="px-3 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-xs font-mono font-black uppercase text-black dark:text-white shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">React.js</span>
-                       <span className="px-3 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-xs font-mono font-black uppercase text-black dark:text-white shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">WebSockets</span>
+                       <span className="px-3 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-xs font-mono font-black uppercase text-black dark:text-white shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">#general</span>
+                       <span className="px-3 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-xs font-mono font-black uppercase text-black dark:text-white shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">#seasonal-discussion</span>
+                       <span className="px-3 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-xs font-mono font-black uppercase text-black dark:text-white shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">#manga-recs</span>
+                       <span className="px-3 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-xs font-mono font-black uppercase text-black dark:text-white shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">#memes</span>
                     </div>
                  </div>
               </div>
            </div>
         </div>
 
-        {/* 2. GRID: Security & Utilities */}
+        {/* 2. GRID: Watch Parties & Showcases */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
            
-           {/* JWT Auth */}
+           {/* Watch Parties */}
            <div className="p-8 border-4 border-black dark:border-white bg-white dark:bg-[#161822] shadow-[8px_8px_0px_#000] dark:shadow-[8px_8px_0px_#E56DB1]">
               <div className="w-12 h-12 border-4 border-black dark:border-white bg-pink-500 text-black flex items-center justify-center mb-6 shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1]">
-                 <Lock className="text-black" size={24} />
+                 <Film className="text-black" size={24} />
               </div>
-              <h3 className="text-xl font-black uppercase text-black dark:text-white mb-3">JWT Authentication</h3>
+              <h3 className="text-xl font-black uppercase text-black dark:text-white mb-3">Weekly Watch Parties</h3>
               <p className="text-gray-700 dark:text-gray-300 text-sm font-semibold leading-relaxed mb-4">
-                 Stateless authentication using JSON Web Tokens. We utilize secure signing algorithms to verify identity on every request, ensuring protected routes remain inaccessible to unauthorized users while maintaining session scalability.
+                 Join fellow club members for weekend anime screenings, movie nights, and legendary watch parties right at the NIT Hamirpur Open Air Theatre (OAT) or within our online watchrooms. Grab snacks and share the experience live!
               </p>
               <div className="flex gap-2">
-                 <span className="px-2 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-black dark:text-white text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">Security</span>
-                 <span className="px-2 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-black dark:text-white text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">Middleware</span>
+                 <span className="px-2 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-black dark:text-white text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">Campus OAT</span>
+                 <span className="px-2 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-black dark:text-white text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">Online Stream</span>
               </div>
            </div>
 
-           {/* Nodemailer */}
+           {/* Creative Showcase */}
            <div className="p-8 border-4 border-black dark:border-white bg-white dark:bg-[#161822] shadow-[8px_8px_0px_#000] dark:shadow-[8px_8px_0px_#E56DB1]">
               <div className="w-12 h-12 border-4 border-black dark:border-white bg-pink-500 text-black flex items-center justify-center mb-6 shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1]">
-                 <Mail className="text-black" size={24} />
+                 <Palette className="text-black" size={24} />
               </div>
-              <h3 className="text-xl font-black uppercase text-black dark:text-white mb-3">Transactional Email</h3>
+              <h3 className="text-xl font-black uppercase text-black dark:text-white mb-3">Creative Showcase</h3>
               <p className="text-gray-700 dark:text-gray-300 text-sm font-semibold leading-relaxed mb-4">
-                 Powered by <span className="text-black dark:text-white font-black">Nodemailer</span>. We handle critical user flows like Account Verification and Secure Password Resets through a reliable SMTP transport service, delivering HTML-formatted emails directly to the inbox.
+                 Showcase your talent to the entire campus! Publish your custom anime drawings, digital art, cosplay journals, reviews, or character deep-dives on our community showcase wall and get helpful feedback from other artists.
               </p>
               <div className="flex gap-2">
-                 <span className="px-2 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-black dark:text-white text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">SMTP</span>
-                 <span className="px-2 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-black dark:text-white text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">Backend</span>
+                 <span className="px-2 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-black dark:text-white text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">Fan Art</span>
+                 <span className="px-2 py-1 border-2 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-black dark:text-white text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1]">Cosplay Logs</span>
               </div>
            </div>
 
         </div>
 
-        {/* 3. GRID: Other Tech */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-           
-           <div className="p-6 border-4 border-black dark:border-white bg-white dark:bg-[#161822] flex flex-col items-center justify-center text-center gap-3 shadow-[5px_5px_0px_#000] dark:shadow-[5px_5px_0px_#E56DB1] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_#000] dark:hover:shadow-[3px_3px_0px_#E56DB1] transition-all">
-              <Database className="text-pink-500" size={24} />
-              <div>
-                 <div className="font-black uppercase text-black dark:text-white text-sm">MongoDB</div>
-                 <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">NoSQL Database</div>
-              </div>
+        {/* 3. GRID: Member Prosposals & Events */}
+        <div className="p-8 border-4 border-black dark:border-white bg-white dark:bg-[#161822] shadow-[8px_8px_0px_#000] dark:shadow-[8px_8px_0px_#E56DB1] flex flex-col md:flex-row items-start md:items-center gap-8">
+           <div className="w-12 h-12 border-4 border-black dark:border-white bg-pink-500 text-black flex items-center justify-center shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1] flex-shrink-0">
+              <Sparkles className="text-black" size={24} />
            </div>
-
-           <div className="p-6 border-4 border-black dark:border-white bg-white dark:bg-[#161822] flex flex-col items-center justify-center text-center gap-3 shadow-[5px_5px_0px_#000] dark:shadow-[5px_5px_0px_#E56DB1] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_#000] dark:hover:shadow-[3px_3px_0px_#E56DB1] transition-all">
-              <Server className="text-pink-500" size={24} />
-              <div>
-                 <div className="font-black uppercase text-black dark:text-white text-sm">Express.js</div>
-                 <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">REST API Framework</div>
-              </div>
+           <div className="flex-1">
+              <h3 className="text-xl font-black uppercase text-black dark:text-white mb-3">Member-Driven Club Events</h3>
+              <p className="text-gray-700 dark:text-gray-300 text-sm font-semibold leading-relaxed">
+                 We believe in a democratic community. Every member can propose and vote on future watch party line-ups, campus cosplay themes, local club merchandise designs, or site features. Submit a feature request or event suggestion right from your portal!
+              </p>
            </div>
-
-           <div className="p-6 border-4 border-black dark:border-white bg-white dark:bg-[#161822] flex flex-col items-center justify-center text-center gap-3 shadow-[5px_5px_0px_#000] dark:shadow-[5px_5px_0px_#E56DB1] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_#000] dark:hover:shadow-[3px_3px_0px_#E56DB1] transition-all">
-              <Wind className="text-pink-500" size={24} />
-              <div>
-                 <div className="font-black uppercase text-black dark:text-white text-sm">Tailwind CSS</div>
-                 <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">Utility-first Styling</div>
-              </div>
-           </div>
-
-           <div className="p-6 border-4 border-black dark:border-white bg-white dark:bg-[#161822] flex flex-col items-center justify-center text-center gap-3 shadow-[5px_5px_0px_#000] dark:shadow-[5px_5px_0px_#E56DB1] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_#000] dark:hover:shadow-[3px_3px_0px_#E56DB1] transition-all">
-              <Cloud className="text-pink-500" size={24} />
-              <div>
-                 <div className="font-black uppercase text-black dark:text-white text-sm">AWS S3</div>
-                 <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">File Storage</div>
-              </div>
-           </div>
-
         </div>
 
       </div>

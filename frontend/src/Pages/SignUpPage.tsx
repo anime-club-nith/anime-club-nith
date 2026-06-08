@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   User,
   Mail,
@@ -8,15 +8,108 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/NavBar";
 
 export default function SignUpPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+
+  const [googleClientId, setGoogleClientId] = useState("");
+  const [showGoogleMockModal, setShowGoogleMockModal] = useState(false);
+
+  useEffect(() => {
+    const fetchGoogleConfig = async () => {
+      try {
+        const res = await fetch("/api/auth/google-config");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.googleClientId && data.googleClientId !== "YOUR_GOOGLE_CLIENT_ID") {
+            setGoogleClientId(data.googleClientId);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load Google configuration:", err);
+      }
+    };
+    fetchGoogleConfig();
+  }, []);
+
+  const fetchAndNavigate = async () => {
+    try {
+      const res = await fetch("/api/room/all-rooms", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        navigate("/room");
+        return;
+      }
+
+      const rooms = await res.json();
+      if (rooms && rooms.length > 0) {
+        navigate(`/room/${rooms[0].roomId}`);
+      } else {
+        navigate("/room");
+      }
+    } catch (err) {
+      console.error("Failed to fetch rooms, navigating to default:", err);
+      navigate("/room");
+    }
+  };
+
+  const handleGoogleSignIn = () => {
+    if (googleClientId) {
+      const redirectUri = encodeURIComponent(`${window.location.origin}/google-callback`);
+      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=token&scope=openid%20profile%20email`;
+    } else {
+      setShowGoogleMockModal(true);
+    }
+  };
+
+  const handleMockLogin = async (mockToken: string) => {
+    setShowGoogleMockModal(false);
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/auth/google-login-success", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ accessToken: mockToken }),
+        credentials: "include",
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data?.message || "Mock login failed");
+        return;
+      }
+
+      try {
+        localStorage.setItem("authUser", JSON.stringify(data.user));
+      } catch {
+        // ignore
+      }
+
+      await fetchAndNavigate();
+    } catch (err) {
+      console.error(err);
+      setError("Mock login failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -239,6 +332,40 @@ export default function SignUpPage() {
           </div>
         </form>
 
+        {/* OR divider */}
+        <div className="relative flex py-4 items-center">
+          <div className="flex-grow border-t-2 border-black"></div>
+          <span className="flex-shrink mx-4 text-xs font-black uppercase text-black">OR</span>
+          <div className="flex-grow border-t-2 border-black"></div>
+        </div>
+
+        {/* Google Auth Button */}
+        <button
+          type="button"
+          onClick={handleGoogleSignIn}
+          className="w-full py-4 px-6 border-4 border-black bg-white hover:bg-gray-50 text-black font-black uppercase text-sm tracking-wider flex items-center justify-center gap-3 shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <path
+              fill="#EA4335"
+              d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.359 0 3.373 2.673 1.455 6.573L5.266 9.765z"
+            />
+            <path
+              fill="#34A853"
+              d="M16.04 15.34c-1.07.73-2.5 1.169-4.04 1.169a7.07 7.07 0 0 1-6.733-4.855l-3.818 3.127C3.373 21.327 7.359 24 12 24c3.082 0 5.891-1.009 8.018-2.836l-3.978-5.824z"
+            />
+            <path
+              fill="#4285F4"
+              d="M23.49 12.273c0-.818-.082-1.609-.227-2.373H12v4.51h6.445A5.518 5.518 0 0 1 16.04 15.34l3.978 5.824c2.327-2.145 3.472-5.3 3.472-8.891z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.267 11.654A7.02 7.02 0 0 1 5.267 9.765l-3.812-3.19A11.954 11.954 0 0 0 0 12c0 2.018.5 3.918 1.455 5.618l3.812-3.964z"
+            />
+          </svg>
+          <span>Continue with Google</span>
+        </button>
+
         {/* Footer Link */}
         <p className="mt-8 text-center text-gray-500 text-sm font-semibold">
           Already have an account?{" "}
@@ -250,6 +377,47 @@ export default function SignUpPage() {
           </a>
         </p>
       </div>
+
+      {/* Mock Google Account Chooser Modal */}
+      {showGoogleMockModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-sm border-4 border-black bg-white p-6 shadow-[8px_8px_0px_#000] relative">
+            <h2 className="text-xl font-black uppercase text-black mb-1">Sign in with Google</h2>
+            <p className="text-gray-600 text-xs font-semibold mb-6">Demo mode: select a sandbox Google account.</p>
+            
+            <div className="space-y-3">
+              {[
+                { name: "Vismay Gawai", email: "vismay@nith.ac.in", token: "mock-access-token-otaku" },
+                { name: "Anime Fan", email: "fan@nith.ac.in", token: "mock-access-token-fan" },
+                { name: "Otaku Member", email: "otaku@nith.ac.in", token: "mock-access-token-otaku" }
+              ].map((acc) => (
+                <button
+                  key={acc.email}
+                  type="button"
+                  onClick={() => handleMockLogin(acc.token)}
+                  className="w-full text-left p-3 border-2 border-black bg-pink-50 hover:bg-pink-100 flex items-center gap-3 shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer"
+                >
+                  <div className="w-8 h-8 border-2 border-black bg-pink-505 text-black flex items-center justify-center font-black rounded-full uppercase text-xs" style={{ backgroundColor: '#ec4899' }}>
+                    {acc.name[0]}
+                  </div>
+                  <div>
+                    <div className="font-black text-sm text-black">{acc.name}</div>
+                    <div className="text-xs font-semibold text-gray-500">{acc.email}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowGoogleMockModal(false)}
+              className="mt-6 w-full py-2 border-4 border-black bg-gray-200 hover:bg-gray-300 text-black font-black uppercase text-xs tracking-wider shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
