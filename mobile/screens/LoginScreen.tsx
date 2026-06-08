@@ -2,16 +2,20 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StatusBar } from 'expo-status-bar';
 
 import client from '../services/client'; // Import the client
 import { useToast } from '../context/ToastContext';
 import { syncPushToken } from '../services/notification';
+import { useTheme } from '../context/ThemeContext';
 
 export default function LoginScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { showToast } = useToast();
+  const { colors, theme } = useTheme();
+  const styles = createStyles(colors);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -33,8 +37,6 @@ export default function LoginScreen({ navigation }: any) {
       }
 
       showToast(response.data.message, 'success');
-      // Replace current screen with Room to prevent going back to login
-      // Replace current screen with Room to prevent going back to login
       navigation.replace('Room');
 
       // Sync push token
@@ -48,6 +50,7 @@ export default function LoginScreen({ navigation }: any) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -65,11 +68,11 @@ export default function LoginScreen({ navigation }: any) {
 
           <View style={styles.form}>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>EMAIL ADDRESS</Text>
+              <Text style={styles.label}>Email Address</Text>
               <TextInput
                 style={styles.input}
                 placeholder="john@example.com"
-                placeholderTextColor="#64748b"
+                placeholderTextColor={colors.subText}
                 value={email}
                 onChangeText={setEmail}
                 autoCapitalize="none"
@@ -77,18 +80,18 @@ export default function LoginScreen({ navigation }: any) {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>PASSWORD</Text>
+              <Text style={styles.label}>Password</Text>
               <View style={styles.passwordContainer}>
                 <TextInput
                   style={[styles.input, styles.passwordInput]}
                   placeholder="••••••••"
-                  placeholderTextColor="#64748b"
+                  placeholderTextColor={colors.subText}
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
                 />
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                  <Feather name={showPassword ? "eye" : "eye-off"} size={20} color="#64748b" />
+                  <Feather name={showPassword ? "eye" : "eye-off"} size={20} color={colors.subText} />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')} style={styles.forgotPassword}>
@@ -113,10 +116,10 @@ export default function LoginScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#060010',
+    backgroundColor: colors.bg,
   },
   keyboardView: {
     flex: 1,
@@ -130,25 +133,39 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     left: 24,
-    padding: 8,
+    borderWidth: 3,
+    borderColor: colors.border,
+    backgroundColor: colors.cardBg,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 3,
   },
   backText: {
-    color: '#94a3b8',
-    fontSize: 16,
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: '900',
+    textTransform: 'uppercase',
   },
   header: {
     marginBottom: 40,
+    marginTop: 60,
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: '900',
+    color: colors.text,
     marginBottom: 12,
+    textTransform: 'uppercase',
   },
   subtitle: {
-    fontSize: 16,
-    color: '#94a3b8',
+    fontSize: 15,
+    color: colors.subText,
     lineHeight: 24,
+    fontWeight: '600',
   },
   form: {
     gap: 24,
@@ -158,22 +175,28 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#64748b',
+    fontWeight: '900',
+    color: colors.text,
     letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   passwordContainer: {
     position: 'relative',
     justifyContent: 'center',
   },
   input: {
-    backgroundColor: '#0A0514',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 12,
+    backgroundColor: colors.cardBg,
+    borderWidth: 4,
+    borderColor: colors.border,
     padding: 16,
-    color: '#fff',
+    color: colors.text,
     fontSize: 16,
+    fontWeight: '600',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 2,
   },
   passwordInput: {
     paddingRight: 50,
@@ -181,22 +204,26 @@ const styles = StyleSheet.create({
   eyeIcon: {
     position: 'absolute',
     right: 16,
+    zIndex: 10,
   },
   loginButton: {
-    backgroundColor: '#4f46e5',
+    backgroundColor: '#E56DB1',
     paddingVertical: 18,
-    borderRadius: 99,
+    borderWidth: 4,
+    borderColor: colors.border,
     alignItems: 'center',
     marginTop: 8,
-    shadowColor: '#4f46e5',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 6, height: 6 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
   },
   loginButtonText: {
-    color: '#fff',
+    color: '#000000',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '900',
+    textTransform: 'uppercase',
   },
   footer: {
     flexDirection: 'row',
@@ -204,21 +231,25 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   footerText: {
-    color: '#94a3b8',
-    fontSize: 14,
-  },
-  linkText: {
-    color: '#818cf8',
+    color: colors.subText,
     fontSize: 14,
     fontWeight: '600',
+  },
+  linkText: {
+    color: '#E56DB1',
+    fontSize: 14,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    textDecorationLine: 'underline',
   },
   forgotPassword: {
     alignSelf: 'flex-end',
     marginTop: 8,
   },
   forgotPasswordText: {
-    color: '#818cf8',
+    color: '#E56DB1',
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: '800',
+    textTransform: 'uppercase',
   },
 });

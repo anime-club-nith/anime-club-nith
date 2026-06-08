@@ -19,6 +19,10 @@ const projectSchema: Schema = new Schema({
       type: String,
       required: true,
   },
+  description: {
+      type: String,
+      required: true,
+  },
   tags: {
       type: [String],
   },

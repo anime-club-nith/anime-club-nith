@@ -1,6 +1,6 @@
-# TNC Mobile
+# Anime Club NITH Mobile
 
-The TNC Mobile application is a cross-platform mobile app developed using Expo and React Native, providing a seamless experience for real-time chat and community interactions.
+The Anime Club NITH Mobile application is a cross-platform mobile app developed using Expo and React Native, providing a seamless experience for real-time chat and community interactions.
 
 ## Tech Stack
 
@@ -15,7 +15,7 @@ The TNC Mobile application is a cross-platform mobile app developed using Expo a
 ## Project Structure
 
 ```text
-tnc-mobile/
+mobile/
 ├── assets/         # App icons and images
 ├── components/     # UI components (Buttons, Inputs, etc.)
 ├── context/        # React Context for global state (e.g., Toast)
@@ -47,15 +47,15 @@ The application uses a Native Stack navigator. It performs an initial token chec
 ### Installation
 1.  Navigate to the mobile directory:
     ```bash
-    cd tnc-mobile
+    cd mobile
     ```
 2.  Install dependencies:
     ```bash
     npm install
     ```
 
-### Configuration
-The mobile app requires a backend API URL. Create a `.env` file in the `tnc-mobile` directory:
+## Configuration
+The mobile app requires a backend API URL. Create a `.env` file in the `mobile` directory:
 
 | Variable | Description |
 | :--- | :--- |

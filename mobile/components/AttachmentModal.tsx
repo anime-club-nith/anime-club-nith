@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Modal, Animated, Easing } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Modal, Animated } from 'react-native';
 import { Feather, Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../context/ThemeContext';
 
 interface AttachmentModalProps {
     visible: boolean;
@@ -13,6 +14,8 @@ export default function AttachmentModal({ visible, onClose, onSelectImage, onSel
     const scale = useRef(new Animated.Value(0)).current;
     const opacity = useRef(new Animated.Value(0)).current;
     const [showModal, setShowModal] = useState(visible);
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
 
     useEffect(() => {
         if (visible) {
@@ -68,14 +71,14 @@ export default function AttachmentModal({ visible, onClose, onSelectImage, onSel
                     }
                 ]}>
                     <TouchableOpacity style={styles.option} onPress={onSelectCode}>
-                        <View style={[styles.iconContainer, { backgroundColor: '#10b98115' }]}>
-                            <Feather name="code" size={20} color="#10b981" />
+                        <View style={styles.iconContainer}>
+                            <Feather name="code" size={20} color={colors.text} />
                         </View>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.option} onPress={onSelectImage}>
-                        <View style={[styles.iconContainer, { backgroundColor: '#6366f115' }]}>
-                            <Ionicons name="image" size={20} color="#6366f1" />
+                        <View style={styles.iconContainer}>
+                            <Ionicons name="image" size={20} color={colors.text} />
                         </View>
                     </TouchableOpacity>
                 </Animated.View>
@@ -84,26 +87,24 @@ export default function AttachmentModal({ visible, onClose, onSelectImage, onSel
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
     overlay: {
         flex: 1,
         backgroundColor: 'transparent',
-        // Position relative to screen for absolute placement of bubble
     },
     modalContent: {
         position: 'absolute',
-        bottom: 90, // Approx height of input bar (50) + safe area (variable) + margin
-        right: 20, // Aligned with attachment button (which is near send button)
-        backgroundColor: '#1A1625',
-        borderRadius: 24,
+        bottom: 120, // Adjusted to match brutalist layout elevation
+        right: 70, // Aligned with attachments button
+        backgroundColor: colors.cardBg,
+        borderWidth: 4,
+        borderColor: colors.border,
         padding: 8,
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.1)',
         gap: 8,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
+        shadowColor: colors.shadow,
+        shadowOffset: { width: 4, height: 4 },
+        shadowOpacity: 1,
+        shadowRadius: 0,
         elevation: 5,
     },
     option: {
@@ -113,8 +114,10 @@ const styles = StyleSheet.create({
     iconContainer: {
         width: 44,
         height: 44,
-        borderRadius: 22,
+        borderWidth: 2,
+        borderColor: colors.border,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: colors.bg,
     },
 });

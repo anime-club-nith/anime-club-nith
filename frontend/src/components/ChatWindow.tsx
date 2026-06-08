@@ -38,7 +38,6 @@ interface Message {
   createdAt: string;
   room?: string;
   imageURL?: string;
-  // Compatibility with UI
   id?: number | string;
   userId?: string;
   content?: string;
@@ -63,7 +62,6 @@ interface ChatWindowProps {
   setCurrentRoom: (roomId: string | null) => void;
 }
 
-// --- Mock Database (used for fallback) ---
 const MOCK_DB = {
   user: {
     id: "99",
@@ -71,8 +69,6 @@ const MOCK_DB = {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
   },
 };
-
-// --- Sub-Components ---
 
 const MemberModal = ({
   isOpen,
@@ -105,7 +101,7 @@ const MemberModal = ({
 
   const handleInvite = async () => {
     try {
-      await navigator.clipboard.writeText("http://localhost:5173");
+      await navigator.clipboard.writeText(window.location.origin);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -117,44 +113,44 @@ const MemberModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-sm bg-[#0A0514] border border-white/10 rounded-2xl shadow-2xl overflow-hidden scale-in-95 animate-in duration-200">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#0A0514]">
+      <div className="w-full max-w-sm bg-white border-4 border-black shadow-[10px_10px_0px_#000] overflow-hidden scale-in-95 animate-in duration-200">
+        <div className="flex items-center justify-between px-6 py-4 border-b-4 border-black bg-white">
           <div>
-            <h3 className="text-white font-semibold tracking-wide">
+            <h3 className="text-black font-black uppercase tracking-wide">
               Room Members
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs font-semibold text-gray-500">
               {members.length} members total
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+            className="p-2 bg-white border-2 border-black hover:bg-pink-100 text-black shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition rounded cursor-pointer"
           >
-            <X size={20} />
+            <X size={18} strokeWidth={2.5} />
           </button>
         </div>
-        <div className="max-h-[400px] overflow-y-auto p-4 space-y-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+        <div className="max-h-[350px] overflow-y-auto p-4 space-y-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
           {members.map((member) => (
             <div
               key={member.id}
-              className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors group"
+              className="flex items-center gap-3 p-2 border-2 border-transparent hover:border-black hover:bg-pink-100/40 transition-all"
             >
               <img
                 src={member.avatar}
                 alt={member.name}
-                className="w-10 h-10 rounded-lg bg-slate-800"
+                className="w-10 h-10 border-2 border-black bg-white rounded-none"
               />
               <div className="flex-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-slate-200 group-hover:text-white transition-colors">
+                  <span className="text-sm font-black uppercase text-black">
                     {member.name}
                     {(member.id === currentUserId || member._id === currentUserId) && (
-                      <span className="text-slate-500 ml-1">(You)</span>
+                      <span className="text-gray-500 ml-1">(You)</span>
                     )}
                   </span>
                   {member.role && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-medium">
+                    <span className="text-[10px] px-2 py-0.5 border border-black bg-pink-100 text-black font-black uppercase tracking-wider">
                       {member.role}
                     </span>
                   )}
@@ -163,15 +159,15 @@ const MemberModal = ({
             </div>
           ))}
         </div>
-        <div className="px-6 py-4 border-t border-white/5 bg-[#080412]">
+        <div className="px-6 py-4 border-t-4 border-black bg-white">
           <button
             onClick={handleInvite}
-            className="w-full py-2.5 rounded-lg bg-white/5 text-slate-300 text-sm font-medium hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-2.5 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-xs shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition flex items-center justify-center gap-2 cursor-pointer"
           >
             {copied ? (
               <>
-                <Check size={16} className="text-emerald-400" />
-                <span className="text-emerald-400">Copied Link!</span>
+                <Check size={16} className="text-black" strokeWidth={2.5} />
+                <span>Copied Link!</span>
               </>
             ) : (
               "Invite People"
@@ -202,10 +198,8 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
   const attachmentMenuRef = useRef<HTMLDivElement>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const optionsMenuRef = useRef<HTMLDivElement>(null);
-
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
 
-  // Browser notifications
   const { permission, requestPermission, showNotification } = useBrowserNotifications();
 
   const allMembers = useMemo(() => {
@@ -223,14 +217,12 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
     effectiveUserRef.current = effectiveUser;
   }, [effectiveUser]);
 
-  // Date separator helper functions
   const getDateLabel = (timestamp: string | Date): string => {
     const messageDate = new Date(timestamp);
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    // Reset time to midnight for comparison
     const resetTime = (date: Date) => {
       date.setHours(0, 0, 0, 0);
       return date;
@@ -245,7 +237,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
     } else if (messageDateOnly.getTime() === yesterdayOnly.getTime()) {
       return 'Yesterday';
     } else {
-      // Format as "Dec 25, 2024"
       return messageDate.toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
@@ -263,7 +254,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
     messages.forEach((message) => {
       const dateLabel = getDateLabel(message.createdAt);
 
-      // Insert date separator if date changed
       if (dateLabel !== lastDate) {
         grouped.push({
           type: 'date-separator',
@@ -273,7 +263,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
         lastDate = dateLabel;
       }
 
-      // Add the actual message
       grouped.push({ ...message, type: 'message' });
     });
 
@@ -281,7 +270,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
   };
 
   const handleImageSelect = (dataUrl: string) => {
-
     setImagePreviewUrl(dataUrl);
     fetch(dataUrl)
       .then(res => res.blob())
@@ -289,11 +277,9 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
         const file = new File([blob], "upload.png", { type: "image/png" });
         setImagePreview(file);
       });
-
     setIsImageModalOpen(false);
   };
 
-  // Load authenticated user
   useEffect(() => {
     try {
       const raw = localStorage.getItem("authUser");
@@ -322,14 +308,12 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
     }
   }, []);
 
-  // Request notification permission on mount
   useEffect(() => {
     if (permission === 'default') {
       requestPermission();
     }
   }, [permission, requestPermission]);
 
-  // Track current room for global notifications
   useEffect(() => {
     if (activeRoom?._id) {
       setCurrentRoom(activeRoom._id);
@@ -338,7 +322,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
     }
   }, [activeRoom, setCurrentRoom]);
 
-  // Fetch Room & Messages
   useEffect(() => {
     if (!roomId) {
       setActiveRoom(null);
@@ -350,7 +333,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
 
     const fetchData = async () => {
       try {
-        // 1. Fetch Room Details
         const roomRes = await axios.get(`/api/room/${roomId}`, {
           withCredentials: true,
         });
@@ -373,16 +355,13 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
             members: members,
           });
 
-          // 2. Fetch Chat History using the ObjectId
           const messagesRes = await axios.get(`/api/chat/chat-history/${roomData._id}?page=1`, {
             withCredentials: true,
           });
 
-          // Socket Connection using ObjectId
           socket.connect();
           socket.emit("join_room", roomData._id);
 
-          // Transform backend messages to UI format
           const history = messagesRes.data.map((msg: Message) => ({
             ...msg,
             id: msg._id,
@@ -397,7 +376,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
           }));
 
           setMessages(history);
-
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -407,8 +385,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
     };
 
     fetchData();
-
-    // Socket connection moved inside fetchData to use roomData._id
 
     const handleReceiveMessage = (newMessage: any) => {
       const formattedMsg: Message = {
@@ -425,7 +401,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
       };
 
       setMessages((prev) => {
-        // If this message belongs to current user, try to find the optimistic one
         const currentUserId = effectiveUserRef.current.id || effectiveUserRef.current._id;
         if (formattedMsg.userId === currentUserId) {
           const existingIndex = prev.findIndex(
@@ -437,7 +412,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
             return newMessages;
           }
         } else {
-          // Message from another user - show browser notification
           const senderName = newMessage.sender?.name || "Someone";
           const messagePreview = newMessage.text || "Sent an image";
 
@@ -452,7 +426,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
     };
 
     socket.on("received_message", handleReceiveMessage);
-    // Listen for the event name used in the controller code (user used 'receive_message' in their edit)
     socket.on("receive_message", handleReceiveMessage);
 
     return () => {
@@ -490,7 +463,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
     };
   }, []);
 
-  // Auto-scroll
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -500,7 +472,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
   const handleSendMessage = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if ((!messageText.trim() && !imagePreview) || !roomId) return;
-
     if (!activeRoom?._id) return;
 
     const tempId = Date.now().toString();
@@ -520,8 +491,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
     };
 
     setMessages((prev) => [...prev, optimisticMessage]);
-
-    // Clear input immediately
     setMessageText("");
     setImagePreview(null);
     setImagePreviewUrl(null);
@@ -538,7 +507,6 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
-      // Success is handled by socket event "received_message" which will replace the optimistic message
     } catch (error) {
       console.error("Failed to send message:", error);
       setMessages((prev) =>
@@ -550,17 +518,13 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
   };
 
   const handleShareCode = async (code: string) => {
-    if (!roomId) return;
-
-    // Sending code as a regular message but marked as code? 
-    // The backend model doesn't seem to have a 'type' field yet. 
-    // We will send it as text for now.
+    if (!roomId || !activeRoom?._id) return;
     try {
       const formData = new FormData();
-      formData.append("text", code); // You might want to wrap this in markdown code blocks like ```{code}```
-      formData.append("room", activeRoom!._id);
+      formData.append("text", code);
+      formData.append("room", activeRoom._id);
 
-      await axios.post(`/api/chat/${activeRoom!._id}`, formData, {
+      await axios.post(`/api/chat/${activeRoom._id}`, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -569,48 +533,35 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
     }
   };
 
-  // --- Render Loading State ---
   if (isLoading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center h-screen bg-[#060010] text-slate-500 gap-3">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-        <p className="text-sm font-medium tracking-wide">Loading Channel...</p>
+      <div className="flex-1 flex flex-col items-center justify-center h-screen bg-white text-black gap-3">
+        <Loader2 className="w-8 h-8 animate-spin text-pink-500" strokeWidth={2.5} />
+        <p className="text-xs font-black uppercase tracking-wide">Loading Channel...</p>
       </div>
     );
   }
 
-  // --- Render Empty/Error State ---
-
   if (!activeRoom) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center bg-[#060010] animate-in fade-in duration-500">
-        {/* Centered Content Container */}
+      <div className="w-full h-full flex flex-col items-center justify-center bg-white border-l-4 border-black animate-in fade-in duration-300">
         <div className="flex flex-col items-center text-center space-y-6">
-          {/* 1. The Circular Button */}
           <button
             onClick={() => navigate("/join-room")}
-            className="
-              group relative flex items-center justify-center
-              w-24 h-24 rounded-full cursor-pointer
-              bg-[#0A0514] border-2 border-white/5 
-              transition-all duration-300 ease-out
-              hover:border-indigo-500/50 hover:bg-[#110c1d]
-              hover:shadow-[0_0_30px_-5px_rgba(99,102,241,0.3)]
-              hover:-translate-y-2 active:scale-95
-            "
+            className="group relative flex items-center justify-center w-24 h-24 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black shadow-[8px_8px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
           >
             <Plus
               size={40}
-              strokeWidth={1.5}
-              className="text-slate-600 transition-colors duration-300 group-hover:text-indigo-400"
+              strokeWidth={3}
+              className="text-black transition-colors duration-300"
             />
           </button>
           <div className="space-y-1">
-            <h3 className="text-xl font-medium text-white tracking-wide">
+            <h3 className="text-xl font-black uppercase text-black">
               Join Room
             </h3>
-            <p className="text-sm text-slate-500 font-light max-w-xs mx-auto">
-              OR navigate to the sidebar to see the channels you've joined
+            <p className="text-sm font-semibold text-gray-700 max-w-xs mx-auto">
+              Navigate to the sidebar or click here to explore channels.
             </p>
           </div>
         </div>
@@ -619,7 +570,7 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
   }
 
   return (
-    <div className="flex-1 flex flex-col h-screen bg-[#060010] relative min-w-0">
+    <div className="flex-1 flex flex-col h-screen bg-white border-l-0 md:border-l-4 border-black relative min-w-0">
       <MemberModal
         isOpen={isMemberModalOpen}
         onClose={() => setIsMemberModalOpen(false)}
@@ -645,20 +596,20 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
       )}
 
       {/* Dynamic Header */}
-      <header className="h-16 px-6 flex items-center justify-between border-b border-white/5 bg-[#060010]/80 backdrop-blur-md sticky top-0 z-10">
+      <header className="h-16 px-6 flex items-center justify-between border-b-4 border-black bg-white sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <button
             onClick={onOpenSidebar}
-            className="md:hidden p-1 -ml-2 mr-1 text-slate-400 hover:text-white transition-colors"
+            className="md:hidden p-2 bg-white border-2 border-black hover:bg-pink-100 text-black rounded shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition mr-1 cursor-pointer"
           >
-            <Menu size={20} />
+            <Menu size={18} strokeWidth={2.5} />
           </button>
-          <Hash className="w-5 h-5 text-slate-400" />
+          <Hash className="w-5 h-5 text-black" strokeWidth={2.5} />
           <div>
-            <h2 className="font-semibold text-white tracking-wide">
+            <h2 className="font-black uppercase text-black tracking-wide text-sm md:text-base">
               {activeRoom.title}
             </h2>
-            <p className="text-xs text-slate-500 font-light hidden sm:block">
+            <p className="text-xs font-semibold text-gray-700 hidden sm:block">
               {activeRoom.description}
             </p>
           </div>
@@ -667,31 +618,28 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsMemberModalOpen(true)}
-            className="p-2 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg cursor-pointer transition-all duration-200 group"
+            className="p-2 border-2 border-black bg-white hover:bg-pink-100 text-black shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition rounded cursor-pointer"
             title="View Members"
           >
-            <Users size={20} strokeWidth={1.5} />
+            <Users size={18} strokeWidth={2.5} />
           </button>
           <div className="relative" ref={optionsMenuRef}>
             <button
               onClick={() => setShowOptionsMenu(!showOptionsMenu)}
-              className={`p-2 rounded-lg cursor-pointer transition-all duration-200 ${showOptionsMenu
-                ? "bg-white/5 text-white"
-                : "text-slate-400 hover:text-white hover:bg-white/5"
-                }`}
+              className="p-2 border-2 border-black bg-white hover:bg-pink-100 text-black shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition rounded cursor-pointer"
             >
-              <MoreHorizontal size={20} strokeWidth={1.5} />
+              <MoreHorizontal size={18} strokeWidth={2.5} />
             </button>
             {showOptionsMenu && (
-              <div className="absolute right-0 top-full mt-2 w-48 bg-[#0A0514] border border-white/10 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white border-4 border-black shadow-[4px_4px_0px_#000] overflow-hidden z-50">
                 <a
-                  href="https://github.com/ayush00git/TNC/issues"
+                  href="https://github.com/anime-club-nith/tac-frontend/issues"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-3 text-sm text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+                  className="flex items-center gap-3 px-4 py-3 text-xs font-black uppercase text-black hover:bg-pink-100 transition-colors"
                   onClick={() => setShowOptionsMenu(false)}
                 >
-                  <AlertCircle size={16} className="text-red-400" />
+                  <AlertCircle size={16} className="text-red-600" strokeWidth={2.5} />
                   Report an issue
                 </a>
               </div>
@@ -702,38 +650,35 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
 
       {/* Message Stream */}
       <div
-        className="flex-1 overflow-y-auto px-6 py-6 space-y-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
+        className="flex-1 overflow-y-auto px-6 py-6 space-y-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] bg-pink-100/10"
         ref={scrollRef}
       >
         {/* Dynamic Welcome Message */}
-        <div className="py-8 border-b border-white/5 mb-4">
-          <h1 className="text-3xl font-bold text-white mb-2">
+        <div className="py-8 border-b-4 border-black mb-4">
+          <h1 className="text-3xl font-black uppercase text-black mb-2">
             Welcome to #{activeRoom.title}!
           </h1>
-          <p className="text-slate-400">
+          <p className="text-gray-700 font-semibold text-sm">
             This is the start of the{" "}
-            <span className="text-indigo-400">{activeRoom.title}</span>{" "}
+            <span className="text-pink-600 font-black">#{activeRoom.title}</span>{" "}
             conversation.
           </p>
         </div>
 
         {groupMessagesWithDates(messages).map((item, idx) => {
-          // Handle date separator
           if (item.type === 'date-separator') {
             return (
               <div key={item.id} className="flex items-center gap-4 my-6">
-                <div className="flex-1 h-px bg-white/10"></div>
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <div className="flex-1 h-[2px] bg-black"></div>
+                <span className="text-xs font-black uppercase text-black tracking-widest px-3 py-1 border-2 border-black bg-pink-100 shadow-[2px_2px_0px_#000]">
                   {item.label}
                 </span>
-                <div className="flex-1 h-px bg-white/10"></div>
+                <div className="flex-1 h-[2px] bg-black"></div>
               </div>
             );
           }
 
-          // Handle regular message
           const msg = item;
-          // Adjust user lookup for real data structure
           const user = msg.sender || {
             id: "unknown",
             _id: "unknown",
@@ -741,14 +686,12 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
             avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=Unknown`,
           };
 
-          // IMPORTANT: Check ID types (string vs number)
           const isMe = (user.id === effectiveUser.id || user._id === effectiveUser.id) && user.id !== "unknown";
 
           const groupedMessages = groupMessagesWithDates(messages);
           const prevItem = groupedMessages[idx - 1];
           const prevMsg = prevItem?.type === 'message' ? prevItem : null;
 
-          // Check sender ID consistency
           const prevSenderId = prevMsg?.sender?.id || prevMsg?.sender?._id || prevMsg?.userId;
           const currentSenderId = user.id || user._id;
           const isSequence = prevMsg && prevSenderId === currentSenderId;
@@ -758,20 +701,15 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
           return (
             <div
               key={msg.id}
-              className={`group flex gap-4 ${isSequence ? "mt-1" : "mt-6"
-                } hover:bg-white/[0.02] -mx-4 px-4 py-1 rounded-lg transition-colors`}
+              className={`flex gap-4 ${isSequence ? "mt-1 pl-14" : "mt-6"}`}
             >
-              {!isSequence ? (
+              {!isSequence && (
                 <div className="flex-shrink-0 mt-0.5">
                   <img
                     src={avatarUrl}
                     alt={user.name}
-                    className="w-10 h-10 rounded-xl bg-slate-800"
+                    className="w-10 h-10 border-2 border-black bg-white rounded-none shadow-[2px_2px_0px_#000]"
                   />
-                </div>
-              ) : (
-                <div className="w-10 flex-shrink-0 text-[10px] text-slate-600 opacity-0 group-hover:opacity-100 text-right pt-2 select-none">
-                  {msg.timestamp?.split(" ")[0]}
                 </div>
               )}
 
@@ -779,54 +717,55 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
                 {!isSequence && (
                   <div className="flex items-center gap-2 mb-1">
                     <span
-                      className={`font-medium ${isMe ? "text-indigo-400" : "text-slate-200"
-                        }`}
+                      className={`text-xs font-black uppercase ${isMe ? "text-pink-600" : "text-black"}`}
                     >
-                      {user.name} {isMe && <span className="opacity-50">(You)</span>}
+                      {user.name} {isMe && <span className="opacity-70">(You)</span>}
                     </span>
                     {user.role && (
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#1A1625] text-slate-400 border border-white/5">
+                      <span className="px-1.5 py-0.5 border border-black text-[9px] font-black uppercase bg-pink-100 text-black">
                         {user.role}
                       </span>
                     )}
-                    <span className="text-xs text-slate-500 font-light ml-1">
+                    <span className="text-[10px] text-gray-500 font-bold ml-1">
                       {msg.timestamp}
                     </span>
                   </div>
                 )}
-                {/* Check content vs text field */}
+                
                 {msg.type === "code" ? (
-                  <div className="mt-2 bg-[#0A0514] border border-white/10 rounded-lg overflow-hidden">
-                    <pre className="p-4 text-sm text-slate-300 font-mono overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+                  <div className="mt-2 bg-[#0d1117] border-2 border-black shadow-[3px_3px_0px_#000] overflow-hidden max-w-xl">
+                    <pre className="p-4 text-xs text-white font-mono overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
                       <code>{msg.content || msg.text}</code>
                     </pre>
                   </div>
                 ) : (
-                  <p className="text-slate-300 font-light leading-relaxed whitespace-pre-wrap">
+                  <div className={`p-3 border-2 border-black font-semibold text-sm shadow-[2px_2px_0px_#000] max-w-[80%] inline-block whitespace-pre-wrap ${isMe ? 'bg-pink-100 text-black' : 'bg-white text-black'}`}>
                     {msg.content || msg.text}
-                  </p>
+                  </div>
                 )}
+                
                 {msg.image && (
                   <div className="mt-2">
                     <img
                       src={msg.image}
                       alt="uploaded content"
-                      className="rounded-lg max-w-xs cursor-pointer"
+                      className="border-2 border-black shadow-[3px_3px_0px_#000] max-w-xs cursor-pointer bg-white p-1 hover:scale-[1.01] transition-transform"
                       onClick={() => setViewImage(msg.image as string)}
                     />
                   </div>
                 )}
+                
                 {isMe && (
-                  <div className="flex justify-end mt-1">
+                  <div className="flex justify-end mt-1 max-w-[80%]">
                     {msg.status === "sending" && (
-                      <div className="flex space-x-0.5 animate-pulse">
-                        <div className="w-1 h-1 bg-slate-500 rounded-full animation-delay-[0ms]" />
-                        <div className="w-1 h-1 bg-slate-500 rounded-full animation-delay-[100ms]" />
-                        <div className="w-1 h-1 bg-slate-500 rounded-full animation-delay-[200ms]" />
+                      <div className="flex space-x-0.5 animate-pulse items-center">
+                        <div className="w-1.5 h-1.5 bg-pink-500 border border-black rounded-full" />
+                        <div className="w-1.5 h-1.5 bg-pink-500 border border-black rounded-full" />
+                        <div className="w-1.5 h-1.5 bg-pink-500 border border-black rounded-full" />
                       </div>
                     )}
-                    {msg.status === "sent" && <Check className="w-3 h-3 text-slate-500" />}
-                    {msg.status === "error" && <AlertCircle className="w-3 h-3 text-red-500" />}
+                    {msg.status === "sent" && <Check className="w-3 h-3 text-pink-600 font-black" strokeWidth={3} />}
+                    {msg.status === "error" && <AlertCircle className="w-3 h-3 text-red-600 font-black" strokeWidth={3} />}
                   </div>
                 )}
               </div>
@@ -834,63 +773,51 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
           );
         })}
       </div>
+
       {/* Input Area */}
-      <div className="px-6 pb-6 pt-2 bg-[#060010] relative">
+      <div className="px-6 pb-6 pt-2 bg-white border-t-4 border-black relative">
         {imagePreviewUrl && (
           <div className="relative mb-2">
             <img
               src={imagePreviewUrl}
               alt="preview"
-              className="rounded-lg max-w-xs h-24"
+              className="border-2 border-black max-w-xs h-24 bg-white p-1"
             />
             <button
               onClick={() => {
                 setImagePreview(null);
                 setImagePreviewUrl(null);
               }}
-              className="absolute top-2 right-2 p-1 bg-black/50 rounded-full text-white hover:bg-black/75"
+              className="absolute top-2 left-2 p-1 bg-white border-2 border-black text-black hover:bg-red-50 hover:text-red-600 cursor-pointer"
             >
-              <X size={16} />
+              <X size={16} strokeWidth={2.5} />
             </button>
           </div>
         )}
         <form
           onSubmit={handleSendMessage}
-          className="bg-[#0A0514] rounded-full border-2 border-white/5 focus-within:border-indigo-500/30 transition-colors p-2 flex items-center gap-2"
+          className="bg-white border-4 border-black focus-within:bg-pink-100/35 transition-colors p-2 flex items-center gap-2 shadow-[4px_4px_0px_#000] focus-within:shadow-[2px_2px_0px_#000]"
         >
           <div className="relative" ref={attachmentMenuRef}>
             <button
               type="button"
               onClick={() => setShowAttachmentMenu((prev) => !prev)}
-              className={`
-      p-2 rounded-full transition-all duration-300 ease-out cursor-pointer
-      ${showAttachmentMenu
-                  ? "bg-indigo-500/20 text-indigo-400 rotate-45"
-                  : "text-slate-500 hover:text-indigo-400 hover:bg-white/5 rotate-0"
-                }
-    `}
+              className={`p-2 bg-white border-2 border-black text-black hover:bg-pink-100 rounded-full transition-all duration-300 ease-out cursor-pointer ${showAttachmentMenu ? "rotate-45" : "rotate-0"}`}
             >
-              <Plus size={20} strokeWidth={2} />
+              <Plus size={20} strokeWidth={2.5} />
             </button>
 
             {showAttachmentMenu && (
-              <div
-                className="
-      absolute bottom-full left-0 mb-3 w-48 
-      bg-[#0A0514] border border-white/10 rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-20
-      origin-bottom-left
-      animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-200 ease-out
-    "
-              >
+              <div className="absolute bottom-full left-0 mb-3 w-48 bg-white border-4 border-black shadow-[4px_4px_0px_#000] overflow-hidden z-20 origin-bottom-left animate-in fade-in zoom-in-95 duration-200">
                 <div className="p-1">
                   <button
                     onClick={() => {
                       setIsCodeModalOpen(true);
                       setShowAttachmentMenu(false);
                     }}
-                    className="w-full text-left px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg flex items-center gap-3 transition-colors"
+                    className="w-full text-left px-3 py-2.5 text-xs font-black uppercase text-black hover:bg-pink-100 flex items-center gap-3 transition-colors cursor-pointer"
                   >
-                    <Code size={18} className="text-indigo-400" />
+                    <Code size={18} className="text-black" strokeWidth={2.5} />
                     <span>Code Snippet</span>
                   </button>
                   <button
@@ -898,9 +825,9 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
                       setIsImageModalOpen(true);
                       setShowAttachmentMenu(false);
                     }}
-                    className="w-full text-left px-3 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg flex items-center gap-3 transition-colors"
+                    className="w-full text-left px-3 py-2.5 text-xs font-black uppercase text-black hover:bg-pink-100 flex items-center gap-3 transition-colors cursor-pointer"
                   >
-                    <Image size={18} className="text-purple-400" />
+                    <Image size={18} className="text-black" strokeWidth={2.5} />
                     <span>Upload Image</span>
                   </button>
                 </div>
@@ -914,7 +841,7 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
               placeholder={`Message #${activeRoom.title}`}
-              className="w-full bg-transparent border-none focus:outline-none text-slate-200 placeholder:text-slate-600 font-light ml-2"
+              className="w-full bg-transparent border-none focus:outline-none text-black placeholder:text-gray-500 font-semibold ml-2"
             />
           </div>
 
@@ -922,14 +849,14 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
             <button
               type="button"
               onClick={() => setShowEmojiPicker((prev) => !prev)}
-              className="p-2 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+              className="p-2 text-black hover:text-pink-500 transition-colors cursor-pointer"
             >
-              <Smile size={20} strokeWidth={1.5} />
+              <Smile size={20} strokeWidth={2.5} />
             </button>
             {showEmojiPicker && (
-              <div className="absolute bottom-full right-0 mb-4 z-50 shadow-2xl rounded-2xl overflow-hidden border border-white/10 animate-in fade-in zoom-in-95 duration-200">
+              <div className="absolute bottom-full right-0 mb-4 z-50 border-4 border-black shadow-[6px_6px_0px_#000] bg-white animate-in fade-in zoom-in-95 duration-200">
                 <EmojiPicker
-                  theme={Theme.DARK}
+                  theme={document.documentElement.classList.contains('dark') ? Theme.DARK : Theme.LIGHT}
                   onEmojiClick={(emojiData) => {
                     setMessageText((prev) => prev + emojiData.emoji);
                     setShowEmojiPicker(false);
@@ -942,19 +869,9 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
             <button
               type="submit"
               disabled={!messageText.trim() && !imagePreviewUrl}
-              className={`
-                p-2.5 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer
-                ${messageText.trim() || imagePreviewUrl
-                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 translate-y-0 hover:bg-indigo-500"
-                  : "bg-[#1A1625] text-slate-600 translate-y-0 cursor-not-allowed"
-                }
-              `}
+              className={`p-2.5 border-4 border-black flex items-center justify-center transition-all duration-200 cursor-pointer ${messageText.trim() || imagePreviewUrl ? "bg-pink-500 text-black shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px]" : "bg-gray-200 text-gray-500 cursor-not-allowed"}`}
             >
-              <ArrowUp
-                size={20}
-                strokeWidth={2.5}
-                className={messageText.trim() || imagePreviewUrl ? "" : ""}
-              />
+              <ArrowUp size={20} strokeWidth={3} />
             </button>
           </div>
         </form>

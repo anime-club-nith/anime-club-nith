@@ -28,9 +28,6 @@ const server = createServer(app);
 const allowedOrigins = [
   "http://localhost:5173",
   "http://13.202.26.208",
-  "https://tnc.ayushz.me",
-  "https://ayushz.me",
-  "https://www.ayushz.me",
 ]
 
 const io = new Server(server, {
@@ -86,7 +83,7 @@ app.use(cookieParser());
 app.get("/", allowOnlyAuthenticatedUser, (req, res) => {
   return res
     .status(200)
-    .json({ message: "Hey welcome to the TNC server" });
+    .json({ message: "Hey welcome to the Anime Club NITH server" });
 });
 
 app.use('/api/chat', allowOnlyAuthenticatedUser, chatRoute);

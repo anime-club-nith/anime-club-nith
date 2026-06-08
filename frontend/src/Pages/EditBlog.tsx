@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, X, Save, AlertCircle, Maximize2, Minimize2 } from 'lucide-react';
+import { ArrowLeft, X, Save, AlertCircle, Maximize2, Minimize2, Terminal as TerminalIcon } from 'lucide-react';
 import Navbar from '../components/NavBar';
+import Footer from '../components/Footer';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkBreaks from 'remark-breaks';
+import rehypeHighlight from 'rehype-highlight';
 
 const EditBlog = () => {
     const navigate = useNavigate();
@@ -21,8 +23,25 @@ const EditBlog = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isImageUploading, setIsImageUploading] = useState(false);
     const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
+    const [selection, setSelection] = useState<{ start: number; end: number } | null>(null);
+    const editorRef = useRef<HTMLTextAreaElement>(null);
 
-    // Fetch existing blog data
+    const captureSelection = () => {
+        if (editorRef.current) {
+            setSelection({
+                start: editorRef.current.selectionStart,
+                end: editorRef.current.selectionEnd
+            });
+        }
+    };
+
+    const toggleViewMode = () => {
+        if (viewMode === 'write') {
+            captureSelection();
+        }
+        setViewMode(prev => prev === 'write' ? 'preview' : 'write');
+    };
+
     useEffect(() => {
         const fetchBlog = async () => {
             try {
@@ -36,7 +55,6 @@ const EditBlog = () => {
                 const data = await response.json();
                 const existingImageURLs: string[] = Array.isArray(data.imageURL) ? data.imageURL : [];
 
-                // Pre-populate form fields
                 setTitle(data.title || '');
                 setExcerpt(data.excerpt || '');
                 setContent(data.content || '');
@@ -55,13 +73,37 @@ const EditBlog = () => {
         }
     }, [blogId]);
 
-    // Handle body overflow when fullscreen
     useEffect(() => {
         document.body.style.overflow = isFullscreen ? 'hidden' : 'unset';
         return () => {
             document.body.style.overflow = 'unset';
         };
     }, [isFullscreen]);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.ctrlKey && e.key === 'Escape') {
+                e.preventDefault();
+                toggleViewMode();
+            } else if (e.key === 'Escape' && !e.ctrlKey) {
+                e.preventDefault();
+                setIsFullscreen(prev => !prev);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [viewMode]);
+
+    useEffect(() => {
+        if (viewMode === 'write' && selection && editorRef.current) {
+            const editor = editorRef.current;
+            editor.focus();
+            requestAnimationFrame(() => {
+                editor.setSelectionRange(selection.start, selection.end);
+            });
+        }
+    }, [viewMode, selection]);
 
     const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
@@ -220,12 +262,12 @@ const EditBlog = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[#060010] text-[#c9d1d9] font-sans">
+            <div className="min-h-screen bg-pink-100/35 text-black font-sans">
                 <Navbar />
                 <div className="flex items-center justify-center min-h-screen">
                     <div className="text-center">
-                        <div className="w-16 h-16 border-4 border-[#30363d] border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-                        <p className="text-[#8b949e] font-mono text-sm uppercase tracking-wider">Loading blog...</p>
+                        <div className="w-16 h-16 border-8 border-black border-t-pink-500 rounded-full animate-spin mx-auto mb-4"></div>
+                        <p className="text-black font-black uppercase text-xs tracking-wider">Loading blog...</p>
                     </div>
                 </div>
             </div>
@@ -233,250 +275,304 @@ const EditBlog = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#060010] text-[#c9d1d9] font-sans selection:bg-white selection:text-black">
+        <div className="min-h-screen bg-pink-100/35 text-black font-sans selection:bg-pink-500/30">
             <Navbar />
-            <div className="max-w-[1400px] mx-auto px-6 lg:px-12 pt-32 pb-20">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-24 border-b border-[#30363d] pb-8">
-                    <button
-                        onClick={() => navigate('/my-blogs')}
-                        className="flex items-center gap-2 text-[#8b949e] hover:text-white transition-colors group"
-                    >
-                        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-                        <span className="font-mono uppercase text-sm tracking-wider">Abort & Return</span>
-                    </button>
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-[#00ffff] rounded-full"></div>
-                        <span className="font-mono text-xs text-[#00ffff] uppercase tracking-widest">Edit Mode</span>
-                    </div>
-                </div>
-
-                {/* Form */}
-                <form onSubmit={handleSubmit} className="max-w-5xl mx-auto space-y-16">
-                    {error && (
-                        <div className="bg-red-500/5 border border-red-500/20 text-red-400 p-4 font-mono text-sm flex items-center gap-3">
-                            <AlertCircle size={16} />
-                            <span>ERROR: {error}</span>
-                        </div>
-                    )}
-
-                    {/* Title */}
-                    <div className="space-y-4">
-                        <input
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            placeholder="ENTRY TITLE_01"
-                            className="w-full bg-transparent border-b border-[#30363d] text-white text-5xl md:text-7xl font-black uppercase tracking-tight py-4 focus:outline-none focus:border-[#00ffff] transition-colors placeholder:text-[#30363d]"
-                        />
-                    </div>
-
-                    {/* Excerpt */}
-                    <div className="space-y-4">
-                        <label className="text-xs font-mono text-[#8b949e] uppercase tracking-widest block pl-4 border-l-2 border-[#00ffff]">Abstract / Description</label>
-                        <textarea
-                            value={excerpt}
-                            onChange={(e) => setExcerpt(e.target.value)}
-                            placeholder="Briefly describe this log entry..."
-                            className="w-full bg-transparent text-[#c9d1d9] text-xl md:text-2xl font-light p-4 h-32 resize-none focus:outline-none placeholder:text-[#30363d] leading-relaxed border-l-2 border-[#30363d] focus:border-[#c9d1d9] transition-colors ml-1 scrollbar-hide"
-                        />
-                    </div>
-
-                    {/* Tags */}
-                    <div className="space-y-4">
-                        <label className="text-xs font-mono text-[#8b949e] uppercase tracking-widest block pl-4 border-l-2 border-[#00ffff]">Metadata Tags [{tags.length}/4]</label>
-                        <div className="w-full p-4 flex flex-wrap gap-3 items-center ml-1">
-                            {tags.map(tag => (
-                                <span key={tag} className="flex items-center gap-2 bg-[#161b22] border border-[#30363d] text-[#00ffff] px-3 py-1 text-xs font-mono uppercase tracking-wider">
-                                    {tag}
+            
+            <div className="pt-24 pb-32">
+                <div className="max-w-4xl mx-auto px-6 lg:px-12 mt-8 border-4 border-black bg-white p-8 md:p-12 shadow-[10px_10px_0px_#000]">
+                    {/* Mode Toggle & Status */}
+                    <div className="flex justify-between items-center mb-12 border-b-4 border-black pb-6">
+                        <button
+                            type="button"
+                            onClick={() => navigate('/my-blogs')}
+                            className="flex items-center gap-2 border-4 border-black px-4 py-2 bg-white hover:bg-pink-100 text-black font-black uppercase text-xs shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer"
+                        >
+                            <ArrowLeft size={16} strokeWidth={2.5} />
+                            <span>Abort & Return</span>
+                        </button>
+                        
+                        <div className="flex items-center gap-6">
+                            <div className="flex flex-col items-end gap-1 border-r-4 border-black pr-6">
+                                <div className="flex gap-4">
                                     <button
                                         type="button"
-                                        onClick={() => removeTag(tag)}
-                                        className="hover:text-white transition-colors"
+                                        onClick={() => {
+                                            if (viewMode === 'preview') setViewMode('write');
+                                        }}
+                                        className={`text-xs font-black uppercase tracking-widest transition-colors cursor-pointer ${viewMode === 'write' ? 'text-pink-500 border-b-2 border-pink-500' : 'text-black hover:text-pink-500'}`}
                                     >
-                                        <X size={12} />
+                                        [ Write ]
                                     </button>
-                                </span>
-                            ))}
-                            {tags.length < 4 && (
-                                <div className="flex items-center gap-2 text-[#8b949e] border-b border-[#30363d] focus-within:border-[#00ffff] focus-within:text-[#00ffff] transition-colors">
-                                    <span className="font-mono text-xs"></span>
-                                    <input
-                                        type="text"
-                                        value={currentTag}
-                                        onChange={(e) => setCurrentTag(e.target.value)}
-                                        onKeyDown={handleTagKeyDown}
-                                        placeholder="ADD_TAG"
-                                        className="bg-transparent border-none text-sm font-mono uppercase focus:outline-none w-[100px] py-1 placeholder:text-[#30363d]"
-                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            if (viewMode === 'write') {
+                                                captureSelection();
+                                                setViewMode('preview');
+                                            }
+                                        }}
+                                        className={`text-xs font-black uppercase tracking-widest transition-colors cursor-pointer ${viewMode === 'preview' ? 'text-emerald-600 border-b-2 border-emerald-600' : 'text-black hover:text-pink-500'}`}
+                                    >
+                                        [ Preview ]
+                                    </button>
                                 </div>
-                            )}
+                                <span className="text-[9px] font-black text-gray-500 uppercase tracking-tighter">Ctrl + Esc to toggle</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className={`w-3 h-3 border-2 border-black ${viewMode === 'write' ? 'bg-pink-500 animate-pulse' : 'bg-emerald-500'}`}></div>
+                                <span className={`font-black text-xs uppercase tracking-widest ${viewMode === 'write' ? 'text-pink-500' : 'text-emerald-600'}`}>
+                                    {viewMode === 'write' ? 'Write Mode' : 'Preview Mode'}
+                                </span>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Content */}
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between border-l-2 border-[#00ff00] pl-4">
-                            <label className="text-xs font-mono text-[#8b949e] uppercase tracking-widest">Main Content</label>
-
-                            {/* Write / Preview Toggles */}
-                            <div className="flex gap-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setViewMode('write')}
-                                    className={`text-xs font-mono uppercase tracking-widest transition-colors ${viewMode === 'write' ? 'text-[#00ff00] underline underline-offset-4' : 'text-[#30363d] hover:text-[#8b949e]'}`}
-                                >
-                                    [ Write ]
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setViewMode('preview')}
-                                    className={`text-xs font-mono uppercase tracking-widest transition-colors ${viewMode === 'preview' ? 'text-[#00ff00] underline underline-offset-4' : 'text-[#30363d] hover:text-[#8b949e]'}`}
-                                >
-                                    [ Preview ]
-                                </button>
+                    <form onSubmit={handleSubmit}>
+                        {error && (
+                            <div className="mb-12 border-4 border-black bg-red-100 text-red-800 p-4 font-black text-xs flex items-center gap-3 shadow-[4px_4px_0px_#000]">
+                                <AlertCircle size={14} strokeWidth={2.5} />
+                                <span>ERROR: {error}</span>
                             </div>
-                        </div>
+                        )}
 
-                        <div className="relative">
-                            {viewMode === 'write' ? (
-                                <>
-                                    <p className="text-[10px] text-[#8b949e] uppercase tracking-widest ml-1 mb-2">Paste images directly into the editor and they will be uploaded automatically.</p>
+                        {viewMode === 'write' ? (
+                            <div className="space-y-12">
+                                {/* Title Input */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black uppercase text-black tracking-wider ml-1">Entry Title</label>
+                                    <input
+                                        type="text"
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        placeholder="TITLE_HERE"
+                                        className="w-full bg-white border-4 border-black p-4 text-black text-3xl font-black uppercase focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition placeholder:text-gray-400"
+                                    />
+                                </div>
+
+                                {/* Abstract Input */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black uppercase text-black tracking-wider ml-1">Abstract / Description</label>
+                                    <textarea
+                                        value={excerpt}
+                                        onChange={(e) => setExcerpt(e.target.value)}
+                                        placeholder="Briefly describe this entry..."
+                                        className="w-full bg-white border-4 border-black p-4 text-black text-base font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition placeholder:text-gray-400 h-24 resize-none leading-relaxed"
+                                    />
+                                </div>
+
+                                {/* Metadata & Tags */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase text-black tracking-wider ml-1">Metadata Tags [{tags.length}/4]</label>
+                                        <div className="flex flex-wrap gap-2 p-2 border-4 border-black bg-white min-h-12 shadow-[4px_4px_0px_#000] items-center">
+                                            {tags.map(tag => (
+                                                <span key={tag} className="flex items-center gap-2 border-2 border-black bg-pink-100 text-black px-3 py-1 text-[10px] font-black uppercase shadow-[2px_2px_0px_#000]">
+                                                    {tag}
+                                                    <button type="button" onClick={() => removeTag(tag)} className="text-black hover:text-red-500 cursor-pointer"><X size={10} strokeWidth={2.5} /></button>
+                                                </span>
+                                            ))}
+                                            {tags.length < 4 && (
+                                                <input
+                                                    type="text"
+                                                    value={currentTag}
+                                                    onChange={(e) => setCurrentTag(e.target.value)}
+                                                    onKeyDown={handleTagKeyDown}
+                                                    placeholder="ADD_TAG"
+                                                    className="bg-transparent border-none text-[10px] font-black uppercase focus:outline-none w-20 py-1 text-black placeholder:text-gray-500"
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="pt-6 flex justify-end gap-4">
+                                        <button
+                                            type="button"
+                                            onClick={handleSaveDraft}
+                                            disabled={isSubmitting}
+                                            className="px-4 py-2.5 border-4 border-black bg-white hover:bg-pink-100 text-black font-black uppercase tracking-widest text-xs shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer disabled:opacity-50"
+                                        >
+                                            Save Draft
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                            className="px-4 py-2.5 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase tracking-widest text-xs shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer disabled:opacity-50"
+                                        >
+                                            Commit Entry
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Content Input */}
+                                <div className="space-y-2 relative group">
+                                    <label className="text-xs font-black uppercase text-black tracking-wider ml-1">Main Content (Markdown)</label>
+                                    <p className="text-[10px] font-black uppercase tracking-wider text-gray-500 ml-1">Paste images directly into the editor to upload and embed them.</p>
                                     {isImageUploading && (
-                                        <p className="text-[10px] text-[#58a6ff] uppercase tracking-widest ml-1 mb-2">Uploading image...</p>
+                                        <p className="text-[10px] font-black uppercase tracking-wider text-pink-600 ml-1 animate-pulse">Uploading image...</p>
                                     )}
                                     <textarea
+                                        ref={editorRef}
                                         value={content}
                                         onPaste={handlePaste}
                                         onChange={(e) => setContent(e.target.value)}
-                                        placeholder="Begin log entry... (Markdown & HTML supported)"
-                                        className="w-full bg-transparent text-[#c9d1d9] text-lg leading-loose p-4 h-[600px] resize-y focus:outline-none placeholder:text-[#30363d] border-l-2 border-[#30363d] focus:border-[#c9d1d9] transition-colors ml-1 scrollbar-hide"
+                                        placeholder="Begin entry... Markdown and HTML supported."
+                                        className="w-full bg-white text-black text-lg font-semibold p-8 h-[600px] border-4 border-black focus:outline-none focus:bg-pink-100 shadow-[8px_8px_0px_#000] focus:shadow-[4px_4px_0px_#000] transition placeholder:text-gray-500 scrollbar-hide"
                                     />
-                                </>
-                            ) : (
-                                <div className="w-full bg-[#0d1117]/50 p-8 h-[600px] overflow-y-auto border-l-2 border-[#30363d] ml-1">
-                                    {content ? (
-                                        <div className="prose prose-invert prose-lg max-w-none">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsFullscreen(true)}
+                                        className="absolute bottom-4 right-4 p-2 bg-white border-2 border-black hover:bg-pink-100 text-black rounded shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer"
+                                    >
+                                        <Maximize2 size={16} strokeWidth={2.5} />
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="border-4 border-black bg-white p-8 md:p-12 shadow-[10px_10px_0px_#000]">
+                                <div className="max-w-6xl mx-auto">
+                                    {/* Title Block Mock */}
+                                    <div className="mb-12 border-b-4 border-black pb-8">
+                                        {tags.length > 0 && (
+                                            <div className="flex flex-wrap gap-2 mb-8">
+                                                {tags.map(tag => (
+                                                    <span key={tag} className="px-2 py-1 border-2 border-black bg-pink-100 text-xs font-black uppercase text-black shadow-[2px_2px_0px_#000]">
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                        <h1 className="text-3xl md:text-5xl font-black uppercase text-black mb-6 leading-tight">
+                                            {title || 'Untitled Entry'}
+                                        </h1>
+                                        <div className="flex flex-col md:flex-row md:items-center gap-4 text-gray-700 text-xs font-black uppercase border-l-4 border-black pl-4">
+                                            <span>{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                                            <span className="hidden md:inline">/</span>
+                                            <span className="text-pink-600">Reading Time: Est. ~{Math.ceil(content.split(' ').length / 200)} min</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Content Mock */}
+                                    <div className="prose prose-lg mx-auto max-w-3xl text-black leading-relaxed selection:bg-pink-500/30">
+                                        {content ? (
                                             <ReactMarkdown
-                                                rehypePlugins={[rehypeRaw]}
+                                                rehypePlugins={[rehypeRaw, rehypeHighlight]}
                                                 remarkPlugins={[remarkBreaks]}
                                             >
                                                 {content}
                                             </ReactMarkdown>
-                                        </div>
-                                    ) : (
-                                        <div className="h-full flex items-center justify-center text-[#30363d] font-mono text-sm uppercase tracking-widest">
-                                            No Data To Render
-                                        </div>
-                                    )}
+                                        ) : (
+                                            <div className="h-48 flex items-center justify-center text-gray-400 font-black uppercase text-xs tracking-widest border-4 border-dashed border-black">
+                                                Empty Content State
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            )}
-
-                            {/* Fullscreen Toggle Button */}
+                            </div>
+                        )}
+                        
+                        {/* Submit */}
+                        <div className="flex justify-between pt-12 border-t-4 border-black mt-12">
                             <button
                                 type="button"
-                                onClick={() => setIsFullscreen(true)}
-                                className="absolute bottom-3 right-3 p-2 bg-[#161b22] border border-[#30363d] hover:border-[#00ff00] hover:text-[#00ff00] text-[#8b949e] rounded transition-colors"
-                                aria-label="Maximize editor"
+                                onClick={handleSaveDraft}
+                                disabled={isSubmitting}
+                                className="px-6 py-4 border-4 border-black bg-white hover:bg-pink-100 text-black font-black uppercase shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer text-sm flex items-center gap-2"
                             >
-                                <Maximize2 size={16} />
+                                <Save size={16} strokeWidth={2.5} />
+                                {isSubmitting ? 'Saving...' : 'Save Draft'}
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="px-6 py-4 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer text-sm flex items-center gap-2"
+                            >
+                                <Save size={16} strokeWidth={2.5} />
+                                {isSubmitting ? 'Publishing...' : 'Publish Entry'}
                             </button>
                         </div>
-                    </div>
-
-                    {/* Submit */}
-                    <div className="flex justify-between pt-12 border-t border-[#30363d]">
-                        <button
-                            type="button"
-                            onClick={handleSaveDraft}
-                            disabled={isSubmitting}
-                            className={`group relative cursor-pointer px-8 py-4 bg-transparent border border-[#30363d] text-white font-mono uppercase tracking-widest text-sm hover:border-[#ffff00] hover:text-[#ffff00] transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
-                        >
-                            <span className="absolute inset-0 bg-[#ffff00]/5 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-                            <span className="relative flex items-center gap-3">
-                                <Save size={16} />
-                                {isSubmitting ? 'SAVING...' : 'SAVE TO DRAFTS'}
-                            </span>
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`group relative cursor-pointer px-8 py-4 bg-transparent border border-[#30363d] text-white font-mono uppercase tracking-widest text-sm hover:border-[#00ffff] hover:text-[#00ffff] transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
-                        >
-                            <span className="absolute inset-0 bg-[#00ffff]/5 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-                            <span className="relative flex items-center gap-3">
-                                <Save size={16} />
-                                {isSubmitting ? 'PUBLISHING...' : 'PUBLISH ENTRY'}
-                            </span>
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
 
             {/* Fullscreen Content Editor */}
             {isFullscreen && (
-                <div className="fixed inset-0 z-50 bg-[#060010] flex flex-col animate-in fade-in duration-300">
-                    <div className="flex-1 flex flex-col p-8">
-                        {/* Header with Write/Preview toggles */}
-                        <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#30363d]">
-                            <div className="flex gap-4">
+                <div className="fixed inset-0 z-50 bg-pink-100/35 flex flex-col p-8 animate-in fade-in duration-300">
+                    <div className="flex-1 flex flex-col p-8 border-4 border-black bg-white shadow-[10px_10px_0px_#000] min-h-0">
+                        {/* Header with Toggles */}
+                        <div className="flex items-center justify-between mb-8 pb-4 border-b-4 border-black">
+                            <div className="flex gap-8">
                                 <button
                                     type="button"
-                                    onClick={() => setViewMode('write')}
-                                    className={`text-sm font-mono uppercase tracking-widest transition-colors ${viewMode === 'write' ? 'text-[#00ff00] underline underline-offset-4' : 'text-[#30363d] hover:text-[#8b949e]'}`}
+                                    onClick={() => {
+                                        if (viewMode === 'preview') setViewMode('write');
+                                    }}
+                                    className={`text-sm font-black uppercase tracking-widest transition-colors cursor-pointer ${viewMode === 'write' ? 'text-pink-500 border-b-2 border-pink-500' : 'text-black hover:text-pink-500'}`}
                                 >
                                     [ Write ]
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => setViewMode('preview')}
-                                    className={`text-sm font-mono uppercase tracking-widest transition-colors ${viewMode === 'preview' ? 'text-[#00ff00] underline underline-offset-4' : 'text-[#30363d] hover:text-[#8b949e]'}`}
+                                    onClick={() => {
+                                        if (viewMode === 'write') {
+                                            captureSelection();
+                                            setViewMode('preview');
+                                        }
+                                    }}
+                                    className={`text-sm font-black uppercase tracking-widest transition-colors cursor-pointer ${viewMode === 'preview' ? 'text-emerald-600 border-b-2 border-emerald-600' : 'text-black hover:text-pink-500'}`}
                                 >
                                     [ Preview ]
                                 </button>
                             </div>
-                            <button
-                                onClick={() => setIsFullscreen(false)}
-                                className="p-2 hover:bg-[#161b22] rounded transition-colors text-[#8b949e] hover:text-white"
-                                aria-label="Exit fullscreen"
-                            >
-                                <Minimize2 size={20} />
-                            </button>
+                            <div className="flex items-center gap-6">
+                                <span className={`text-xs font-black uppercase tracking-widest ${viewMode === 'write' ? 'text-pink-500' : 'text-emerald-600'}`}>
+                                    {viewMode === 'write' ? 'Active Workflow: Editing' : 'Active Workflow: Reviewing'}
+                                </span>
+                                <button
+                                    onClick={() => setIsFullscreen(false)}
+                                    className="p-2 bg-white border-2 border-black hover:bg-pink-100 text-black rounded shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer"
+                                >
+                                    <Minimize2 size={20} strokeWidth={2.5} />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Content Area */}
-                        <div className="flex-1 overflow-hidden">
+                        <div className="flex-1 overflow-hidden min-h-0">
                             {viewMode === 'write' ? (
                                 <textarea
+                                    ref={editorRef}
                                     value={content}
                                     onPaste={handlePaste}
                                     onChange={(e) => setContent(e.target.value)}
-                                    placeholder="Begin log entry... (Markdown & HTML supported)"
-                                    className="w-full h-full bg-transparent text-[#c9d1d9] text-lg leading-loose p-6 resize-none focus:outline-none placeholder:text-[#30363d] scrollbar-hide"
+                                    className="w-full h-full bg-white text-black text-xl font-semibold p-12 border-4 border-black shadow-[10px_10px_0px_#000] focus:outline-none focus:bg-pink-100/10 max-w-5xl mx-auto block resize-none"
                                     autoFocus
+                                    placeholder="Begin log entry..."
                                 />
                             ) : (
-                                <div className="w-full h-full overflow-y-auto p-6 scrollbar-hide">
-                                    {content ? (
-                                        <div className="prose prose-invert prose-lg max-w-none">
+                                <div className="w-full h-full overflow-y-auto px-12 py-8 scrollbar-hide">
+                                    <div className="max-w-4xl mx-auto">
+                                        <div className="flex justify-between items-center mb-8 pb-4 border-b-4 border-black">
+                                            <div className="flex items-center gap-2 text-black font-black uppercase text-xs">
+                                                <TerminalIcon size={14} strokeWidth={2.5} />
+                                                <span>~/fullscreen/preview</span>
+                                            </div>
+                                        </div>
+                                        <h1 className="text-4xl font-black uppercase text-black mb-12">{title || 'Untitled Entry'}</h1>
+                                        <div className="prose prose-lg mx-auto max-w-3xl text-black leading-relaxed">
                                             <ReactMarkdown
-                                                rehypePlugins={[rehypeRaw]}
+                                                rehypePlugins={[rehypeRaw, rehypeHighlight]}
                                                 remarkPlugins={[remarkBreaks]}
                                             >
                                                 {content}
                                             </ReactMarkdown>
                                         </div>
-                                    ) : (
-                                        <div className="h-full flex items-center justify-center text-[#30363d] font-mono text-sm uppercase tracking-widest">
-                                            No Data To Render
-                                        </div>
-                                    )}
+                                    </div>
                                 </div>
                             )}
                         </div>
                     </div>
                 </div>
             )}
+            <Footer />
         </div>
     );
 };

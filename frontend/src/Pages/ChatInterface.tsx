@@ -12,7 +12,7 @@ export default function ChatInterface({ setCurrentRoom }: ChatInterfaceProps) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
 
   return (
-    <div className="flex h-screen w-full bg-[#060010] overflow-hidden">
+    <div className="flex h-screen w-full bg-white overflow-hidden">
       <RoomSidebar
         isOpen={isMobileSidebarOpen}
         onClose={() => setIsMobileSidebarOpen(false)}

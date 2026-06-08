@@ -19,7 +19,7 @@ export const postFeatures = async(req: Request, res: Response) => {
         return res.status(200).json({ message: "Feature request accepted, you can contribute to it on github" })
     } catch (error) {
         console.log(`${error}`);
-        throw new Error(`While submitting the feature request`);
+        return res.status(500).json({ message: 'An internal server error occurred.' });
     }
 }
 
@@ -29,6 +29,6 @@ export const getFeatures = async(req: Request, res: Response) => {
         return res.status(200).json(features);
     } catch (error) {
         console.log(`${error}`);
-        throw new Error(`While fetching the requested features from backend`);
+        return res.status(500).json({ message: 'An internal server error occurred.' });
     }
 }

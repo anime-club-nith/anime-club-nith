@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Blog from "../models/blog";
-import { uploadToS3 } from "../services/s3Bucket";
+import { uploadToCloudinary } from "../services/cloudinary";
 
 const extractFilesFromRequest = (req: Request): Express.Multer.File[] => {
 	const files: Express.Multer.File[] = [];
@@ -30,7 +30,7 @@ const uploadImages = async (files: Express.Multer.File[]): Promise<string[]> => 
 	const imageUrls: string[] = [];
 	for (const file of files) {
 		if (!file || !file.buffer) continue;
-		const url = await uploadToS3(file);
+		const url = await uploadToCloudinary(file);
 		imageUrls.push(url);
 	}
 	return imageUrls;
@@ -42,7 +42,7 @@ export const getBlogsHandler = async (req: Request, res: Response) => {
 		return res.status(200).json({ message: "Blogs fetched successfully", blogs });
 	} catch (error) {
 		console.log(`${error}`);
-		throw new Error(`While fetching blogs`);
+		return res.status(500).json({ message: 'An internal server error occurred.' });
 	};
 };
 
@@ -73,7 +73,7 @@ export const postBlogHandler = async (req: Request, res: Response) => {
 		return res.status(200).json({ message: "Blog uploaded success", blog });
 	} catch (error) {
 		console.log(`${error}`);
-		throw new Error(`While posting the blog`);
+		return res.status(500).json({ message: 'An internal server error occurred.' });
 	};
 };
 
@@ -84,7 +84,7 @@ export const uploadBlogImageHandler = async (req: Request, res: Response) => {
 			return res.status(400).json({ message: 'No image file provided' });
 		}
 
-		const imageURL = await uploadToS3(image);
+		const imageURL = await uploadToCloudinary(image);
 		return res.status(200).json({ imageURL });
 	} catch (error) {
 		console.error(`${error}`);
@@ -106,7 +106,7 @@ export const getABlogHandler = async (req: Request, res: Response) => {
         return res.status(200).json(blog);
     }catch(error) {
         console.log(`${error}`);
-        throw new Error(`While fetching this requested blog`);
+        return res.status(500).json({ message: 'An internal server error occurred.' });
     }
 };
 
@@ -121,7 +121,7 @@ export const getUsersBlogsHandler = async (req: Request, res: Response) => {
         return res.status(200).json(blogs);
     } catch(error) {
         console.log(`${error}`);
-        throw new Error(`While fetching user's own blogs`);
+        return res.status(500).json({ message: 'An internal server error occurred.' });
     }
 };
 
@@ -157,7 +157,7 @@ export const editBlogHandler = async (req: Request, res: Response) => {
         return res.status(200).json({ message: "Blog edited successfully", blog: editBlog });
     }catch(error) {
         console.log(`${error}`);
-        throw new Error(`While editing the blog`);
+        return res.status(500).json({ message: 'An internal server error occurred.' });
     }
 };
 
@@ -177,6 +177,6 @@ export const deleteBlogHandler = async (req: Request, res: Response) => {
         return res.status(200).json({ message: "Blog deleted successfully", blog: reqBlog });
     }catch(error) {
         console.log(`${error}`);
-        throw new Error(`While deleting the blog`);
+        return res.status(500).json({ message: 'An internal server error occurred.' });
     }
 };

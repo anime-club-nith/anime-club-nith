@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, MessageSquare, Shield, Zap, Download } from 'lucide-react';
+import { ArrowRight, Download } from 'lucide-react';
 
 export default function HeroSection() {
     const navigate = useNavigate();
@@ -14,100 +14,73 @@ export default function HeroSection() {
     };
 
     return (
-        <div className="min-h-screen bg-[#060010] text-slate-200 font-sans selection:bg-indigo-500/30">
+        <div className="min-h-screen bg-white dark:bg-[#0c0d12] text-black dark:text-white font-sans selection:bg-pink-500/30 transition-colors">
             <div className="relative z-10">
 
                 {/* Hero Section */}
-                <section className="pt-32 pb-20 px-6 max-w-7xl mx-auto text-center">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-                        </span>
-                        v1.4.5 Now Live - Join the Community
-                    </div>
-
-                    <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
-                        The Nerds <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-                            Community
-                        </span>
-                    </h1>
-
-                    <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-                        TNC is the premier workspace for engineers, designers, and founders to connect.
-                        Real-time chat, domain-specific rooms, and a <span className="text-indigo-400">community that actually ships.</span>
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-community that actually ships.in-from-bottom-8 duration-700 delay-200">
-                        <button
-                            onClick={handleStartChatting}
-                            className="w-full sm:w-auto px-8 py-4 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer transition-all shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 group"
-                        >
-                            Get Started
-                            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
-
-                        {/* Get the App Button */}
-                        <a
-                            href="https://github.com/ayush00git/TNC/releases/download/v1.0.0/tnc-mobile-v1.0.0.apk"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="
-                w-full sm:w-auto px-8 py-4 rounded-full 
-                bg-[#060010] 
-                border-2 border-white/10 
-                text-slate-400 font-medium tracking-wide cursor-pointer
-                flex items-center justify-center gap-2
-                transition-all duration-300 ease-out
-                hover:border-indigo-500/50 hover:text-indigo-100 
-                hover:shadow-lg hover:shadow-indigo-500/10 
-                hover:-translate-y-0.5
-              "
-                        >
-                            Get the App
-                            <Download size={18} />
-                        </a>
-                    </div>
-                </section>
-
-                {/* Feature Grid */}
-                <section className="py-20 px-6 max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                        {/* Feature 1 */}
-                        <div className="p-8 rounded-3xl bg-[#0A0514] border border-white/5 hover:border-indigo-500/30 transition-colors group">
-                            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <MessageSquare className="text-indigo-400" size={24} />
+                <section className="pt-32 pb-20 px-6 max-w-7xl mx-auto text-left">
+                    <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+                        
+                        {/* Left Content */}
+                        <div className="space-y-10">
+                            <div className="inline-block border-4 border-black dark:border-white px-5 py-1 font-black uppercase text-xs tracking-widest bg-pink-100 dark:bg-[#2b1724] text-black dark:text-white">
+                                NIT Hamirpur Anime Club
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-3">Real-time Channels</h3>
-                            <p className="text-slate-400 leading-relaxed">
-                                Instant messaging powered by WebSockets. No lag, just pure conversation flow across 7 distinct domains.
+
+                            <h1 className="text-5xl md:text-7xl font-black uppercase leading-[1.05] tracking-tight text-black dark:text-white">
+                                ANIME CLUB <br />
+                                <span className="text-pink-500">
+                                    NITH
+                                </span>
+                            </h1>
+
+                            <p className="text-sm md:text-base font-semibold text-pink-600 max-w-xl tracking-wide">
+                                The First Rule of Anime Club is: You DO talk about Anime
                             </p>
+
+                            <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 max-w-xl leading-relaxed">
+                                Anime Club NITH is the premier space for otaku, artists, and fans to connect. 
+                                Join real-time room chats, publish reviews/blogs, showcase your artwork, and grow the community.
+                            </p>
+
+                            <div className="flex flex-col sm:flex-row gap-6 pt-4">
+                                <button
+                                    onClick={handleStartChatting}
+                                    className="px-10 py-4 bg-pink-500 hover:bg-pink-400 border-4 border-black dark:border-white font-black uppercase shadow-[6px_6px_0px_#000] dark:shadow-[6px_6px_0px_#E56DB1] active:translate-x-[2px] active:translate-y-[2px] transition flex items-center justify-center gap-2 cursor-pointer text-black dark:text-white"
+                                >
+                                    Get Started
+                                    <ArrowRight size={18} />
+                                </button>
+
+                                <a
+                                    href="https://github.com/anime-club-nith"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-10 py-4 bg-white dark:bg-[#161822] border-4 border-black dark:border-white font-black uppercase shadow-[6px_6px_0px_#000] dark:shadow-[6px_6px_0px_#E56DB1] hover:bg-gray-50 dark:hover:bg-[#1e2030] active:translate-x-[2px] active:translate-y-[2px] transition text-center text-black dark:text-white flex items-center justify-center gap-2"
+                                >
+                                    Get the App
+                                    <Download size={18} />
+                                </a>
+                            </div>
                         </div>
 
-                        {/* Feature 2 */}
-                        <div className="p-8 rounded-3xl bg-[#0A0514] border border-white/5 hover:border-purple-500/30 transition-colors group">
-                            <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <Shield className="text-purple-400" size={24} />
+                        {/* Right Visual */}
+                        <div className="relative flex justify-center lg:justify-end">
+                            <div className="relative w-[350px] h-[350px] md:w-[400px] md:h-[400px] border-4 border-black dark:border-white shadow-[10px_10px_0px_#000] dark:shadow-[10px_10px_0px_#E56DB1] bg-white dark:bg-[#161822] flex items-center justify-center p-8 transition-all">
+                                <img
+                                    src="/logo-dark.svg"
+                                    alt="Anime Club NITH Logo"
+                                    className="object-contain w-full h-full dark:hidden"
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                />
+                                <img
+                                    src="/logo-light.svg"
+                                    alt="Anime Club NITH Logo"
+                                    className="object-contain w-full h-full hidden dark:block"
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                />
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-3">Secure & Private</h3>
-                            <p className="text-slate-400 leading-relaxed">
-                                End-to-end encrypted verification and secure authentication ensuring your discussions remain private.
-                            </p>
                         </div>
-
-                        {/* Feature 3 */}
-                        <div className="p-8 rounded-3xl bg-[#0A0514] border border-white/5 hover:border-emerald-500/30 transition-colors group">
-                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <Zap className="text-emerald-400" size={24} />
-                            </div>
-                            <h3 className="text-xl font-bold text-white mb-3">Lightning Fast</h3>
-                            <p className="text-slate-400 leading-relaxed">
-                                Built on a modern stack for maximum performance. Zero bloat, optimized for developer workflows.
-                            </p>
-                        </div>
-
                     </div>
                 </section>
             </div>

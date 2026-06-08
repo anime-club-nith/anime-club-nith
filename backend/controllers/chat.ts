@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { uploadToS3 } from "../services/s3Bucket";
+import { uploadToCloudinary } from "../services/cloudinary";
 import Chat from "../models/chat";
 import Room from "../models/room";
 import { isValidObjectId } from "mongoose";
@@ -29,7 +29,7 @@ export const sendChat = async (req: Request, res: Response) => {
 
         let imageUrl: string | undefined;
         if (image) {
-            imageUrl = await uploadToS3(image);
+            imageUrl = await uploadToCloudinary(image);
         }
 
         // save to database

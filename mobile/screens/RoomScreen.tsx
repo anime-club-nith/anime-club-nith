@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, FlatList, Dimensions, StatusBar, Platform, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, FlatList, Dimensions, StatusBar as RNStatusBar, Platform, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Feather, Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
+
 import client from '../services/client'; // Import client
 import { Room } from '../types'; // Import Room type
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../context/ThemeContext';
 
 // UI Helper to map generic rooms to icons/colors if they don't have them
 const getRoomStyle = (index: number) => {
@@ -27,6 +30,8 @@ export default function RoomScreen({ navigation }: any) {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const { showToast } = useToast();
+  const { colors, theme, toggleTheme } = useTheme();
+  const styles = createStyles(colors);
 
   useEffect(() => {
     fetchRooms();
@@ -35,7 +40,6 @@ export default function RoomScreen({ navigation }: any) {
   const fetchRooms = async () => {
     try {
       const response = await client.get('/api/room/allRooms');
-      // response.data.rooms is the array based on controller
       setRooms(response.data.rooms);
     } catch (error: any) {
       console.error('Error fetching rooms:', error);
@@ -55,19 +59,15 @@ export default function RoomScreen({ navigation }: any) {
   };
 
   const handleJoinRoom = async (room: Room) => {
-    // Optional: Call join API first if needed, but for now we just enter navigation
-    // The backend `handleJoining` is mapped to `GET /:roomId/join` which is unconventional (GET usually safe).
-    // Let's call it to ensure membership is recorded if the backend requires it.
     try {
       await client.get(`/api/room/${room.roomId}/join`);
     } catch (error) {
       console.log("Join room silent fail (maybe already joined or error)", error);
-      // Continue anyway to let user see chat
     }
 
     navigation.navigate('Chat', {
       roomTitle: room.title,
-      roomId: room.roomId // Pass String ID for API lookups (e.g. "general")
+      roomId: room.roomId
     });
   };
 
@@ -80,7 +80,7 @@ export default function RoomScreen({ navigation }: any) {
       <TouchableOpacity
         style={styles.card}
         onPress={() => handleJoinRoom(item)}
-        activeOpacity={0.7}
+        activeOpacity={0.8}
       >
         <View style={[styles.iconContainer, { backgroundColor: `${color}15` }]}>
           <Feather name={iconName} size={24} color={color} />
@@ -93,7 +93,7 @@ export default function RoomScreen({ navigation }: any) {
 
         <View style={styles.cardFooter}>
           <Text style={styles.joinText}>Join</Text>
-          <Ionicons name="arrow-forward" size={14} color="#64748b" />
+          <Ionicons name="arrow-forward" size={14} color={colors.text} />
         </View>
       </TouchableOpacity>
     );
@@ -101,7 +101,7 @@ export default function RoomScreen({ navigation }: any) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
 
       {/* Header */}
       <View style={styles.header}>
@@ -109,18 +109,24 @@ export default function RoomScreen({ navigation }: any) {
           <Text style={styles.greeting}>Welcome back,</Text>
           <Text style={styles.title}>Choose a Room</Text>
         </View>
-        <TouchableOpacity style={styles.profileButton} onPress={handleLogout}>
-          {/* Logout logic */}
-          <View style={[styles.avatarPlaceholder, styles.logoutContainer]}>
-            <Feather name="log-out" size={18} color="#ef4444" />
-          </View>
-        </TouchableOpacity>
+        <View style={styles.headerButtons}>
+          {/* Theme Toggling */}
+          <TouchableOpacity style={styles.themeButton} onPress={toggleTheme}>
+            <Feather name={theme === 'dark' ? "sun" : "moon"} size={20} color={colors.text} />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.profileButton} onPress={handleLogout}>
+            <View style={styles.logoutContainer}>
+              <Feather name="log-out" size={18} color="#ef4444" />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Grid List */}
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#6366f1" />
+          <ActivityIndicator size="large" color="#E56DB1" />
         </View>
       ) : (
         <FlatList
@@ -132,7 +138,7 @@ export default function RoomScreen({ navigation }: any) {
           columnWrapperStyle={styles.gridRow}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
-            <Text style={{ color: '#fff', textAlign: 'center', marginTop: 50 }}>No active rooms found.</Text>
+            <Text style={{ color: colors.text, textAlign: 'center', marginTop: 50, fontWeight: '700' }}>No active rooms found.</Text>
           }
         />
       )}
@@ -141,11 +147,11 @@ export default function RoomScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#060010',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    backgroundColor: colors.bg,
+    paddingTop: Platform.OS === 'android' ? RNStatusBar.currentHeight : 0,
   },
   center: {
     flex: 1,
@@ -159,33 +165,53 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 24,
   },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
   greeting: {
     fontSize: 14,
-    color: '#94a3b8',
+    color: colors.subText,
     marginBottom: 4,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   title: {
     fontSize: 28,
-    color: '#fff',
-    fontWeight: 'bold',
+    color: colors.text,
+    fontWeight: '900',
+    textTransform: 'uppercase',
   },
-  profileButton: {
-    padding: 4,
-  },
-  avatarPlaceholder: {
+  themeButton: {
     width: 40,
     height: 40,
-    borderRadius: 20,
-    backgroundColor: '#1e1b4b',
+    borderWidth: 3,
+    borderColor: colors.border,
+    backgroundColor: colors.cardBg,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(99, 102, 241, 0.3)',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 3,
+  },
+  profileButton: {
+    padding: 0,
   },
   logoutContainer: {
+    width: 40,
+    height: 40,
+    borderWidth: 3,
+    borderColor: colors.border,
     backgroundColor: 'rgba(239, 68, 68, 0.1)',
-    borderColor: 'rgba(239, 68, 68, 0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 3,
   },
   gridContent: {
     paddingHorizontal: 16,
@@ -197,32 +223,43 @@ const styles = StyleSheet.create({
   },
   card: {
     width: COLUMN_WIDTH,
-    backgroundColor: '#0A0514',
-    borderRadius: 20,
+    backgroundColor: colors.cardBg,
+    borderWidth: 4,
+    borderColor: colors.border,
     padding: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 6, height: 6 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
   },
   iconContainer: {
     width: 48,
     height: 48,
-    borderRadius: 14,
+    borderWidth: 3,
+    borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#fff',
+    fontWeight: '900',
+    color: colors.text,
     marginBottom: 6,
+    textTransform: 'uppercase',
   },
   cardDesc: {
     fontSize: 13,
-    color: '#64748b',
+    color: colors.subText,
     lineHeight: 18,
     marginBottom: 16,
-    height: 36, // Fixed height for 2 lines
+    height: 36,
+    fontWeight: '600',
   },
   cardFooter: {
     flexDirection: 'row',
@@ -231,7 +268,8 @@ const styles = StyleSheet.create({
   },
   joinText: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#64748b',
+    fontWeight: '900',
+    color: colors.text,
+    textTransform: 'uppercase',
   },
 });

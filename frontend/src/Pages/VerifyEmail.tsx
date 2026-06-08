@@ -8,7 +8,6 @@ export default function VerifyEmail() {
     const navigate = useNavigate();
     const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
     const [message, setMessage] = useState("Verifying your email...");
-    const [isHovered, setIsHovered] = useState(false);
 
     useEffect(() => {
         const verify = async () => {
@@ -46,76 +45,57 @@ export default function VerifyEmail() {
             }
         };
 
-        // Adding a small delay to prevent flickering if api is too fast
         setTimeout(verify, 1500);
     }, [searchParams, navigate]);
 
     return (
-        <div className="min-h-screen bg-[#060010] text-slate-200 font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden">
+        <div className="min-h-screen bg-pink-100/35 text-black font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden selection:bg-pink-500/30">
             <Navbar />
-            <div className="w-full max-w-md relative z-10">
-
-                {/* Main Card - Removed Gradients/Glows */}
-                <div className="bg-[#0A0514] border border-white/10 rounded-3xl p-8 text-center shadow-2xl relative">
-
-                    {/* Status Icon Area - Clean */}
-                    <div className="flex justify-center mb-8">
-                        <div className={`w-20 h-20 rounded-2xl flex items-center justify-center border border-white/5 shadow-inner transition-colors duration-500 ${status === 'loading' ? 'bg-[#1A1625]' :
-                                status === 'success' ? 'bg-emerald-500/10 border-emerald-500/20' :
-                                    'bg-red-500/10 border-red-500/20'
-                            }`}>
-                            {status === "loading" && (
-                                <Loader2 className="w-10 h-10 text-indigo-400 animate-spin" strokeWidth={1.5} />
-                            )}
-                            {status === "success" && (
-                                <CheckCircle2 className="w-10 h-10 text-emerald-400 animate-in zoom-in duration-300" strokeWidth={1.5} />
-                            )}
-                            {status === "error" && (
-                                <XCircle className="w-10 h-10 text-red-400 animate-in zoom-in duration-300" strokeWidth={1.5} />
-                            )}
-                        </div>
+            
+            <div className="w-full max-w-md border-4 border-black bg-white p-8 shadow-[10px_10px_0px_#000] relative z-10 mt-24">
+                {/* Status Icon Area */}
+                <div className="flex justify-center mb-8">
+                    <div className={`w-20 h-20 border-4 border-black flex items-center justify-center shadow-[4px_4px_0px_#000] transition-colors duration-500 ${status === 'loading' ? 'bg-pink-100' :
+                            status === 'success' ? 'bg-emerald-100' :
+                                'bg-red-100'
+                        }`}>
+                        {status === "loading" && (
+                            <Loader2 className="w-10 h-10 text-black animate-spin" strokeWidth={2.5} />
+                        )}
+                        {status === "success" && (
+                            <CheckCircle2 className="w-10 h-10 text-emerald-600 animate-in zoom-in duration-300" strokeWidth={2.5} />
+                        )}
+                        {status === "error" && (
+                            <XCircle className="w-10 h-10 text-red-600 animate-in zoom-in duration-300" strokeWidth={2.5} />
+                        )}
                     </div>
-
-                    {/* Text Content */}
-                    <h1 className="text-2xl font-bold text-white tracking-tight mb-3">
-                        {status === "loading" ? "Verifying..." : status === "success" ? "Verified!" : "Verification Failed"}
-                    </h1>
-
-                    <p className="text-slate-400 font-light leading-relaxed mb-10 min-h-[48px]">
-                        {message}
-                    </p>
-
-                    {/* Action Button */}
-                    {status !== "loading" && (
-                        <button
-                            onClick={() => navigate("/login")}
-                            onMouseEnter={() => setIsHovered(true)}
-                            onMouseLeave={() => setIsHovered(false)}
-                            className={`
-                                w-full py-4 px-6 rounded-full
-                                bg-[#060010] border-2 cursor-pointer
-                                text-sm font-medium tracking-wider
-                                flex items-center justify-center gap-2
-                                transition-all duration-300 ease-out
-                                ${isHovered
-                                    ? 'border-indigo-500/50 text-indigo-100 translate-y-[-2px] shadow-lg shadow-indigo-500/10'
-                                    : 'border-white/10 text-slate-500 hover:text-slate-300'}
-                            `}
-                        >
-                            <span>Go to Login</span>
-                            <ArrowRight
-                                className={`w-4 h-4 transition-transform duration-300 ${isHovered ? 'translate-x-1' : ''}`}
-                            />
-                        </button>
-                    )}
                 </div>
+
+                {/* Text Content */}
+                <h1 className="text-2xl font-black uppercase text-black text-center mb-3">
+                    {status === "loading" ? "Verifying..." : status === "success" ? "Verified!" : "Verification Failed"}
+                </h1>
+
+                <p className="text-gray-700 font-semibold leading-relaxed text-center mb-10 min-h-[48px]">
+                    {message}
+                </p>
+
+                {/* Action Button */}
+                {status !== "loading" && (
+                    <button
+                        onClick={() => navigate("/login")}
+                        className="w-full py-4 px-6 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
+                    >
+                        <span>Go to Login</span>
+                        <ArrowRight className="w-4 h-4" strokeWidth={3} />
+                    </button>
+                )}
 
                 {/* Footer Brand */}
-                <div className="mt-8 text-center opacity-40 hover:opacity-100 transition-opacity duration-300">
-                    <ShieldCheck className="w-5 h-5 mx-auto text-slate-500 mb-2" strokeWidth={1.5} />
-                    <p className="text-xs text-slate-600 font-medium tracking-widest uppercase">Secure Verification</p>
+                <div className="mt-8 text-center">
+                    <ShieldCheck className="w-5 h-5 mx-auto text-black mb-2" strokeWidth={2} />
+                    <p className="text-xs text-black font-black tracking-widest uppercase">Secure Verification</p>
                 </div>
-
             </div>
         </div>
     );

@@ -1,6 +1,6 @@
-# TNC (The Nerds Community)
+# Anime Club NITH
 
-TNC is a comprehensive, real-time communication platform designed for tech enthusiasts. It facilitates connection, discussion, and collaboration through dedicated chat rooms, providing a seamless experience across web and mobile interfaces.
+Anime Club NITH is a comprehensive, real-time communication platform designed for anime enthusiasts. It facilitates connection, discussion, and collaboration through dedicated chat rooms, providing a seamless experience across web and mobile interfaces.
 
 ## Project Structure
 
@@ -8,7 +8,7 @@ This repository is organized as a monorepo containing the following components:
 
 -   **[Backend](backend/README.md)**: A Node.js and Express 5 server managing business logic, data persistence with MongoDB, and real-time orchestration via Socket.io.
 -   **[Frontend](frontend/README.md)**: A high-performance web application built with React 19, Vite, and Tailwind CSS 4, featuring smooth GSAP animations.
--   **[Mobile](tnc-mobile/README.md)**: A cross-platform mobile application developed with Expo and React Native.
+-   **[Mobile](mobile/README.md)**: A cross-platform mobile application developed with Expo and React Native.
 
 ## Core Features
 
@@ -26,7 +26,7 @@ This repository is organized as a monorepo containing the following components:
 -   Node.js, Express 5, TypeScript
 -   MongoDB with Mongoose ODM
 -   Socket.io (WebSockets)
--   AWS S3 (Blob Storage)
+-   Cloudinary (Media Hosting)
 -   Nodemailer (Communication)
 
 ### Frontend (Web)
@@ -68,7 +68,7 @@ This repository is organized as a monorepo containing the following components:
 
 3.  **Initialize Mobile**:
     ```bash
-    cd tnc-mobile
+    cd mobile
     npm install
     npx expo start
     ```

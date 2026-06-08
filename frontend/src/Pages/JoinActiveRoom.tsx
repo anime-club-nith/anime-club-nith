@@ -12,7 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/NavBar";
 import Footer from "../components/Footer";
-// Interface for type safety
+
 interface Room {
   id: number;
   title: string;
@@ -21,7 +21,6 @@ interface Room {
   icon: React.ElementType;
 }
 
-// Data Array - Hardcoded as requested
 const ROOM_DATA: Room[] = [
   {
     id: 1,
@@ -82,7 +81,6 @@ const ROOM_DATA: Room[] = [
 ];
 
 const ChatRoomCard = ({ room }: { room: Room }) => {
-  const [isHovered, setIsHovered] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
   const [joinError, setJoinError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -101,8 +99,6 @@ const ChatRoomCard = ({ room }: { room: Room }) => {
         data = await res.json();
       } catch (parseError) {
         console.error("Failed to parse join API response:", parseError);
-        const text = await res.text();
-        console.error("Response text:", text);
         setJoinError("Failed to join room - invalid response");
         setIsJoining(false);
         return;
@@ -115,7 +111,6 @@ const ChatRoomCard = ({ room }: { room: Room }) => {
         return;
       }
 
-      // Refresh joined rooms from API to sync cache with backend (await to ensure cache is updated)
       try {
         const refreshRes = await fetch(
           "/api/room/joined",
@@ -137,7 +132,6 @@ const ChatRoomCard = ({ room }: { room: Room }) => {
             refreshRes.status,
             errorData
           );
-          // If refresh fails, manually add to cache as fallback
           const raw = localStorage.getItem("joinedRooms");
           const existing: string[] = raw ? JSON.parse(raw) : [];
           if (!existing.includes(slug)) {
@@ -159,7 +153,6 @@ const ChatRoomCard = ({ room }: { room: Room }) => {
         }
       }
 
-      // On success, navigate into the room chat
       const targetPath = `/room/${slug}`;
       navigate(targetPath);
     } catch (err) {
@@ -170,74 +163,38 @@ const ChatRoomCard = ({ room }: { room: Room }) => {
   };
 
   return (
-    <div
-      className={`
-        group relative flex flex-col justify-between
-        h-full p-8 rounded-2xl
-        bg-[#0A0514] border-2 
-        transition-all duration-300 ease-out
-        ${
-          isHovered
-            ? "border-indigo-500/30 shadow-[0_0_30px_-10px_rgba(99,102,241,0.1)]"
-            : "border-white/5"
-        }
-      `}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="group relative flex flex-col justify-between h-full p-8 border-4 border-black bg-white shadow-[8px_8px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_#000] transition-all duration-200">
       {/* Content Section */}
       <div className="space-y-4">
         {/* Header with Icon */}
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold text-white tracking-wide group-hover:text-indigo-200 transition-colors">
+          <h3 className="text-xl font-black uppercase text-black tracking-wide">
             {room.title}
           </h3>
-          <room.icon
-            className={`
-              w-6 h-6 transition-colors duration-300
-              ${isHovered ? "text-indigo-400" : "text-slate-600"}
-            `}
-            strokeWidth={1.5}
-          />
+          <room.icon className="w-6 h-6 text-black" strokeWidth={2.5} />
         </div>
 
         {/* Description */}
-        <p className="text-slate-400 text-sm leading-relaxed font-light min-h-[48px]">
+        <p className="text-gray-700 text-sm font-semibold leading-relaxed min-h-[48px]">
           {room.description}
         </p>
       </div>
 
-      {/* Button Section - 8pt spacing (mt-8 = 32px) */}
+      {/* Button Section */}
       <div className="mt-8 space-y-2">
         <button
           onClick={() => {
             void handleJoinRoom(room.slug);
           }}
           disabled={isJoining}
-          className={`
-            w-full py-3 px-6 rounded-full
-            bg-[#060010] 
-            border-2 ${isJoining ? "cursor-wait opacity-80" : "cursor-pointer"}
-            text-sm font-medium tracking-wider
-            flex items-center justify-center gap-2
-            transition-all duration-300 ease-out
-            ${
-              isHovered
-                ? "border-indigo-500/50 text-indigo-100 translate-y-[-2px] shadow-lg shadow-indigo-500/10"
-                : "border-white/5 text-slate-500"
-            }
-          `}
+          className="w-full py-3 px-6 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-[4px_4px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition duration-200 cursor-pointer"
         >
           <span>{isJoining ? "Joining..." : "Join Room"}</span>
-          <ArrowRight
-            className={`w-4 h-4 transition-transform duration-300 ${
-              isHovered ? "translate-x-1" : ""
-            }`}
-          />
+          <ArrowRight className="w-4 h-4" strokeWidth={3} />
         </button>
 
         {joinError && (
-          <p className="text-xs text-red-400 text-center">{joinError}</p>
+          <p className="text-xs font-black uppercase text-red-600 text-center">{joinError}</p>
         )}
       </div>
     </div>
@@ -246,16 +203,17 @@ const ChatRoomCard = ({ room }: { room: Room }) => {
 
 const JoinActiveRoom = () => {
   return (
-    <div className="min-h-screen bg-[#060010] text-slate-200 font-sans selection:bg-indigo-500/30">
-      {/* Header Section */}
+    <div className="min-h-screen bg-pink-100/35 text-black font-sans selection:bg-pink-500/30">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-6 pt-20 pb-12 mt-8 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-500 tracking-tight mb-4">
+      
+      {/* Header Section */}
+      <div className="max-w-7xl mx-auto px-6 pt-24 pb-12 mt-8 text-center">
+        <h1 className="text-4xl md:text-5xl font-black uppercase text-black tracking-tight mb-4">
           Active Rooms
         </h1>
-        <p className="text-slate-400 text-lg max-w-2xl mx-auto font-light">
+        <p className="text-gray-700 text-lg max-w-2xl mx-auto font-semibold">
           Select a domain to connect with peers. Real-time discussions for
-          engineering, design, and casual yapping.
+          engineering, design, and casual conversations.
         </p>
       </div>
 
@@ -267,12 +225,7 @@ const JoinActiveRoom = () => {
           ))}
         </div>
       </main>
-
-      {/* Subtle Background Glow Effect */}
-      <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-900/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-purple-900/5 rounded-full blur-[120px]" />
-      </div>
+      
       <Footer />
     </div>
   );

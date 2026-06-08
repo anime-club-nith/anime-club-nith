@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Box, Cpu, Cloud, Palette, Layout, Server, Hash, Menu } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-// --- Types ---
 interface Room {
   id: number;
   title: string;
@@ -10,7 +9,6 @@ interface Room {
   icon: React.ElementType;
 }
 
-// --- Navigation Data ---
 const ROOMS: Room[] = [
   { id: 1, title: "Blockchain", slug: "blockchain", icon: Box },
   { id: 2, title: "Yaps", slug: "yaps", icon: Hash },
@@ -29,14 +27,12 @@ interface RoomSidebarProps {
 export default function RoomSidebar({ isOpen = true, onClose }: RoomSidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const currentPath = location.pathname; // e.g. "/room/design"
+  const currentPath = location.pathname;
   const [joinedSlugs, setJoinedSlugs] = useState<string[]>([]);
   const [_isLoading, setIsLoading] = useState(true);
 
-  // Load joined rooms: use localStorage cache first, then fetch from API
   useEffect(() => {
     const fetchJoinedRooms = async () => {
-      // Load from cache immediately for instant UI
       try {
         const cached = localStorage.getItem("joinedRooms");
         if (cached) {
@@ -45,10 +41,9 @@ export default function RoomSidebar({ isOpen = true, onClose }: RoomSidebarProps
           setIsLoading(false);
         }
       } catch {
-        // ignore cache errors
+        // ignore
       }
 
-      // Fetch from API to sync with backend (source of truth)
       try {
         const res = await fetch("/api/room/joined", {
           credentials: "include",
@@ -59,11 +54,8 @@ export default function RoomSidebar({ isOpen = true, onClose }: RoomSidebarProps
           const slugs = (data.rooms || []).map(
             (room: { roomId: string }) => room.roomId
           );
-          // Update state and cache
           setJoinedSlugs(slugs);
           localStorage.setItem("joinedRooms", JSON.stringify(slugs));
-        } else {
-          console.error("Failed to fetch joined rooms:", res.status);
         }
       } catch (err) {
         console.error("Failed to fetch joined rooms:", err);
@@ -73,20 +65,17 @@ export default function RoomSidebar({ isOpen = true, onClose }: RoomSidebarProps
     };
 
     fetchJoinedRooms();
-  }, [location.pathname]); // Re-fetch when route changes (e.g., after joining a room)
+  }, [location.pathname]);
 
-  // Match rooms by slug (case-insensitive to handle any mismatches)
   const joinedRooms = ROOMS.filter((room) => {
     return joinedSlugs.some(
       (slug) => slug.toLowerCase() === room.slug.toLowerCase()
     );
   });
 
-  // Logic to determine which tab is active based on the current URL path
   const activeIndex = joinedRooms.findIndex((room) =>
     currentPath.includes(room.slug)
   );
-  // Default to 0 if no match found (e.g. root path)
   const safeActiveIndex = activeIndex >= 0 ? activeIndex : 0;
 
   const handleNavigation = (slug: string) => {
@@ -106,7 +95,7 @@ export default function RoomSidebar({ isOpen = true, onClose }: RoomSidebarProps
 
       <nav
         className={`
-          flex flex-col items-center py-6 bg-[#060010] border-r border-white/5 
+          flex flex-col items-center py-6 bg-white border-r-4 border-black 
           w-20 h-screen 
           fixed top-0 left-0 z-50 
           transition-transform duration-300 ease-in-out
@@ -114,56 +103,38 @@ export default function RoomSidebar({ isOpen = true, onClose }: RoomSidebarProps
           md:translate-x-0 md:static md:sticky md:inset-auto
         `}
       >
-        {/* Mobile Close Button (User requested hamburger to close, but X is standard. Placing X here. 
-          If they really wanted a hamburger to close, I could swap Icon, but X is better UX.) 
-          Actually, I will use the Hamburger (Menu) icon as requested if strictly needed, 
-          but usually "hamburger in mobile menu" refers to the *context*. 
-          I will add a Close button at the top if on mobile.
-      */}
         <div className="md:hidden w-full flex justify-center mb-4">
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white transition-colors"
+            className="p-2 text-black hover:text-pink-500 transition-colors cursor-pointer"
           >
-            <Menu size={24} />
+            <Menu size={24} strokeWidth={2.5} />
           </button>
         </div>
+
         {/* Brand / Logo */}
         <div className="mb-8">
           <div
-            className="w-10 h-10 flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
+            className="w-10 h-10 border-4 border-black bg-pink-500 flex items-center justify-center cursor-pointer hover:bg-pink-400 shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition"
             onClick={() => navigate("/")}
           >
-            <span className="font-bold text-white">TNC</span>
+            <span className="font-black text-black uppercase tracking-tighter text-xs">NITH</span>
           </div>
         </div>
 
         {/* Navigation Items Container */}
         <div className="flex-1 w-full flex flex-col items-center relative gap-4">
-          {/* Animated Sliding Background - moves smoothly behind the icons */}
           {joinedRooms.length > 0 && (
-            <>
-              <div
-                className="absolute w-12 h-12 bg-[#1A1625] rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]"
-                style={{
-                  top: `${safeActiveIndex * 64}px`, // 48px icon + 16px gap = 64px stride
-                  opacity: activeIndex >= 0 ? 1 : 0,
-                }}
-              />
-
-              {/* Animated Active Indicator - the small purple strip on the left */}
-              <div
-                className="absolute left-0 w-1 h-6 bg-indigo-500 rounded-r-full transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] delay-75"
-                style={{
-                  top: `${safeActiveIndex * 64 + 12}px`,
-                  opacity: activeIndex >= 0 ? 1 : 0,
-                }}
-              />
-            </>
+            <div
+              className="absolute w-12 h-12 bg-pink-500 border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]"
+              style={{
+                top: `${safeActiveIndex * 64}px`,
+                opacity: activeIndex >= 0 ? 1 : 0,
+              }}
+            />
           )}
 
           {joinedRooms.map((room, _index) => {
-            // Check strict equality for hover/active styling logic if needed
             const isActive = currentPath.includes(room.slug);
 
             return (
@@ -171,18 +142,15 @@ export default function RoomSidebar({ isOpen = true, onClose }: RoomSidebarProps
                 key={room.id}
                 onClick={() => handleNavigation(room.slug)}
                 className={`
-                relative z-10 group w-12 h-12 rounded-2xl flex items-center justify-center cursor-pointer transition-colors duration-300
-                ${isActive
-                    ? "text-indigo-400"
-                    : "text-slate-500 hover:text-slate-300"
-                  }
-              `}
+                  relative z-10 group w-12 h-12 flex items-center justify-center cursor-pointer transition-colors duration-300
+                  ${isActive ? "text-black" : "text-gray-500 hover:text-black"}
+                `}
                 aria-label={`Maps to ${room.title}`}
               >
-                <room.icon size={22} strokeWidth={1.5} />
+                <room.icon size={22} strokeWidth={2.5} />
 
                 {/* Tooltip */}
-                <div className="absolute left-14 px-3 py-1.5 rounded-lg bg-[#1A1625] border border-white/10 text-xs font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-xl">
+                <div className="absolute left-14 px-3 py-1.5 border-2 border-black bg-white text-xs font-black uppercase text-black opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-[3px_3px_0px_#000]">
                   {room.title}
                 </div>
               </button>
@@ -190,28 +158,17 @@ export default function RoomSidebar({ isOpen = true, onClose }: RoomSidebarProps
           })}
         </div>
 
-        {/* Add / Manage Rooms */}
+        {/* Add / Join Rooms */}
         <div className="mb-4">
           <button
             onClick={() => navigate("/join-room")}
-            className="w-10 h-10 rounded-2xl border border-dashed border-slate-600 text-slate-400 hover:border-indigo-500 hover:text-indigo-300 flex items-center justify-center transition-colors cursor-pointer"
+            className="w-10 h-10 border-4 border-dashed border-black bg-white text-black hover:bg-pink-100 flex items-center justify-center transition-colors cursor-pointer font-black text-lg shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px]"
             title="Join another room"
           >
             +
           </button>
         </div>
-
-        {/* User Avatar (Bottom)
-      <div className="mt-auto">
-        <button className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10 hover:border-indigo-500/50 transition-colors">
-          <img 
-            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" 
-            alt="User Profile" 
-            className="w-full h-full bg-slate-800" 
-          />
-        </button>
-      </div> */}
       </nav>
-      </>
-      );
+    </>
+  );
 }

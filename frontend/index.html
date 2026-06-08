@@ -2,12 +2,29 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/tnc-logo-light.svg" />
+    <script>
+      (function() {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
+
+    <!-- Favicon: Anime Club NITH icon -->
+    <link rel="icon" type="image/png" href="/src/assets/logo-dark.png" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Nerds Community</title>
+    <meta name="description" content="Anime Club NITH — Connect, discuss events, share fanart and anime recommendations with fellow members at NIT Hamirpur."/>
+
+    <title>Anime Club NITH</title>
+
+    <!-- Google Fonts: Inter (modern geometric sans-serif) + JetBrains Mono (code blocks) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>

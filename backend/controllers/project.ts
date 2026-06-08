@@ -12,7 +12,7 @@ export const getAllProjects = async (req: Request, res: Response) => {
     });
   }catch(error) {
     console.log(`${error}`);
-    throw new Error(`While fetching projects`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -44,7 +44,7 @@ export const postAProject = async(req: Request, res: Response) => {
     });
   }catch(error) {
     console.log(`${error}`);
-    throw new Error(`While uploading a project`);    
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -58,7 +58,7 @@ export const getProjectById = async(req: Request, res: Response) => {
     });
   }catch(error) {
     console.log(`${error}`);
-    throw new Error(`While getting a project: ${projectId}`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -83,7 +83,7 @@ export const deleteProjectById = async(req: Request, res: Response) => {
     });
   }catch(error) {
     console.log(`${error}`);
-    throw new Error(`While deleting a project: ${projectId}`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -120,6 +120,6 @@ export const editProjectById = async(req: Request, res: Response) => {
     })
   } catch (error) {
     console.log(`${error}`);
-    throw new Error(`While editing the blog`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 }

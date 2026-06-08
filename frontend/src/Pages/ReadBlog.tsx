@@ -59,7 +59,6 @@ const ReadBlog = () => {
                 }
 
                 const data = await response.json();
-                // Ensure tags is always an array and readTime has a default value
                 setPost({
                     ...data,
                     tags: data.tags || [],
@@ -79,7 +78,6 @@ const ReadBlog = () => {
         }
     }, [blogId]);
 
-    // Handle escape key to close expanded image
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
@@ -99,12 +97,12 @@ const ReadBlog = () => {
     if (loading) {
         return (
             <>
-                <div className="min-h-screen bg-[#060010] text-[#c9d1d9]">
+                <div className="min-h-screen bg-pink-100/35 text-black font-sans">
                     <Navbar />
                     <div className="pt-24 pb-32 flex items-center justify-center min-h-screen">
                         <div className="text-center">
-                            <div className="w-16 h-16 border-4 border-[#30363d] border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-                            <p className="text-[#8b949e] font-mono text-sm uppercase tracking-wider">Loading entry...</p>
+                            <div className="w-16 h-16 border-8 border-black border-t-pink-500 rounded-full animate-spin mx-auto mb-4"></div>
+                            <p className="text-black font-black uppercase text-xs tracking-wider">Loading entry...</p>
                         </div>
                     </div>
                 </div>
@@ -116,16 +114,16 @@ const ReadBlog = () => {
     if (error || !post) {
         return (
             <>
-                <div className="min-h-screen bg-[#060010] text-[#c9d1d9]">
+                <div className="min-h-screen bg-pink-100/35 text-black font-sans">
                     <Navbar />
                     <div className="pt-24 pb-32 flex items-center justify-center min-h-screen">
-                        <div className="text-center max-w-md">
-                            <X size={64} className="text-red-500 mx-auto mb-4" />
-                            <h2 className="text-3xl font-bold text-white mb-4">Entry Not Found</h2>
-                            <p className="text-[#8b949e] mb-8">{error || 'The blog post you are looking for does not exist.'}</p>
+                        <div className="text-center max-w-md border-4 border-black bg-white p-8 shadow-[8px_8px_0px_#000]">
+                            <X size={64} className="text-red-600 mx-auto mb-4" strokeWidth={2.5} />
+                            <h2 className="text-3xl font-black uppercase text-black mb-4">Entry Not Found</h2>
+                            <p className="text-gray-700 font-semibold mb-8">{error || 'The blog post you are looking for does not exist.'}</p>
                             <button
                                 onClick={() => navigate('/blogs')}
-                                className="px-6 py-3 bg-white text-black font-bold uppercase tracking-wider text-sm hover:bg-gray-200 transition-colors rounded"
+                                className="px-6 py-3 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer text-sm"
                             >
                                 Return to Index
                             </button>
@@ -139,57 +137,57 @@ const ReadBlog = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-[#060010] text-[#c9d1d9] selection:bg-white selection:text-black">
+            <div className="min-h-screen bg-pink-100/35 text-black font-sans selection:bg-pink-500/30">
                 <Navbar />
 
                 <div className="pt-24 pb-32">
-                        <div className="max-w-4xl mx-auto px-6 lg:px-12">
+                    <div className="max-w-4xl mx-auto px-6 lg:px-12 mt-8 border-4 border-black bg-white p-8 md:p-12 shadow-[10px_10px_0px_#000]">
+                        
                         {/* Reader Header */}
-                        <div className="flex justify-between items-center mb-8 pb-4 border-b border-[#30363d]">
-                            <div className="flex items-center gap-2 text-[#8b949e] font-mono text-xs">
-                                <TerminalIcon size={14} />
+                        <div className="flex justify-between items-center mb-8 pb-4 border-b-4 border-black">
+                            <div className="flex items-center gap-2 text-black font-black uppercase text-xs">
+                                <TerminalIcon size={14} strokeWidth={2.5} />
                                 <span>~/logs/{post._id}</span>
                             </div>
                             <button
                                 onClick={() => navigate('/blogs')}
-                                className="p-2 hover:bg-[#161b22] rounded-full transition-colors text-white group"
+                                className="p-2 bg-white border-2 border-black hover:bg-pink-100 text-black shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer group"
                             >
-                                <X size={24} className="group-hover:rotate-90 transition-transform duration-300" />
+                                <X size={20} strokeWidth={2.5} className="group-hover:rotate-90 transition-transform duration-300" />
                             </button>
                         </div>
 
                         {/* Title Block */}
-                        <div className="mb-12 border-b border-[#30363d] pb-8">
+                        <div className="mb-12 border-b-4 border-black pb-8">
                             {post.tags && post.tags.length > 0 && (
                                 <div className="flex flex-wrap gap-2 mb-8">
                                     {post.tags.map(tag => (
                                         <span
                                             key={tag}
-                                            className="px-3 py-1 bg-[#161b22] border border-[#30363d] text-[#c9d1d9] text-xs font-mono uppercase tracking-wider rounded"
+                                            className="px-2 py-1 border-2 border-black bg-pink-100 text-xs font-black uppercase text-black shadow-[2px_2px_0px_#000]"
                                         >
                                             {tag}
                                         </span>
                                     ))}
                                 </div>
                             )}
-                            <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
+                            <h1 className="text-3xl md:text-5xl font-black uppercase text-black mb-6 leading-tight">
                                 {post.title}
                             </h1>
-                            <div className="flex flex-col md:flex-row md:items-center gap-4 text-[#8b949e] text-sm border-l-2 border-[#30363d] pl-4">
+                            <div className="flex flex-col md:flex-row md:items-center gap-4 text-gray-700 text-xs font-black uppercase border-l-4 border-black pl-4">
                                 <span>{formatDate(post.createdAt)}</span>
                                 <span className="hidden md:inline">/</span>
-                                <span>{post.readTime}</span>
+                                <span className="text-pink-600">{post.readTime}</span>
                             </div>
                             {post.user && (
-                                <div className="flex flex-col gap-1 mt-8 text-sm font-mono text-[#8b949e]">
-                                    <span className="text-white font-bold">Author: {post.user.name}</span>
-                                    <span>{post.user.email}</span>
+                                <div className="flex flex-col gap-0.5 mt-8 text-xs font-black uppercase text-pink-600">
+                                    <span>Author: {post.user.name}</span>
                                 </div>
                             )}
                         </div>
 
                         {/* Content */}
-                        <div className="prose prose-invert prose-lg mx-auto max-w-3xl text-[#c9d1d9] leading-relaxed selection:bg-white selection:text-black">
+                        <div className="prose prose-lg mx-auto max-w-3xl text-black leading-relaxed selection:bg-pink-500/30">
                             <ReactMarkdown
                                 rehypePlugins={[rehypeRaw, rehypeHighlight]}
                                 remarkPlugins={[remarkBreaks]}
@@ -199,7 +197,7 @@ const ReadBlog = () => {
                                             src={src}
                                             alt={alt}
                                             onClick={() => setExpandedImage(src || '')}
-                                            className="cursor-pointer hover:opacity-75 transition-opacity"
+                                            className="cursor-pointer hover:opacity-75 transition-opacity border-4 border-black shadow-[4px_4px_0px_#000]"
                                             title="Click to expand"
                                         />
                                     )
@@ -212,7 +210,7 @@ const ReadBlog = () => {
                         {/* Image Expansion Modal */}
                         {expandedImage && (
                             <div
-                                className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+                                className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
                                 onClick={() => setExpandedImage(null)}
                             >
                                 <div
@@ -222,27 +220,27 @@ const ReadBlog = () => {
                                     <img
                                         src={expandedImage}
                                         alt="Expanded view"
-                                        className="w-full h-full object-contain rounded-lg border border-[#30363d]"
+                                        className="w-full h-full object-contain border-4 border-black bg-white shadow-[10px_10px_0px_#000]"
                                     />
                                     <button
                                         onClick={() => setExpandedImage(null)}
-                                        className="absolute -top-12 -right-12 p-2 bg-[#161b22] border border-[#30363d] hover:border-[#ff0080] text-[#8b949e] hover:text-[#ff0080] rounded-full transition-colors"
+                                        className="absolute -top-12 -right-12 p-2 bg-white border-2 border-black hover:bg-pink-100 text-black rounded-full transition-colors cursor-pointer"
                                         aria-label="Close expanded image"
                                     >
-                                        <X size={24} />
+                                        <X size={24} strokeWidth={2.5} />
                                     </button>
                                 </div>
                             </div>
                         )}
 
                         {/* Footer Navigation */}
-                        <div className="mt-32 pt-10 border-t border-[#30363d] flex justify-between items-center">
+                        <div className="mt-20 pt-8 border-t-4 border-black flex justify-between items-center">
                             <button
                                 onClick={() => navigate('/blogs')}
-                                className="flex items-center gap-2 text-[#8b949e] hover:text-white transition-colors group"
+                                className="flex items-center gap-2 border-4 border-black px-6 py-3 bg-white hover:bg-pink-100 text-black font-black uppercase text-xs tracking-wider shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
                             >
-                                <ChevronRight className="rotate-180 group-hover:-translate-x-1 transition-transform" size={20} />
-                                <span className="font-mono uppercase text-sm tracking-wider">Return to Index</span>
+                                <ChevronRight className="rotate-180" size={16} strokeWidth={2.5} />
+                                <span>Return to Index</span>
                             </button>
                         </div>
                     </div>

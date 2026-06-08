@@ -42,7 +42,7 @@ const BlogPage = () => {
     };
 
     const getRandomColor = () => {
-        const colors = ['#ff0080', '#00ff00', '#00ffff', '#ffff00', '#ff00ff', '#FFA500'];
+        const colors = ['#E56DB1', '#E56DB1', '#E56DB1'];
         return colors[Math.floor(Math.random() * colors.length)];
     };
 
@@ -88,21 +88,19 @@ const BlogPage = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-[#060010] text-[#c9d1d9] font-sans selection:bg-white selection:text-black relative">
+            <div className="min-h-screen bg-pink-100/35 text-black font-sans selection:bg-pink-500/30 relative">
 
                 {/* MAIN LIST */}
                 <Navbar />
                 <div className="pt-24 pb-32">
 
-                    {/* Full width container but constrained max-width for readability */}
-                    <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+                    <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
 
                         {/* HEADER */}
-                        <div className="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-12 pb-8 border-b border-[#30363d]">
+                        <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-12 pb-8 border-b-4 border-black mt-8">
                             <div className="flex-1">
-                                {/* Fixed line-height here to prevent header overlap */}
-                                <h1 className="text-6xl md:text-8xl lg:text-9xl font-black text-white tracking-tighter uppercase leading-tight">
-                                    TECH<br />LOGS.
+                                <h1 className="text-6xl md:text-8xl lg:text-9xl font-black text-black tracking-tighter uppercase leading-tight">
+                                    CLUB<br />BLOGS.
                                 </h1>
                             </div>
                             <div className="flex flex-col gap-4 w-full md:w-auto">
@@ -110,19 +108,19 @@ const BlogPage = () => {
                                     <input
                                         type="text"
                                         placeholder="Search entries..."
-                                        className="w-full md:w-80 bg-transparent border-b border-[#30363d] text-xl text-white px-0 py-3 focus:outline-none focus:border-white transition-colors placeholder:text-[#30363d]"
+                                        className="w-full md:w-80 bg-white border-4 border-black text-black px-4 py-3 pr-10 focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition placeholder:text-gray-500 font-semibold"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                     />
-                                    <Search size={20} className="absolute right-0 top-1/2 -translate-y-1/2 text-[#30363d] group-focus-within:text-white transition-colors" />
+                                    <Search size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-black" strokeWidth={2.5} />
                                 </div>
                                 <div className="flex gap-3">
                                     {localStorage.getItem("authUser") && (
                                         <button
                                             onClick={() => navigate('/my-blogs')}
-                                            className="flex items-center justify-center cursor-pointer gap-2 px-6 py-3 bg-transparent border border-[#30363d] text-white hover:bg-[#161b22] transition-colors rounded font-mono uppercase text-sm tracking-wider"
+                                            className="flex items-center justify-center cursor-pointer gap-2 px-6 py-3 border-4 border-black bg-white hover:bg-pink-100 text-black shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition font-black uppercase text-xs tracking-wider"
                                         >
-                                            <User size={16} />
+                                            <User size={16} strokeWidth={2.5} />
                                             <span>My Blogs</span>
                                         </button>
                                     )}
@@ -135,9 +133,9 @@ const BlogPage = () => {
                                             }
                                             navigate('/write-blog');
                                         }}
-                                        className="flex items-center justify-center cursor-pointer gap-2 px-6 py-3 bg-[#161b22] border border-[#30363d] text-white hover:bg-[#30363d] transition-colors rounded font-mono uppercase text-sm tracking-wider"
+                                        className="flex items-center justify-center cursor-pointer gap-2 px-6 py-3 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition font-black uppercase text-xs tracking-wider"
                                     >
-                                        <PenTool size={16} />
+                                        <PenTool size={16} strokeWidth={2.5} />
                                         <span>Write Blog</span>
                                     </button>
                                 </div>
@@ -145,61 +143,57 @@ const BlogPage = () => {
                         </div>
 
                         {/* NO-IMAGE POST LIST */}
-                        <div className="flex flex-col">
+                        <div className="flex flex-col gap-8">
                             {Array.isArray(filteredPosts) && filteredPosts.map((post, index) => (
                                 <div
                                     key={post._id || post.id || index}
-                                    className="group relative border-t border-[#30363d] py-16 md:py-24 cursor-pointer transition-colors duration-500 hover:bg-[#161b22]/30"
+                                    className="group relative border-4 border-black bg-white p-8 md:p-12 shadow-[8px_8px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_#000] transition-all duration-200 cursor-pointer"
                                     onClick={() => navigate(`/blogs/${post._id}`)}
                                 >
-                                    {/* Left Accent Bar on Hover */}
-                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-current transform scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" style={{ color: post.color }} />
-
-                                    <div className="flex flex-col md:flex-row gap-8 md:gap-20 items-start pl-6">
+                                    <div className="flex flex-col md:flex-row gap-8 md:gap-20 items-start">
 
                                         {/* Column 1: Index & Meta */}
                                         <div className="w-full md:w-32 flex flex-row md:flex-col justify-between md:justify-start gap-4 shrink-0">
-                                            <span className="font-mono text-4xl md:text-6xl font-bold text-[#30363d] group-hover:text-white transition-colors duration-300 select-none">
+                                            <span className="font-black text-4xl md:text-6xl text-pink-500 select-none">
                                                 {(index + 1).toString().padStart(2, '0')}
                                             </span>
-                                            <div className="flex flex-col text-xs font-mono text-[#8b949e] uppercase tracking-widest">
+                                            <div className="flex flex-col text-xs font-black uppercase tracking-widest text-gray-500">
                                                 <span>{formatDate(post.createdAt)}</span>
-                                                <span className="mt-1">{post.readTime}</span>
+                                                <span className="mt-1 text-pink-600">{post.readTime}</span>
                                             </div>
                                         </div>
 
                                         {/* Column 2: Main Content */}
-                                        <div className="flex-1 min-w-0"> {/* min-w-0 ensures flex child shrinks properly */}
+                                        <div className="flex-1 min-w-0">
                                             {/* Tags */}
                                             <div className="flex flex-wrap gap-2 mb-6">
                                                 {post.tags.map(tag => (
-                                                    <span key={tag} className="text-xs font-mono text-[#8b949e] uppercase tracking-wider border border-[#30363d] px-2 py-1 rounded group-hover:border-white/20 group-hover:text-white transition-colors">
+                                                    <span key={tag} className="px-2 py-1 border-2 border-black bg-pink-100 text-xs font-black uppercase text-black shadow-[2px_2px_0px_#000]">
                                                         {tag}
                                                     </span>
                                                 ))}
                                             </div>
 
-                                            {/* Title - Fixed Line Height */}
-                                            <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight uppercase group-hover:translate-x-2 transition-transform duration-300">
+                                            {/* Title */}
+                                            <h2 className="text-3xl md:text-5xl font-black uppercase text-black mb-4 leading-tight">
                                                 {post.title}
                                             </h2>
 
                                             {/* Excerpt */}
-                                            <p className="text-[#8b949e] text-lg md:text-2xl font-light max-w-3xl leading-relaxed mb-8">
+                                            <p className="text-gray-700 text-base md:text-lg font-semibold leading-relaxed mb-6">
                                                 {post.excerpt}
                                             </p>
 
                                             {/* User Info */}
                                             {post.user && (
-                                                <div className="flex flex-col gap-1 mt-4 mb-8 text-sm font-mono text-[#8b949e]">
-                                                    <span className="text-white font-bold">{post.user.name}</span>
-                                                    <span>{post.user.email}</span>
+                                                <div className="flex flex-col gap-0.5 text-xs font-black uppercase text-pink-600">
+                                                    <span>By {post.user.name}</span>
                                                 </div>
                                             )}
 
                                             {/* Action */}
-                                            <div className="flex items-center gap-3 text-white font-bold uppercase tracking-wider text-sm opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                                                Read Entry <ArrowUpRight size={16} />
+                                            <div className="flex items-center gap-2 text-black font-black uppercase tracking-widest text-xs mt-6">
+                                                Read Entry <ArrowUpRight size={16} strokeWidth={2.5} />
                                             </div>
                                         </div>
                                     </div>
@@ -213,36 +207,36 @@ const BlogPage = () => {
                 {/* Auth Modal */}
                 {showAuthModal && (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowAuthModal(false)} />
-                        <div className="relative bg-[#0d1117] border border-[#30363d] p-8 max-w-md w-full shadow-2xl rounded-lg animate-in fade-in zoom-in duration-200">
+                        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowAuthModal(false)} />
+                        <div className="relative bg-white border-4 border-black p-8 max-w-md w-full shadow-[10px_10px_0px_#000] animate-in fade-in zoom-in duration-200">
                             <button
                                 onClick={() => setShowAuthModal(false)}
-                                className="absolute top-4 right-4 text-[#8b949e] hover:text-white transition-colors"
+                                className="absolute top-4 right-4 text-black hover:text-pink-500 transition-colors cursor-pointer"
                             >
-                                <X size={20} />
+                                <X size={20} strokeWidth={2.5} />
                             </button>
 
                             <div className="flex flex-col items-center text-center space-y-4">
-                                <div className="w-12 h-12 bg-[#1f2937] rounded-full flex items-center justify-center text-white mb-2">
-                                    <PenTool size={24} />
+                                <div className="w-12 h-12 border-4 border-black bg-pink-500 text-black flex items-center justify-center mb-2">
+                                    <PenTool size={24} strokeWidth={2.5} />
                                 </div>
-                                <h3 className="text-xl font-bold text-white">
+                                <h3 className="text-xl font-black uppercase text-black">
                                     Login to Write
                                 </h3>
-                                <p className="text-[#8b949e] text-sm leading-relaxed">
-                                    Join the community to share your thoughts and ideas.
+                                <p className="text-gray-600 font-semibold text-sm">
+                                    Join the community to share your reviews and thoughts.
                                 </p>
 
                                 <div className="grid grid-cols-2 gap-4 w-full pt-4">
                                     <button
                                         onClick={() => navigate('/login')}
-                                        className="w-full py-2.5 px-4 bg-white hover:bg-gray-200 cursor-pointer text-black font-semibold text-sm rounded transition-colors"
+                                        className="w-full py-2.5 px-4 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-sm shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
                                     >
                                         Log In
                                     </button>
                                     <button
                                         onClick={() => navigate('/signup')}
-                                        className="w-full py-2.5 px-4 bg-transparent cursor-pointer border border-[#30363d] text-white hover:border-white font-semibold text-sm rounded transition-colors"
+                                        className="w-full py-2.5 px-4 border-4 border-black bg-white hover:bg-pink-100 text-black font-black uppercase text-sm shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
                                     >
                                         Sign Up
                                     </button>

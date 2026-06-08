@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, Platform, SafeAreaView } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 
 interface CodeSnippetModalProps {
     visible: boolean;
@@ -10,6 +10,8 @@ interface CodeSnippetModalProps {
 
 export default function CodeSnippetModal({ visible, onClose, onSend }: CodeSnippetModalProps) {
     const [code, setCode] = useState('');
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
 
     const handleSend = () => {
         if (code.trim()) {
@@ -48,7 +50,7 @@ export default function CodeSnippetModal({ visible, onClose, onSend }: CodeSnipp
                             multiline
                             autoFocus
                             placeholder="// Type or paste your code here..."
-                            placeholderTextColor="#64748b"
+                            placeholderTextColor={colors.subText}
                             value={code}
                             onChangeText={setCode}
                             textAlignVertical="top"
@@ -62,10 +64,10 @@ export default function CodeSnippetModal({ visible, onClose, onSend }: CodeSnipp
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0A0514',
+        backgroundColor: colors.bg,
     },
     safeArea: {
         flex: 1,
@@ -76,38 +78,51 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: 16,
         paddingVertical: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,0.05)',
+        borderBottomWidth: 4,
+        borderBottomColor: colors.border,
     },
     title: {
         fontSize: 16,
-        fontWeight: '600',
-        color: '#fff',
+        fontWeight: '900',
+        color: colors.text,
+        textTransform: 'uppercase',
     },
     closeButton: {
         padding: 8,
         marginLeft: -8,
     },
     cancelText: {
-        color: '#94a3b8',
-        fontSize: 15,
+        color: colors.subText,
+        fontSize: 14,
+        fontWeight: '700',
+        textTransform: 'uppercase',
     },
     sendButton: {
         paddingHorizontal: 16,
         paddingVertical: 8,
-        backgroundColor: '#6366f1',
-        borderRadius: 20,
+        backgroundColor: '#E56DB1',
+        borderWidth: 3,
+        borderColor: colors.border,
+        shadowColor: colors.shadow,
+        shadowOffset: { width: 3, height: 3 },
+        shadowOpacity: 1,
+        shadowRadius: 0,
+        elevation: 2,
     },
     sendText: {
-        color: '#fff',
-        fontWeight: '600',
+        color: '#000000',
+        fontWeight: '900',
         fontSize: 14,
+        textTransform: 'uppercase',
     },
     disabledButton: {
-        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+        backgroundColor: colors.cardBg,
+        borderColor: colors.subText,
+        shadowOpacity: 0,
+        elevation: 0,
     },
     disabledText: {
-        color: 'rgba(255, 255, 255, 0.3)',
+        color: colors.subText,
     },
     editorContainer: {
         flex: 1,
@@ -117,7 +132,11 @@ const styles = StyleSheet.create({
         flex: 1,
         fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
         fontSize: 14,
-        color: '#e2e8f0',
+        color: colors.text,
         lineHeight: 20,
+        backgroundColor: colors.cardBg,
+        borderWidth: 3,
+        borderColor: colors.border,
+        padding: 16,
     },
 });

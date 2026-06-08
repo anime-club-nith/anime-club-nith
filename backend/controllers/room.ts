@@ -16,7 +16,7 @@ export const handleCreateRoom = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "Room created successfully" });
   } catch (error) {
     console.log(`${error}`);
-    throw new Error(`While creating a room`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -30,7 +30,7 @@ export const handleRoomInfo = async (req: Request, res: Response) => {
     return res.status(200).json({ room });
   } catch (error) {
     console.log(`${error}`);
-    throw new Error(`While gathering the rooms info`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -46,7 +46,7 @@ export const handleJoining = async (req: Request, res: Response) => {
     return res.status(200).json({ message: `Joined room: ${room.roomId}` });
   } catch (error) {
     console.log(`${error}`);
-    throw new Error(`While joining room`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -62,7 +62,7 @@ export const handleJoinedRooms = async (req: Request, res: Response) => {
     return res.status(200).json({ rooms });
   } catch (error) {
     console.log(`${error}`);
-    throw new Error(`While fetching joined rooms`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -72,7 +72,7 @@ export const handleGetAllRooms = async (req: Request, res: Response) => {
     return res.status(200).json({ rooms });
   } catch (error) {
     console.log(`${error}`);
-    throw new Error(`While fetching all rooms`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 

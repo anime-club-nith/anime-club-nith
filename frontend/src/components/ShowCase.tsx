@@ -10,7 +10,7 @@ interface MockMessage {
 export default function ShowCase() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<MockMessage[]>([
-    { id: 1, text: "Try sending a message to see how fast TNC is!", sender: 'bot' }
+    { id: 1, text: "Try sending a message to see how fast Anime Club NITH is!", sender: 'bot' }
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -37,63 +37,59 @@ export default function ShowCase() {
       setIsTyping(false);
       const botMsg: MockMessage = { 
         id: Date.now() + 1, 
-        text: "Welcome to the TNC network! This is a live demo of our real-time engine.", 
+        text: "Welcome to the Anime Club NITH portal! This is a live demonstration of our WebSocket engine.", 
         sender: 'bot' 
       };
       setMessages(prev => [...prev, botMsg]);
-    }, 600); // 600ms delay feels natural but fast
+    }, 600);
   };
 
   return (
-    <section className="py-24 px-6 bg-[#060010] border-t border-white/5 relative overflow-hidden">
-      
-      {/* Glow Effects */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
-
+    <section className="py-24 px-6 bg-white dark:bg-[#0c0d12] border-t-4 border-black dark:border-white relative overflow-hidden transition-colors">
       <div className="max-w-4xl mx-auto relative z-10">
         
         {/* Section Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 border-4 border-black dark:border-white bg-pink-100 dark:bg-[#2b1724] text-black dark:text-white font-black uppercase text-xs shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1] mb-4">
             <Sparkles size={14} />
             <span>Interactive Demo</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Experience <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Zero Latency</span>
+          <h2 className="text-3xl md:text-4xl font-black uppercase text-black dark:text-white mb-4">
+            Experience <span className="text-pink-500">Zero Latency</span>
           </h2>
-          <p className="text-slate-400 max-w-lg mx-auto">
+          <p className="text-gray-700 dark:text-gray-300 font-semibold max-w-lg mx-auto">
             Go ahead, type something below. Our WebSocket engine handles message delivery in milliseconds.
           </p>
         </div>
 
         {/* The Mock Chat Interface */}
-        <div className="w-full max-w-md mx-auto bg-[#0A0514] border border-white/10 rounded-3xl shadow-2xl shadow-black/50 overflow-hidden flex flex-col h-[500px]">
+        <div className="w-full max-w-md mx-auto bg-white dark:bg-[#161822] border-4 border-black dark:border-white shadow-[10px_10px_0px_#000] dark:shadow-[10px_10px_0px_#E56DB1] overflow-hidden flex flex-col h-[500px] transition-all">
           
           {/* Mock Header */}
-          <div className="px-6 py-4 border-b border-white/5 bg-[#0A0514] flex items-center justify-between">
+          <div className="px-6 py-4 border-b-4 border-black dark:border-white bg-white dark:bg-[#161822] flex items-center justify-between transition-colors">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                <div className="w-10 h-10 border-2 border-black dark:border-white bg-pink-500 text-black dark:text-white flex items-center justify-center font-black">
                   <Bot size={20} />
                 </div>
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#0A0514] rounded-full"></div>
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-black dark:border-white rounded-full"></div>
               </div>
               <div>
-                <h3 className="text-white font-semibold text-sm">TNC Bot</h3>
-                <p className="text-indigo-400 text-xs font-medium">Online</p>
+                <h3 className="text-black dark:text-white font-black uppercase text-sm">NITH Bot</h3>
+                <p className="text-pink-600 text-xs font-black uppercase">Online</p>
               </div>
             </div>
             <div className="flex gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-red-500 border border-red-500/50" />
-              <div className="w-2.5 h-2.5 rounded-full bg-yellow-500 border border-yellow-500/50" />
-              <div className="w-2.5 h-2.5 rounded-full bg-green-500 border border-green-500/50" />
+              <div className="w-3.5 h-3.5 border-2 border-black dark:border-white bg-red-500" />
+              <div className="w-3.5 h-3.5 border-2 border-black dark:border-white bg-yellow-500" />
+              <div className="w-3.5 h-3.5 border-2 border-black dark:border-white bg-green-500" />
             </div>
           </div>
 
           {/* Messages Area */}
           <div 
             ref={scrollRef}
-            className="flex-1 overflow-y-auto p-6 space-y-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
+            className="flex-1 overflow-y-auto p-6 space-y-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] bg-pink-100/5 dark:bg-[#2b1724]/10"
           >
             {messages.map((msg) => (
               <div 
@@ -102,18 +98,18 @@ export default function ShowCase() {
               >
                 {/* Avatar */}
                 <div className={`
-                  w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1
-                  ${msg.sender === 'user' ? 'bg-slate-700 text-white' : 'bg-indigo-500/10 text-indigo-400'}
+                  w-8 h-8 border-2 border-black dark:border-white flex items-center justify-center flex-shrink-0 mt-1
+                  ${msg.sender === 'user' ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-pink-500 text-black dark:text-white'}
                 `}>
                   {msg.sender === 'user' ? <User size={14} /> : <Bot size={14} />}
                 </div>
 
                 {/* Bubble */}
                 <div className={`
-                  max-w-[80%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed
+                  max-w-[80%] px-4 py-2.5 border-2 border-black dark:border-white text-sm font-semibold leading-relaxed shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1]
                   ${msg.sender === 'user' 
-                    ? 'bg-indigo-600 text-white rounded-tr-none' 
-                    : 'bg-[#1A1625] text-slate-300 rounded-tl-none border border-white/5'}
+                    ? 'bg-pink-100 dark:bg-[#2b1724] text-black dark:text-white' 
+                    : 'bg-white dark:bg-[#161822] text-black dark:text-white'}
                 `}>
                   {msg.text}
                 </div>
@@ -123,20 +119,20 @@ export default function ShowCase() {
             {/* Typing Indicator */}
             {isTyping && (
               <div className="flex gap-3 animate-in fade-in duration-200">
-                <div className="w-8 h-8 rounded-full bg-indigo-500/10 flex items-center justify-center flex-shrink-0 mt-1 text-indigo-400">
+                <div className="w-8 h-8 border-2 border-black dark:border-white bg-pink-500 text-black dark:text-white flex items-center justify-center flex-shrink-0 mt-1">
                    <Bot size={14} />
                 </div>
-                <div className="bg-[#1A1625] border border-white/5 px-4 py-3 rounded-2xl rounded-tl-none flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                  <span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                  <span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce"></span>
+                <div className="bg-white dark:bg-[#161822] border-2 border-black dark:border-white px-4 py-3 shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1] flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-black dark:bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                  <span className="w-1.5 h-1.5 bg-black dark:bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                  <span className="w-1.5 h-1.5 bg-black dark:bg-white rounded-full animate-bounce"></span>
                 </div>
               </div>
             )}
           </div>
 
           {/* Input Area */}
-          <div className="p-4 bg-[#0A0514] border-t border-white/5">
+          <div className="p-4 bg-white dark:bg-[#161822] border-t-4 border-black dark:border-white relative transition-colors">
             <form 
               onSubmit={handleSend}
               className="relative flex items-center"
@@ -146,19 +142,19 @@ export default function ShowCase() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type a message..."
-                className="w-full bg-[#151020] border border-white/10 rounded-full py-3 pl-5 pr-12 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
+                className="w-full bg-white dark:bg-[#161822] border-4 border-black dark:border-white py-3 pl-4 pr-14 text-sm text-black dark:text-white placeholder:text-gray-500 font-semibold focus:outline-none focus:bg-pink-100 dark:focus:bg-[#2b1724] shadow-[4px_4px_0px_#000] dark:shadow-[4px_4px_0px_#E56DB1] focus:shadow-[2px_2px_0px_#000] dark:focus:shadow-[2px_2px_0px_#E56DB1] transition"
               />
               <button
                 type="submit"
                 disabled={!input.trim()}
                 className={`
-                  absolute right-1.5 p-2 rounded-full flex items-center justify-center transition-all duration-200
+                  absolute right-2 p-2 border-4 border-black dark:border-white flex items-center justify-center transition-all duration-200 cursor-pointer
                   ${input.trim() 
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 hover:scale-105' 
-                    : 'bg-white/5 text-slate-600 cursor-not-allowed'}
+                    ? 'bg-pink-500 text-black dark:text-white shadow-[2px_2px_0px_#000] dark:shadow-[2px_2px_0px_#E56DB1] active:translate-x-[1px] active:translate-y-[1px]' 
+                    : 'bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400 shadow-none cursor-not-allowed'}
                 `}
               >
-                <ArrowUp size={16} />
+                <ArrowUp size={16} strokeWidth={3} />
               </button>
             </form>
           </div>

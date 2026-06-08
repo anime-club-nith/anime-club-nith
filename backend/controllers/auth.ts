@@ -38,7 +38,7 @@ export const handleUserSignUp = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "Check your inbox for account verification email" });
   } catch (error) {
     console.log(`While signing up`);
-    throw new Error(`While creating a new User`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -72,7 +72,7 @@ export const handleVerifyEmail = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "Email verified successfully", token, user });
   } catch (error) {
     console.log(`${error}`);
-    throw new Error(`While verifying the email`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -118,7 +118,7 @@ export const handleUserLogIn = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(`${error}`);
-    throw new Error(`While logging in`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -153,7 +153,7 @@ export const handleForgetPassViaOld = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "Password changed successfully" });
   } catch (error) {
     console.log(`${error}`);
-    throw new Error(`While changing the password`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -184,7 +184,7 @@ export const handlerForgetPassViaEmail = async (
     return res.status(200).json({ message: `Reset link sent to your email` });
   } catch (error) {
     console.log(`${error}`);
-    throw new Error(`While user tried to change pass via email`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -220,7 +220,7 @@ export const changeUserPass = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "Password changed successfully" });
   } catch (error) {
     console.log(`${error}`);
-    throw new Error(`While changing password via email`);
+    return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };
 
@@ -230,7 +230,7 @@ export const handleUserLogOut = async(req: Request, res: Response) => {
         return res.status(200).json({ message: "Logged out successfully" });
     }catch(error) {
         console.log(`${error}`);
-        throw new Error(`While clearing the token from cookies`);
+        return res.status(500).json({ message: 'An internal server error occurred.' });
     }
 };
 

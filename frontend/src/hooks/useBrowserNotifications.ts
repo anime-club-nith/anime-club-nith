@@ -24,8 +24,8 @@ export function useBrowserNotifications() {
     const showNotification = useCallback((title: string, options?: NotificationOptions) => {
         if (Notification.permission === 'granted') {
             const notification = new Notification(title, {
-                icon: '/tnc-logo.png',
-                badge: '/tnc-logo.png',
+                icon: '/logo-dark.png',
+                badge: '/logo-dark.png',
                 ...options,
             });
 

@@ -81,7 +81,7 @@ export function useGlobalNotifications(userId: string | null) {
             // Show browser notification
             showNotification(`${senderName} in #${roomTitle}`, {
                 body: messageText,
-                icon: '/tnc-logo.png',
+                icon: '/logo-dark.png',
                 tag: roomId,
                 data: { roomId, roomTitle },
             });

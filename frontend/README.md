@@ -1,6 +1,6 @@
-# TNC Frontend
+# Anime Club NITH Frontend
 
-The frontend for the TNC project is a high-performance web application built with React, Vite, and Tailwind CSS. It focuses on a premium user experience with smooth animations and real-time capabilities.
+The frontend for the Anime Club NITH project is a high-performance web application built with React, Vite, and Tailwind CSS. It focuses on a premium user experience with smooth animations and real-time capabilities.
 
 ## Tech Stack
 

@@ -1,6 +1,6 @@
-# TNC Backend
+# Anime Club NITH Backend
 
-The backend for the TNC project is built with Node.js, Express, and TypeScript. It provides a RESTful API for core functionalities and utilizes Socket.io for real-time communication features.
+The backend for the Anime Club NITH project is built with Node.js, Express, and TypeScript. It provides a RESTful API for core functionalities and utilizes Socket.io for real-time communication features.
 
 ## Tech Stack
 
@@ -9,7 +9,7 @@ The backend for the TNC project is built with Node.js, Express, and TypeScript. 
 -   **Language**: TypeScript
 -   **Database**: MongoDB with Mongoose ODM
 -   **Real-time**: Socket.io
--   **Storage**: AWS S3 (via `@aws-sdk/client-s3`)
+-   **Storage**: Cloudinary (via `cloudinary`)
 -   **Authentication**: JWT (JSON Web Tokens) & Cookie-parser
 -   **Notifications**: Expo Server SDK
 -   **Mailing**: Nodemailer
@@ -22,7 +22,7 @@ backend/
 ├── middlewares/    # Custom Express middlewares (e.g., Auth)
 ├── models/         # Mongoose schemas and TypeScript interfaces
 ├── routes/         # API route definitions
-├── services/       # External service integrations (S3, Socket, MongoDB, Email)
+├── services/       # External service integrations (Cloudinary, Socket, MongoDB, Email)
 ├── types/          # Global TypeScript type definitions
 ├── server.ts       # Application entry point & configuration
 └── tsconfig.json   # TypeScript configuration
@@ -44,7 +44,7 @@ Powered by **Socket.io**, the backend supports real-time chat functionality. The
 ### 3. Service Layer
 Encapsulates logic for external integrations:
 -   `connection.ts`: MongoDB connection management.
--   `s3Bucket.ts`: Utilities for interacting with AWS S3.
+-   `cloudinary.ts`: Utilities for interacting with Cloudinary.
 -   `sendEmail.ts` & `verifyAcc.ts`: Email handling for account verification and password resets.
 -   `socket.ts`: Socket.io event handling and setup.
 
@@ -105,10 +105,9 @@ Create a `.env` file in the `backend` directory and provide the following variab
 | :--- | :--- |
 | `MONGO_URI` | MongoDB connection string |
 | `PORT` | Port number for the server (e.g., 8001) |
-| `AWS_ACCESS_KEY` | AWS Access Key ID |
-| `AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key |
-| `AWS_S3_BUCKET` | Name of the AWS S3 bucket |
-| `AWS_S3_REGION` | AWS region for the S3 bucket |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary Cloud Name |
+| `CLOUDINARY_API_KEY` | Cloudinary API Key |
+| `CLOUDINARY_API_SECRET` | Cloudinary API Secret |
 | `JWT_ENCRYP_KEY` | Secret key for JWT signing |
 | `MAIL_USER` | Email address for sending notifications (SMTP) |
 | `MAIL_PASS` | Password or App Password for the email account |

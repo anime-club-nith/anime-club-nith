@@ -1,11 +1,11 @@
 import React from 'react';
 import {
   Modal, View, Text, StyleSheet, TouchableOpacity,
-  FlatList, Image, SafeAreaView, Platform, StatusBar
+  FlatList, Image, SafeAreaView, Platform
 } from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
+import { useTheme } from '../context/ThemeContext';
 
-// --- Types ---
 export interface Member {
   id: string | number;
   name: string;
@@ -15,12 +15,11 @@ export interface Member {
 interface MembersModalProps {
   visible: boolean;
   onClose: () => void;
-  members?: Member[]; // Optional: if you pass data from parent
+  members?: Member[];
   roomTitle?: string;
   currentUserId?: string;
 }
 
-// --- Mock Data (Fallback) ---
 const MOCK_MEMBERS: Member[] = [
   { id: 1, name: "Alex Dev", avatar: "https://api.dicebear.com/7.x/avataaars/png?seed=Alex" },
   { id: 2, name: "Sarah Chen", avatar: "https://api.dicebear.com/7.x/avataaars/png?seed=Sarah" },
@@ -30,6 +29,8 @@ const MOCK_MEMBERS: Member[] = [
 ];
 
 export default function MembersModal({ visible, onClose, members = MOCK_MEMBERS, roomTitle = "Room Members", currentUserId }: MembersModalProps) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   const renderMember = ({ item }: { item: Member }) => (
     <View style={styles.memberRow}>
@@ -55,7 +56,6 @@ export default function MembersModal({ visible, onClose, members = MOCK_MEMBERS,
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        {/* The Modal Card */}
         <View style={styles.modalContainer}>
 
           {/* Header */}
@@ -65,7 +65,7 @@ export default function MembersModal({ visible, onClose, members = MOCK_MEMBERS,
               <Text style={styles.subtitle}>{members.length} members</Text>
             </View>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color="#94a3b8" />
+              <Ionicons name="close" size={24} color={colors.text} />
             </TouchableOpacity>
           </View>
 
@@ -78,10 +78,10 @@ export default function MembersModal({ visible, onClose, members = MOCK_MEMBERS,
             showsVerticalScrollIndicator={false}
           />
 
-          {/* Footer Action (Optional) */}
+          {/* Footer Action */}
           <View style={styles.footer}>
             <TouchableOpacity style={styles.inviteButton}>
-              <Feather name="user-plus" size={18} color="#fff" />
+              <Feather name="user-plus" size={18} color="#000000" />
               <Text style={styles.inviteText}>Invite People</Text>
             </TouchableOpacity>
           </View>
@@ -92,47 +92,49 @@ export default function MembersModal({ visible, onClose, members = MOCK_MEMBERS,
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)', // Dimmed background
+    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'flex-end',
   },
   modalContainer: {
-    backgroundColor: '#0A0514', // Slightly lighter than pure black bg
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    height: '80%', // Takes up bottom 80% of screen
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: colors.cardBg,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    height: '80%',
+    borderWidth: 4,
+    borderColor: colors.border,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.05)',
+    borderBottomWidth: 4,
+    borderBottomColor: colors.border,
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: '900',
+    color: colors.text,
+    textTransform: 'uppercase',
   },
   subtitle: {
     fontSize: 14,
-    color: '#64748b',
+    color: colors.subText,
     marginTop: 2,
+    fontWeight: '600',
   },
   closeButton: {
     padding: 8,
-    backgroundColor: '#1A1625',
-    borderRadius: 12,
+    backgroundColor: colors.bg,
+    borderWidth: 2,
+    borderColor: colors.border,
   },
   listContent: {
     padding: 24,
   },
-  // Member Row
   memberRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -145,8 +147,9 @@ const styles = StyleSheet.create({
   avatar: {
     width: 48,
     height: 48,
-    borderRadius: 16,
-    backgroundColor: '#1e1b4b',
+    borderWidth: 2,
+    borderColor: colors.border,
+    backgroundColor: colors.bg,
   },
   infoContainer: {
     flex: 1,
@@ -154,29 +157,35 @@ const styles = StyleSheet.create({
   },
   memberName: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#e2e8f0',
+    fontWeight: '700',
+    color: colors.text,
+    textTransform: 'uppercase',
   },
-
-  // Footer
   footer: {
     padding: 24,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.05)',
+    borderTopWidth: 4,
+    borderTopColor: colors.border,
     paddingBottom: Platform.OS === 'ios' ? 40 : 24,
   },
   inviteButton: {
-    backgroundColor: '#4f46e5',
+    backgroundColor: '#E56DB1',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 16,
-    borderRadius: 16,
+    borderWidth: 4,
+    borderColor: colors.border,
     gap: 8,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 3,
   },
   inviteText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: '#000000',
+    fontWeight: '950',
     fontSize: 16,
+    textTransform: 'uppercase',
   },
 });

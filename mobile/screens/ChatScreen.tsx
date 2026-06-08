@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
     StyleSheet, Text, View, TextInput, TouchableOpacity,
-    SafeAreaView, Platform, FlatList, Image, StatusBar, Keyboard, Animated, ActivityIndicator, Modal, ScrollView
+    SafeAreaView, Platform, FlatList, Image, StatusBar as RNStatusBar, Keyboard, Animated, ActivityIndicator, Modal, ScrollView
 } from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Socket } from 'socket.io-client';
 import { jwtDecode } from "jwt-decode";
+import { StatusBar } from 'expo-status-bar';
+
 import { initSocket, disconnectSocket } from '../services/socket';
 import AttachmentModal from '../components/AttachmentModal';
 import CodeSnippetModal from '../components/CodeSnippetModal';
@@ -15,6 +17,7 @@ import client from '../services/client'; // Import client
 import { Message, User } from '../types'; // Import types
 import { useToast } from '../context/ToastContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '../context/ThemeContext';
 
 export default function ChatScreen({ navigation, route }: any) {
     const { roomTitle, roomId } = route.params || { roomTitle: "Room", roomId: "" };
@@ -36,23 +39,23 @@ export default function ChatScreen({ navigation, route }: any) {
 
     const [members, setMembers] = useState<any[]>([]); // Use appropriate type or import Member
 
+    const { colors, theme, toggleTheme } = useTheme();
+    const styles = createStyles(colors);
+
     const socketRef = useRef<Socket | null>(null);
     const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://13.202.26.208:8000"; // Fallback or env
 
     const fetchRoomInfo = async () => {
         try {
             const response = await client.get(`/api/room/${roomId}`);
-            // Backend returns { room: [...] } because it uses Room.find()
             const roomData = Array.isArray(response.data.room) ? response.data.room[0] : response.data.room;
 
             if (roomData) {
-                // Set the Mongo ID for chat operations
                 if (roomData._id) {
                     setRoomMongoId(roomData._id);
                 }
 
                 if (roomData.members) {
-                    // Map backend users to MembersModal format
                     const mappedMembers = roomData.members.map((m: any) => ({
                         id: m._id,
                         name: m.name,
@@ -65,7 +68,6 @@ export default function ChatScreen({ navigation, route }: any) {
             console.error("Error fetching room info:", error);
         }
     };
-
 
     // Get current user from storage/context
     useEffect(() => {
@@ -80,8 +82,6 @@ export default function ChatScreen({ navigation, route }: any) {
                         email: decoded.email,
                         avatar: decoded.avatar
                     });
-                } else {
-                    // console.log("Debug: No token found in AsyncStorage");
                 }
             } catch (e) {
                 console.error("Failed to load user from token", e);
@@ -116,10 +116,6 @@ export default function ChatScreen({ navigation, route }: any) {
             showSubscription.remove();
             hideSubscription.remove();
         };
-        return () => {
-            showSubscription.remove();
-            hideSubscription.remove();
-        };
     }, []);
 
     // Auto-scroll when keyboard opens
@@ -127,18 +123,18 @@ export default function ChatScreen({ navigation, route }: any) {
         if (messages.length > 0) {
             setTimeout(() => {
                 flatListRef.current?.scrollToEnd({ animated: true });
-            }, 300); // Small delay to wait for keyboard animation
+            }, 300);
         }
-    }, [keyboardHeight]); // Re-run when keyboard height changes
+    }, [keyboardHeight]);
 
-    // Auto-scroll when messages change (new message, initial load, etc.)
+    // Auto-scroll when messages change
     useEffect(() => {
         if (messages.length > 0) {
             setTimeout(() => {
                 flatListRef.current?.scrollToEnd({ animated: true });
-            }, 400); // Delay to ensure layout is complete
+            }, 400);
         }
-    }, [messages]); // Re-run whenever messages array changes
+    }, [messages]);
 
     // Date separator helper functions
     const getDateLabel = (timestamp: string | Date): string => {
@@ -147,7 +143,6 @@ export default function ChatScreen({ navigation, route }: any) {
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
 
-        // Reset time to midnight for comparison
         const resetTime = (date: Date) => {
             date.setHours(0, 0, 0, 0);
             return date;
@@ -162,7 +157,6 @@ export default function ChatScreen({ navigation, route }: any) {
         } else if (messageDateOnly.getTime() === yesterdayOnly.getTime()) {
             return 'Yesterday';
         } else {
-            // Format as "Dec 25, 2024"
             return messageDate.toLocaleDateString('en-US', {
                 month: 'short',
                 day: 'numeric',
@@ -180,7 +174,6 @@ export default function ChatScreen({ navigation, route }: any) {
         messages.forEach((message) => {
             const dateLabel = getDateLabel(message.createdAt);
 
-            // Insert date separator if date changed
             if (dateLabel !== lastDate) {
                 grouped.push({
                     type: 'date-separator',
@@ -190,21 +183,17 @@ export default function ChatScreen({ navigation, route }: any) {
                 lastDate = dateLabel;
             }
 
-            // Add the actual message
             grouped.push({ ...message, type: 'message' });
         });
 
         return grouped;
     };
 
-
     // Fetch Messages
-
     const fetchMessages = async () => {
-        if (!roomMongoId) return; // Need actual _id for chat
+        if (!roomMongoId) return;
         try {
             const response = await client.get(`/api/chat/chat-history/${roomMongoId}`);
-            // Backend returns array of messages
             setMessages(response.data);
         } catch (error) {
             console.error("Error fetching chat:", error);
@@ -225,7 +214,6 @@ export default function ChatScreen({ navigation, route }: any) {
             // Socket Connection
             socketRef.current = initSocket();
 
-            // Monitor connection status
             socketRef.current.on('connect', () => {
                 setSocketConnected(true);
             });
@@ -238,10 +226,7 @@ export default function ChatScreen({ navigation, route }: any) {
                 userId: currentUser?._id
             });
 
-
-
             socketRef.current.on("receive_message", (newMessage: Message) => {
-                // Ignore if from self (handled by optimistic/API response)
                 const senderId = typeof newMessage.sender === 'string'
                     ? newMessage.sender
                     : newMessage.sender._id;
@@ -249,7 +234,6 @@ export default function ChatScreen({ navigation, route }: any) {
                 if (String(senderId) === String(currentUser._id)) return;
 
                 setMessages((prevMessages) => {
-                    // Critical Dedup: Check if ID already exists
                     if (prevMessages.some(m => m._id === newMessage._id)) {
                         return prevMessages;
                     }
@@ -261,7 +245,7 @@ export default function ChatScreen({ navigation, route }: any) {
                 disconnectSocket();
             };
         }
-    }, [roomMongoId, currentUser]); // Re-run if user or room changes
+    }, [roomMongoId, currentUser]);
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -284,7 +268,7 @@ export default function ChatScreen({ navigation, route }: any) {
 
     const handleSend = async () => {
         if (!text.trim() && !selectedImage) return;
-        if (isSending) return; // Guard against multiple clicks
+        if (isSending) return;
 
         setIsSending(true);
         const tempId = Date.now().toString();
@@ -304,21 +288,17 @@ export default function ChatScreen({ navigation, route }: any) {
             imageURL: selectedImage ? selectedImage.uri : undefined
         };
 
-        // Add optimistic message
         setMessages(prev => [...prev, optimisticMessage]);
 
         try {
-            // Optimistic update? Maybe risky without real ID.
-            // Let's just send and let polling/response update it.
             if (roomMongoId) {
                 const formData = new FormData();
                 if (text.trim()) formData.append('text', text);
 
                 if (selectedImage) {
-                    // React Native specific FormData structure
                     const file = {
                         uri: selectedImage.uri,
-                        type: 'image/jpeg', // Default or infer
+                        type: 'image/jpeg',
                         name: selectedImage.fileName || 'upload.jpg',
                     };
                     formData.append('image', file as any);
@@ -330,40 +310,32 @@ export default function ChatScreen({ navigation, route }: any) {
                     },
                 });
 
-                // Replace optimistic message with real one
                 const realMessage = response.data;
                 realMessage.status = 'sent';
 
                 setMessages(prev => {
-                    // Race condition check: Did socket already add this message?
                     const exists = prev.some(m => m._id === realMessage._id);
                     if (exists) {
-                        // Socket beat us. Just remove the optimistic one.
                         return prev.filter(m => m._id !== tempId);
                     }
-                    // Socket didn't add it (or we filtered it out). Update optimistic to real.
                     return prev.map(m => m._id === tempId ? realMessage : m);
                 });
 
                 setText('');
                 setSelectedImage(null);
-                // fetchMessages(); // No need to fetch immediately if we replaced it, let polling handle sync
                 setTimeout(() => {
                     flatListRef.current?.scrollToEnd({ animated: true });
                 }, 100);
             }
         } catch (error) {
             console.error("Error sending message:", error);
-            // Mark as failed
             setMessages(prev => prev.map(m => m._id === tempId ? { ...m, status: 'failed' } : m));
         } finally {
             setIsSending(false);
         }
     };
 
-    // Render a single message item
     const renderItem = ({ item, index }: { item: any; index: number }) => {
-        // Handle date separator
         if (item.type === 'date-separator') {
             return (
                 <View style={styles.dateSeparatorContainer}>
@@ -374,8 +346,6 @@ export default function ChatScreen({ navigation, route }: any) {
             );
         }
 
-        // Handle regular message
-        // Check if message is from current user
         const isMe = (currentUser && item.sender)
             ? String(item.sender._id || item.sender) === String(currentUser._id)
             : false;
@@ -420,23 +390,22 @@ export default function ChatScreen({ navigation, route }: any) {
                             />
                         </TouchableOpacity>
                     ) : (
-                        <Text style={styles.messageText}>{item.text}</Text>
+                        <View style={[styles.bubble, isMe ? styles.myBubble : styles.otherBubble]}>
+                            <Text style={styles.messageText}>{item.text}</Text>
+                        </View>
                     )}
-                    {/* Timestamp for sequence messages */}
                     {isSequence && (
                         <Text style={styles.sequenceTimestamp}>
                             {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </Text>
                     )}
-                    {/* Status Indicator */}
                     {isMe && (
                         <View style={styles.statusContainer}>
                             {item.status === 'sending' ? (
-                                <Feather name="more-horizontal" size={12} color="#818cf8" />
+                                <Feather name="more-horizontal" size={12} color="#E56DB1" />
                             ) : item.status === 'failed' ? (
                                 <Ionicons name="alert-circle" size={12} color="#ef4444" />
                             ) : (
-                                // Default to sent if not sending/failed (existing messages are sent)
                                 <Feather name="check" size={14} color="#4ade80" />
                             )}
                         </View>
@@ -448,29 +417,37 @@ export default function ChatScreen({ navigation, route }: any) {
 
     return (
         <View style={styles.container}>
+            <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
             <SafeAreaView style={styles.safeArea}>
                 {/* Header */}
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <Ionicons name="chevron-back" size={24} color="#cbd5e1" />
+                        <Ionicons name="chevron-back" size={24} color={colors.text} />
                     </TouchableOpacity>
 
                     <View style={styles.headerInfo}>
                         <View style={styles.roomIcon}>
-                            <Feather name="hash" size={16} color="#94a3b8" />
+                            <Feather name="hash" size={16} color={colors.text} />
                         </View>
                         <Text style={styles.headerTitle}>{roomTitle}</Text>
                     </View>
 
-                    <TouchableOpacity style={styles.headerAction} onPress={() => setShowMembersModal(true)}>
-                        <Feather name="users" size={20} color="#cbd5e1" />
-                    </TouchableOpacity>
+                    <View style={styles.headerActions}>
+                        {/* Theme Toggling */}
+                        <TouchableOpacity style={styles.themeButton} onPress={toggleTheme}>
+                            <Feather name={theme === 'dark' ? "sun" : "moon"} size={20} color={colors.text} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.headerAction} onPress={() => setShowMembersModal(true)}>
+                            <Feather name="users" size={20} color={colors.text} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 {/* Message List */}
                 {loading ? (
                     <View style={styles.center}>
-                        <ActivityIndicator size="small" color="#6366f1" />
+                        <ActivityIndicator size="small" color="#E56DB1" />
                     </View>
                 ) : (
                     <Animated.View style={{ flex: 1, marginBottom: keyboardHeight }}>
@@ -482,9 +459,9 @@ export default function ChatScreen({ navigation, route }: any) {
                             contentContainerStyle={styles.listContent}
                             style={styles.list}
                             onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-                            onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })} // Scroll on layout change (keyboard)
+                            onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
                             ListEmptyComponent={
-                                <Text style={{ color: '#64748b', textAlign: 'center', marginTop: 20 }}>No messages yet. Say hi!</Text>
+                                <Text style={{ color: colors.subText, textAlign: 'center', marginTop: 20, fontWeight: '700' }}>No messages yet. Say hi!</Text>
                             }
                             ListFooterComponent={
                                 <View style={{ height: 120 }} />
@@ -514,14 +491,14 @@ export default function ChatScreen({ navigation, route }: any) {
                             value={text}
                             onChangeText={setText}
                             placeholder={`Message #${roomTitle}`}
-                            placeholderTextColor="#64748b"
+                            placeholderTextColor={colors.subText}
                             multiline
                         />
                         <TouchableOpacity
                             style={styles.attachButton}
                             onPress={() => setShowAttachmentModal(true)}
                         >
-                            <Feather name="plus" size={24} color="#64748b" />
+                            <Feather name="plus" size={24} color={colors.text} />
                         </TouchableOpacity>
                     </View>
 
@@ -534,15 +511,15 @@ export default function ChatScreen({ navigation, route }: any) {
                         disabled={(!text.trim() && !selectedImage) || isSending}
                     >
                         {isSending ? (
-                            <ActivityIndicator size="small" color="#fff" />
+                            <ActivityIndicator size="small" color="#000000" />
                         ) : (
-                            <Ionicons name="send" size={18} color={text.trim() ? "#fff" : "#64748b"} />
+                            <Ionicons name="send" size={18} color={((text.trim() || selectedImage) && !isSending) ? "#000000" : colors.subText} />
                         )}
                     </TouchableOpacity>
                 </View>
             </Animated.View>
 
-            {/* Modals - Keep existing implementations */}
+            {/* Modals */}
             <AttachmentModal
                 visible={showAttachmentModal}
                 onClose={() => setShowAttachmentModal(false)}
@@ -554,7 +531,6 @@ export default function ChatScreen({ navigation, route }: any) {
                 visible={showCodeModal}
                 onClose={() => setShowCodeModal(false)}
                 onSend={(code) => {
-                    /* Handle Code Send - Treat as text for now or extend API */
                     if (roomMongoId) {
                         client.post(`/api/chat/${roomMongoId}`, { text: code });
                         setShowCodeModal(false);
@@ -602,47 +578,46 @@ export default function ChatScreen({ navigation, route }: any) {
 
             {/* Connection Status Indicator */}
             {!socketConnected && (
-                <View style={{ position: 'absolute', top: 120, alignSelf: 'center', backgroundColor: 'rgba(239, 68, 68, 0.9)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, zIndex: 100 }}>
-                    <Text style={{ color: 'white', fontSize: 12, fontWeight: '600' }}>Disconnected - Connecting...</Text>
+                <View style={{ position: 'absolute', top: 120, alignSelf: 'center', backgroundColor: 'rgba(239, 68, 68, 0.9)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 0, borderWidth: 3, borderColor: '#000', zIndex: 100 }}>
+                    <Text style={{ color: 'white', fontSize: 12, fontWeight: '900', textTransform: 'uppercase' }}>Disconnected - Connecting...</Text>
                 </View>
             )}
         </View>
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#060010',
+        backgroundColor: colors.bg,
     },
     safeArea: {
         flex: 1,
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        paddingTop: Platform.OS === 'android' ? RNStatusBar.currentHeight : 0,
     },
     center: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    // ... [Previous styles remain mostly same, adding missing ones if any] ...
     messageImage: {
         width: 200,
         height: 150,
-        borderRadius: 12,
+        borderWidth: 3,
+        borderColor: colors.border,
         marginTop: 4,
     },
     codeBlock: {
-        backgroundColor: '#0f0f12',
+        backgroundColor: '#0d1117',
         padding: 12,
-        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: colors.border,
         marginTop: 4,
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.1)',
     },
     codeText: {
         fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
         fontSize: 13,
-        color: '#a5b4fc',
+        color: '#e6edf3',
     },
     header: {
         flexDirection: 'row',
@@ -650,9 +625,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: 16,
         paddingVertical: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,0.05)',
-        backgroundColor: '#060010',
+        borderBottomWidth: 4,
+        borderBottomColor: colors.border,
+        backgroundColor: colors.bg,
     },
     backButton: {
         padding: 8,
@@ -663,15 +638,34 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginRight: 24,
     },
     roomIcon: {
         marginRight: 6,
     },
     headerTitle: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '700',
+        color: colors.text,
+        fontSize: 18,
+        fontWeight: '900',
+        textTransform: 'uppercase',
+    },
+    headerActions: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+    },
+    themeButton: {
+        width: 36,
+        height: 36,
+        borderWidth: 2,
+        borderColor: colors.border,
+        backgroundColor: colors.cardBg,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: colors.shadow,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 1,
+        shadowRadius: 0,
+        elevation: 2,
     },
     headerAction: {
         padding: 8,
@@ -686,7 +680,7 @@ const styles = StyleSheet.create({
     },
     messageRow: {
         flexDirection: 'row',
-        marginBottom: 30,
+        marginBottom: 24,
     },
     sequenceRow: {
         marginBottom: 5,
@@ -699,8 +693,9 @@ const styles = StyleSheet.create({
     avatar: {
         width: 40,
         height: 40,
-        borderRadius: 12,
-        backgroundColor: '#1e1b4b',
+        borderWidth: 2,
+        borderColor: colors.border,
+        backgroundColor: colors.cardBg,
     },
     messageContent: {
         flex: 1,
@@ -711,42 +706,64 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
     userName: {
-        color: '#cbd5e1',
-        fontWeight: '600',
+        color: colors.text,
+        fontWeight: '900',
         fontSize: 15,
         marginRight: 8,
+        textTransform: 'uppercase',
     },
     myUserName: {
-        color: '#818cf8',
+        color: '#E56DB1',
     },
     timestamp: {
-        color: '#64748b',
+        color: colors.subText,
         fontSize: 11,
+        fontWeight: '600',
     },
     sequenceTimestamp: {
-        color: '#64748b',
+        color: colors.subText,
         fontSize: 10,
         alignSelf: 'flex-end',
         marginTop: 4,
+        fontWeight: '600',
+    },
+    bubble: {
+        borderWidth: 3,
+        borderColor: colors.border,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        shadowColor: colors.shadow,
+        shadowOffset: { width: 3, height: 3 },
+        shadowOpacity: 1,
+        shadowRadius: 0,
+        elevation: 2,
+        marginTop: 4,
+    },
+    myBubble: {
+        backgroundColor: colors.accentLight,
+    },
+    otherBubble: {
+        backgroundColor: colors.cardBg,
     },
     messageText: {
-        color: '#e2e8f0',
+        color: colors.text,
         fontSize: 15,
         lineHeight: 22,
+        fontWeight: '600',
     },
     inputContainer: {
         position: 'absolute',
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: '#060010',
-        borderTopWidth: 1,
-        borderTopColor: 'rgba(255,255,255,0.05)',
-        paddingBottom: Platform.OS === 'ios' ? 64 : 50,
+        backgroundColor: colors.bg,
+        borderTopWidth: 4,
+        borderTopColor: colors.border,
+        paddingBottom: Platform.OS === 'ios' ? 44 : 20,
     },
     inputWrapper: {
         flexDirection: 'row',
-        alignItems: 'flex-end',
+        alignItems: 'center',
         paddingHorizontal: 12,
         paddingTop: 12,
         paddingBottom: 8,
@@ -755,20 +772,26 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#0A0514',
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.1)',
-        borderRadius: 20,
+        backgroundColor: colors.cardBg,
+        borderWidth: 4,
+        borderColor: colors.border,
+        borderRadius: 0,
         paddingRight: 4,
+        shadowColor: colors.shadow,
+        shadowOffset: { width: 4, height: 4 },
+        shadowOpacity: 1,
+        shadowRadius: 0,
+        elevation: 2,
     },
     input: {
         flex: 1,
-        color: '#fff',
+        color: colors.text,
         paddingHorizontal: 16,
         paddingTop: 10,
         paddingBottom: 10,
         maxHeight: 100,
         fontSize: 17,
+        fontWeight: '600',
     },
     attachButton: {
         padding: 8,
@@ -776,14 +799,21 @@ const styles = StyleSheet.create({
     sendButton: {
         width: 45,
         height: 45,
-        borderRadius: 30,
-        backgroundColor: '#1A1625',
+        borderWidth: 4,
+        borderColor: colors.border,
+        borderRadius: 0,
+        backgroundColor: colors.cardBg,
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: 8,
+        shadowColor: colors.shadow,
+        shadowOffset: { width: 4, height: 4 },
+        shadowOpacity: 1,
+        shadowRadius: 0,
+        elevation: 2,
     },
     sendButtonActive: {
-        backgroundColor: '#4f46e5',
+        backgroundColor: '#E56DB1',
     },
     previewContainer: {
         paddingHorizontal: 16,
@@ -794,7 +824,8 @@ const styles = StyleSheet.create({
     previewImage: {
         width: 80,
         height: 80,
-        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: colors.border,
         marginRight: 8,
     },
     removePreviewButton: {
@@ -837,13 +868,13 @@ const styles = StyleSheet.create({
     },
     dateSeparatorLine: {
         flex: 1,
-        height: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        height: 2,
+        backgroundColor: colors.border,
     },
     dateSeparatorText: {
-        color: '#64748b',
+        color: colors.text,
         fontSize: 12,
-        fontWeight: '600',
+        fontWeight: '900',
         marginHorizontal: 12,
         textTransform: 'uppercase',
         letterSpacing: 0.5,

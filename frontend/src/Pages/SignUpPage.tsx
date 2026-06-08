@@ -18,7 +18,6 @@ export default function SignUpPage() {
     confirmPassword: "",
   });
 
-  const [isHovered, setIsHovered] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -67,7 +66,6 @@ export default function SignUpPage() {
         return;
       }
 
-      // Persist basic user info so chat can show their name
       try {
         const storedUser = {
           name: formData.name,
@@ -88,17 +86,17 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060010] text-slate-200 font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-pink-100/35 text-black font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden selection:bg-pink-500/30">
       <Navbar />
-      <div className="w-full max-w-md relative z-10">
+      
+      <div className="w-full max-w-md border-4 border-black bg-white p-8 shadow-[10px_10px_0px_#000] relative z-10 mt-24">
         {/* Header */}
-        <div className="text-center mb-10">
-
-          <h1 className="text-3xl font-bold text-white tracking-tight mb-2">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-black uppercase tracking-tight text-black mb-2">
             Create an account
           </h1>
-          <p className="text-slate-400 font-light">
-            Join the community of engineers and designers.
+          <p className="text-gray-600 font-semibold text-sm">
+            Join the community of anime enthusiasts.
           </p>
         </div>
 
@@ -106,30 +104,29 @@ export default function SignUpPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Status Messages */}
           {error && (
-            <p className="text-sm text-red-400 text-center mb-2">{error}</p>
+            <p className="text-xs font-black uppercase text-red-600 border-2 border-black bg-red-100 p-3 shadow-[3px_3px_0px_#000] text-center mb-2">
+              {error}
+            </p>
           )}
           {success && (
-            <p className="text-sm text-emerald-400 text-center mb-2">
+            <p className="text-xs font-black uppercase text-emerald-600 border-2 border-black bg-emerald-100 p-3 shadow-[3px_3px_0px_#000] text-center mb-2">
               {success}
             </p>
           )}
 
           {/* Name Field */}
           <div className="space-y-2">
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider ml-1">
+            <label className="text-xs font-black uppercase text-black tracking-wider ml-1">
               Full Name
             </label>
-            <div className="relative group">
+            <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <User
-                  className="h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors"
-                  strokeWidth={1.5}
-                />
+                <User className="h-5 w-5 text-black" strokeWidth={2.5} />
               </div>
               <input
                 type="text"
                 placeholder="John Doe"
-                className="w-full bg-[#0A0514] border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all duration-300"
+                className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-4 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -140,20 +137,17 @@ export default function SignUpPage() {
 
           {/* Email Field */}
           <div className="space-y-2">
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider ml-1">
+            <label className="text-xs font-black uppercase text-black tracking-wider ml-1">
               Email Address
             </label>
-            <div className="relative group">
+            <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Mail
-                  className="h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors"
-                  strokeWidth={1.5}
-                />
+                <Mail className="h-5 w-5 text-black" strokeWidth={2.5} />
               </div>
               <input
                 type="email"
                 placeholder="john@example.com"
-                className="w-full bg-[#0A0514] border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all duration-300"
+                className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-4 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
@@ -164,20 +158,17 @@ export default function SignUpPage() {
 
           {/* Password Field */}
           <div className="space-y-2">
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider ml-1">
+            <label className="text-xs font-black uppercase text-black tracking-wider ml-1">
               Password
             </label>
-            <div className="relative group">
+            <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Lock
-                  className="h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors"
-                  strokeWidth={1.5}
-                />
+                <Lock className="h-5 w-5 text-black" strokeWidth={2.5} />
               </div>
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className="w-full bg-[#0A0514] border border-white/10 rounded-xl py-3.5 pl-11 pr-10 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all duration-300"
+                className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-10 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
@@ -186,13 +177,13 @@ export default function SignUpPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-slate-300"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-black hover:text-pink-500"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
+                  <EyeOff className="w-5 h-5" strokeWidth={2.5} />
                 ) : (
-                  <Eye className="w-5 h-5" />
+                  <Eye className="w-5 h-5" strokeWidth={2.5} />
                 )}
               </button>
             </div>
@@ -200,20 +191,17 @@ export default function SignUpPage() {
 
           {/* Confirm Password Field */}
           <div className="space-y-2">
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider ml-1">
+            <label className="text-xs font-black uppercase text-black tracking-wider ml-1">
               Confirm Password
             </label>
-            <div className="relative group">
+            <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <ShieldCheck
-                  className="h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors"
-                  strokeWidth={1.5}
-                />
+                <ShieldCheck className="h-5 w-5 text-black" strokeWidth={2.5} />
               </div>
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className="w-full bg-[#0A0514] border border-white/10 rounded-xl py-3.5 pl-11 pr-10 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all duration-300"
+                className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-10 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
                 value={formData.confirmPassword}
                 onChange={(e) =>
                   setFormData({ ...formData, confirmPassword: e.target.value })
@@ -222,15 +210,15 @@ export default function SignUpPage() {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-slate-300"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-black hover:text-pink-500"
                 aria-label={
                   showConfirmPassword ? "Hide password" : "Show password"
                 }
               >
                 {showConfirmPassword ? (
-                  <EyeOff className="w-5 h-5" />
+                  <EyeOff className="w-5 h-5" strokeWidth={2.5} />
                 ) : (
-                  <Eye className="w-5 h-5" />
+                  <Eye className="w-5 h-5" strokeWidth={2.5} />
                 )}
               </button>
             </div>
@@ -241,40 +229,22 @@ export default function SignUpPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              className={`
-                w-full py-4 px-6 rounded-full
-                bg-[#060010] 
-                border-2 cursor-pointer
-                text-sm font-medium tracking-wider
-                flex items-center justify-center gap-2
-                transition-all duration-300 ease-out
-                ${
-                  isHovered
-                    ? "border-indigo-500/50 text-indigo-100 translate-y-[-2px] shadow-lg shadow-indigo-500/10"
-                    : "border-white/10 text-slate-500 hover:text-slate-300"
-                }
-              `}
+              className="w-full py-4 px-6 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
             >
               <span>
                 {isSubmitting ? "Creating account..." : "Create Account"}
               </span>
-              <ArrowRight
-                className={`w-4 h-4 transition-transform duration-300 ${
-                  isHovered ? "translate-x-1" : ""
-                }`}
-              />
+              <ArrowRight className="w-4 h-4" strokeWidth={3} />
             </button>
           </div>
         </form>
 
         {/* Footer Link */}
-        <p className="mt-8 text-center text-slate-500 text-sm font-light">
+        <p className="mt-8 text-center text-gray-500 text-sm font-semibold">
           Already have an account?{" "}
           <a
             href="/login"
-            className="text-indigo-400 hover:text-indigo-300 transition-colors font-medium"
+            className="text-pink-600 hover:text-pink-700 transition-colors font-black uppercase hover:underline"
           >
             Log in
           </a>
