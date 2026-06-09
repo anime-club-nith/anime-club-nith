@@ -89,15 +89,9 @@ export default function Navbar() {
           className="flex items-center gap-3 group"
         >
           <img
-            src="/logo-dark.png"
+            src="/logo-horizontal.png"
             alt="Anime Club NITH"
-            className="h-8 w-auto dark:hidden"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-          />
-          <img
-            src="/logo-light.png"
-            alt="Anime Club NITH"
-            className="h-8 w-auto hidden dark:block"
+            className="h-8 w-auto"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
         </Link>

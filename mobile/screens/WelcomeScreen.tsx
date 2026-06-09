@@ -79,7 +79,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     logoWrapper: {
         width: 120,
         height: 120,
-        borderRadius: 60,
+        borderRadius: 24,
         overflow: 'hidden',
         marginBottom: 32,
         shadowColor: '#E56DB1',
@@ -91,7 +91,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     logoImage: {
         width: 120,
         height: 120,
-        borderRadius: 60,
+        borderRadius: 24,
     },
     headline: {
         fontSize: 34,
