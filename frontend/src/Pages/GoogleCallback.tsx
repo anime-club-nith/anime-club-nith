@@ -35,7 +35,16 @@ export default function GoogleCallback() {
           credentials: "include",
         });
 
-        const data = await res.json();
+        let data;
+        try {
+          data = await res.json();
+        } catch (jsonErr: any) {
+          const text = await res.text().catch(() => "");
+          console.error("Failed to parse JSON response:", jsonErr);
+          setError(`Server returned non-JSON response (Status ${res.status}): ${text.substring(0, 120) || jsonErr.message}`);
+          return;
+        }
+
         if (!res.ok) {
           setError(data.message || "Failed to log in via Google.");
           return;
@@ -69,9 +78,9 @@ export default function GoogleCallback() {
         }
 
         navigate("/room");
-      } catch (err) {
-        console.error(err);
-        setError("An error occurred during Google authentication.");
+      } catch (err: any) {
+        console.error("Google auth callback error:", err);
+        setError(`An error occurred during Google authentication: ${err?.message || err}`);
       }
     };
 
