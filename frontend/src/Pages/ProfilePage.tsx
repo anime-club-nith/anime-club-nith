@@ -101,7 +101,7 @@ export default function ProfilePage() {
   ];
 
   // Fallback to DiceBear avatar if custom URL is empty
-  const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email || username || "user")}`;
+  const defaultAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(username || email || "User")}`;
   const currentAvatar = profile.avatarUrl || defaultAvatar;
 
   if (loading) {

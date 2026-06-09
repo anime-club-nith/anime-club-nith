@@ -38,9 +38,49 @@ export const handleJoining = async (req: Request, res: Response) => {
   const room_Id = req.params.roomId;
   const userId = req.user?._id;
   try {
-    const room = await Room.findOne({ roomId: room_Id });
+    let room = await Room.findOne({ roomId: room_Id });
     if (!room) {
-      return res.status(400).json({ message: "Invalid room id" });
+      const defaultRooms: Record<string, { title: string, description: string }> = {
+        "general-anime": {
+          title: "General Anime",
+          description: "General chat about all things anime, seasonal releases, and recommendations."
+        },
+        "shounen-zone": {
+          title: "Shounen Zone",
+          description: "Discussions about action, adventure, and shounen series like Jujutsu Kaisen, Demon Slayer, Naruto."
+        },
+        "slice-of-life": {
+          title: "Slice of Life / Shojo",
+          description: "Heartwarming slice of life, romance, shojo, and drama series."
+        },
+        "manga-novels": {
+          title: "Manga & Light Novels",
+          description: "Discussing raw chapters, spoilers, art styles, and light novels."
+        },
+        "cosplay-art": {
+          title: "Cosplay & Fan Art",
+          description: "Share your amazing cosplay photos, digital artwork, and creative builds."
+        },
+        "movies-ghibli": {
+          title: "Movies & Ghibli",
+          description: "Special film screenings, Studio Ghibli, watch parties, and movie reviews."
+        },
+        "gaming-music": {
+          title: "Gaming & Music",
+          description: "Anime games, J-RPG, visual novels, and Japanese music/OSTs."
+        }
+      };
+
+      if (defaultRooms[room_Id]) {
+        room = new Room({
+          roomId: room_Id,
+          title: defaultRooms[room_Id].title,
+          description: defaultRooms[room_Id].description
+        });
+        await room.save();
+      } else {
+        return res.status(400).json({ message: "Invalid room id" });
+      }
     }
     await room.updateOne({ $addToSet: { members: userId } });
     return res.status(200).json({ message: `Joined room: ${room.roomId}` });

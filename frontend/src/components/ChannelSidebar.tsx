@@ -23,8 +23,8 @@ export default function ChannelSidebar({ activeRoomSlug, onSelectRoom, joinedSlu
   } catch { /* ignore */ }
 
   if (!avatarUrl) {
-    const avatarSeed = currentUser?.email || currentUser?.name || 'user';
-    avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(avatarSeed)}`;
+    const avatarSeed = currentUser?.name || currentUser?.email || 'User';
+    avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(avatarSeed)}`;
   }
 
   return (

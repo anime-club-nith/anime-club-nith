@@ -96,7 +96,7 @@ export default function MentionAutocomplete({ members, filterQuery, onSelect, on
         
         const avatarUrl = isEveryone 
           ? `https://api.dicebear.com/7.x/identicon/svg?seed=everyone`
-          : (item as Member).avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(item.name)}`;
+          : (item as Member).avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(item.displayName || item.name)}`;
 
         return (
           <button

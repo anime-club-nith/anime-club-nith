@@ -75,7 +75,7 @@ export default function ProfileCard({ userId, onClose }: ProfileCardProps) {
     invisible: { label: "Invisible", color: "bg-slate-400" },
   };
 
-  const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user?.email || user?.name || "user")}`;
+  const defaultAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user?.displayName || user?.name || user?.email || "User")}`;
   const currentAvatar = user?.avatarUrl || defaultAvatar;
 
   const formatDate = (dateStr?: string) => {

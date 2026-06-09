@@ -75,7 +75,7 @@ const MOCK_DB = {
   user: {
     id: "99",
     name: "Alex Dev",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+    avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Alex",
   },
 };
 
@@ -122,44 +122,44 @@ const MemberModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-sm bg-white border-4 border-black shadow-[10px_10px_0px_#000] overflow-hidden scale-in-95 animate-in duration-200">
-        <div className="flex items-center justify-between px-6 py-4 border-b-4 border-black bg-white">
+      <div className="w-full max-w-sm bg-white dark:bg-[#1e1f22] border border-slate-200/60 dark:border-slate-700/60 rounded-2xl overflow-hidden scale-in-95 animate-in duration-200 shadow-xl">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800/60 bg-white dark:bg-[#2b2d31]">
           <div>
-            <h3 className="text-black font-black uppercase tracking-wide">
+            <h3 className="text-black dark:text-white font-bold uppercase tracking-wide">
               Room Members
             </h3>
-            <p className="text-xs font-semibold text-gray-500">
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
               {members.length} members total
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 bg-white border-2 border-black hover:bg-pink-100 text-black shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition rounded cursor-pointer"
+            className="p-1.5 rounded-lg bg-transparent text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors cursor-pointer"
           >
-            <X size={18} strokeWidth={2.5} />
+            <X size={18} />
           </button>
         </div>
-        <div className="max-h-[350px] overflow-y-auto p-4 space-y-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+        <div className="max-h-[350px] overflow-y-auto p-4 space-y-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] bg-slate-50 dark:bg-[#313338]">
           {members.map((member) => (
             <div
               key={member.id}
-              className="flex items-center gap-3 p-2 border-2 border-transparent hover:border-black hover:bg-pink-100/40 transition-all"
+              className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-all"
             >
               <img
                 src={member.avatar}
                 alt={member.name}
-                className="w-10 h-10 border-2 border-black bg-white rounded-none"
+                className="w-10 h-10 rounded-full object-cover"
               />
               <div className="flex-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-black uppercase text-black">
+                  <span className="text-sm font-bold text-black dark:text-white">
                     {member.name}
                     {(member.id === currentUserId || member._id === currentUserId) && (
-                      <span className="text-gray-500 ml-1">(You)</span>
+                      <span className="text-slate-400 ml-1 font-normal text-xs">(You)</span>
                     )}
                   </span>
                   {member.role && (
-                    <span className="text-[10px] px-2 py-0.5 border border-black bg-pink-100 text-black font-black uppercase tracking-wider">
+                    <span className="px-1.5 py-0.5 rounded-full bg-pink-100 dark:bg-pink-500/10 text-[9px] font-semibold text-pink-600 dark:text-pink-400 border border-pink-200 dark:border-pink-500/20">
                       {member.role}
                     </span>
                   )}
@@ -168,14 +168,14 @@ const MemberModal = ({
             </div>
           ))}
         </div>
-        <div className="px-6 py-4 border-t-4 border-black bg-white">
+        <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800/60 bg-white dark:bg-[#2b2d31]">
           <button
             onClick={handleInvite}
-            className="w-full py-2.5 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-xs shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition flex items-center justify-center gap-2 cursor-pointer"
+            className="btn-pink-modern w-full py-2.5 text-xs flex items-center justify-center gap-2 cursor-pointer rounded-xl shadow-none hover:scale-100 active:scale-100"
           >
             {copied ? (
               <>
-                <Check size={16} className="text-black" strokeWidth={2.5} />
+                <Check size={16} className="text-white" strokeWidth={2} />
                 <span>Copied Link!</span>
               </>
             ) : (
@@ -313,7 +313,7 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
         setCurrentUser({
           id: parsed._id,
           name: displayName,
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
+          avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
             avatarSeed
           )}`,
           role: parsed.role,
@@ -469,7 +469,7 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
           const members = (roomData.members || []).map((member: any) => ({
             id: member._id,
             name: member.name,
-            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
+            avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
               member.name
             )}`,
           }));
@@ -685,8 +685,8 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center h-screen bg-white text-black gap-3">
-        <Loader2 className="w-8 h-8 animate-spin text-pink-500" strokeWidth={2.5} />
+      <div className="flex-1 flex flex-col items-center justify-center h-screen bg-[#f2f3f5] dark:bg-[#313338] text-black dark:text-white gap-3">
+        <Loader2 className="w-8 h-8 animate-spin text-pink-500" strokeWidth={2} />
         <p className="text-xs font-black uppercase tracking-wide">Loading Channel...</p>
       </div>
     );
@@ -694,23 +694,23 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
 
   if (!activeRoom) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center bg-white border-l-4 border-black animate-in fade-in duration-300">
+      <div className="w-full h-full flex flex-col items-center justify-center bg-[#f2f3f5] dark:bg-[#313338] border-l-0 md:border-l border-slate-200/50 dark:border-slate-900/60 animate-in fade-in duration-300">
         <div className="flex flex-col items-center text-center space-y-6">
           <button
             onClick={() => navigate("/join-room")}
-            className="group relative flex items-center justify-center w-24 h-24 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black shadow-[8px_8px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
+            className="group relative flex items-center justify-center w-24 h-24 rounded-2xl bg-pink-500 hover:bg-pink-400 text-white shadow-md shadow-pink-500/25 hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-200 cursor-pointer"
           >
             <Plus
               size={40}
               strokeWidth={3}
-              className="text-black transition-colors duration-300"
+              className="text-white transition-colors duration-300"
             />
           </button>
           <div className="space-y-1">
-            <h3 className="text-xl font-black uppercase text-black">
+            <h3 className="text-xl font-bold uppercase text-black dark:text-white">
               Join Room
             </h3>
-            <p className="text-sm font-semibold text-gray-700 max-w-xs mx-auto">
+            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
               Navigate to the sidebar or click here to explore channels.
             </p>
           </div>
@@ -720,7 +720,7 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
   }
 
   return (
-    <div className="flex-1 flex flex-col h-screen bg-white border-l-0 md:border-l-4 border-black relative min-w-0">
+    <div className="flex-1 flex flex-col h-screen bg-[#f2f3f5] dark:bg-[#313338] border-l-0 md:border-l border-slate-200/50 dark:border-slate-900/60 relative min-w-0">
       <MemberModal
         isOpen={isMemberModalOpen}
         onClose={() => setIsMemberModalOpen(false)}
@@ -843,7 +843,7 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
             id: "unknown",
             _id: "unknown",
             name: "Unknown User",
-            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=Unknown`,
+            avatar: `https://api.dicebear.com/7.x/initials/svg?seed=Unknown`,
           };
 
           const isMe = (user.id === effectiveUser.id || user._id === effectiveUser.id) && user.id !== "unknown";
@@ -856,7 +856,7 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
           const currentSenderId = user.id || user._id;
           const isSequence = prevMsg && prevSenderId === currentSenderId;
 
-          const avatarUrl = user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.name || "User")}`;
+          const avatarUrl = user.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.name || "User")}`;
 
           return (
             <div

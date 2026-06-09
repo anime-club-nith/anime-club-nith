@@ -153,7 +153,7 @@ export default function PinnedMessagesDrawer({
             </div>
           ) : (
             pinnedMessages.map((msg) => {
-              const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(msg.sender?.name || "user")}`;
+              const defaultAvatar = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(msg.sender?.name || "user")}`;
               const avatarUrl = msg.sender?.avatarUrl || defaultAvatar;
 
               return (

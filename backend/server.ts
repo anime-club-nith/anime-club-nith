@@ -71,7 +71,59 @@ if (!mongoUri) {
 }
 
 connectToMongo(mongoUri)
-  .then(() => console.log(`Connected to MongoDB`))
+  .then(async () => {
+    console.log(`Connected to MongoDB`);
+    try {
+      const Room = (await import("./models/room")).default;
+      const defaultRooms = [
+        {
+          roomId: "general-anime",
+          title: "General Anime",
+          description: "General chat about all things anime, seasonal releases, and recommendations."
+        },
+        {
+          roomId: "shounen-zone",
+          title: "Shounen Zone",
+          description: "Discussions about action, adventure, and shounen series like Jujutsu Kaisen, Demon Slayer, Naruto."
+        },
+        {
+          roomId: "slice-of-life",
+          title: "Slice of Life / Shojo",
+          description: "Heartwarming slice of life, romance, shojo, and drama series."
+        },
+        {
+          roomId: "manga-novels",
+          title: "Manga & Light Novels",
+          description: "Discussing raw chapters, spoilers, art styles, and light novels."
+        },
+        {
+          roomId: "cosplay-art",
+          title: "Cosplay & Fan Art",
+          description: "Share your amazing cosplay photos, digital artwork, and creative builds."
+        },
+        {
+          roomId: "movies-ghibli",
+          title: "Movies & Ghibli",
+          description: "Special film screenings, Studio Ghibli, watch parties, and movie reviews."
+        },
+        {
+          roomId: "gaming-music",
+          title: "Gaming & Music",
+          description: "Anime games, J-RPG, visual novels, and Japanese music/OSTs."
+        }
+      ];
+
+      for (const r of defaultRooms) {
+        const exists = await Room.findOne({ roomId: r.roomId });
+        if (!exists) {
+          await Room.create(r);
+          console.log(`Seeded default room: ${r.title}`);
+        }
+      }
+    } catch (seedErr) {
+      console.error("Error seeding default rooms:", seedErr);
+    }
+  })
   .catch((e: string) =>
     console.log(`Error while connecting to database: ${e}`)
   );

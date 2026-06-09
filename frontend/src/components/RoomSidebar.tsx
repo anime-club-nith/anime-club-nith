@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Cpu, Cloud, Palette, Layout, Server, Hash, Plus } from "lucide-react";
+import { Hash, Zap, Heart, BookOpen, Palette, Film, Gamepad2, Plus } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface Room {
@@ -10,13 +10,13 @@ interface Room {
 }
 
 const ROOMS: Room[] = [
-  { id: 1, title: "Blockchain", slug: "blockchain", icon: Box },
-  { id: 2, title: "Yaps", slug: "yaps", icon: Hash },
-  { id: 3, title: "AI/ML", slug: "ai-ml", icon: Cpu },
-  { id: 4, title: "Cloud", slug: "cloud", icon: Cloud },
-  { id: 5, title: "Design", slug: "design", icon: Palette },
-  { id: 6, title: "Frontend", slug: "frontend", icon: Layout },
-  { id: 7, title: "Backend", slug: "backend", icon: Server },
+  { id: 1, title: "General Anime", slug: "general-anime", icon: Hash },
+  { id: 2, title: "Shounen Zone", slug: "shounen-zone", icon: Zap },
+  { id: 3, title: "Slice of Life / Shojo", slug: "slice-of-life", icon: Heart },
+  { id: 4, title: "Manga & Novels", slug: "manga-novels", icon: BookOpen },
+  { id: 5, title: "Cosplay & Fan Art", slug: "cosplay-art", icon: Palette },
+  { id: 6, title: "Movies & Ghibli", slug: "movies-ghibli", icon: Film },
+  { id: 7, title: "Gaming & Music", slug: "gaming-music", icon: Gamepad2 },
 ];
 
 interface RoomSidebarProps {

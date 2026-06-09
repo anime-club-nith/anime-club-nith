@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import {
   ArrowRight,
-  Box,
-  Cpu,
-  Cloud,
-  Palette,
-  Layout,
-  Server,
   Hash,
+  Zap,
+  Heart,
+  BookOpen,
+  Palette,
+  Film,
+  Gamepad2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/NavBar";
@@ -24,59 +24,52 @@ interface Room {
 const ROOM_DATA: Room[] = [
   {
     id: 1,
-    title: "Blockchain",
-    slug: "blockchain",
-    description:
-      "Discussions on decentralized ledgers, smart contracts, Web3 protocols, and the future of DeFi.",
-    icon: Box,
+    title: "General Anime",
+    slug: "general-anime",
+    description: "General chat about all things anime, seasonal releases, recommendations, and news.",
+    icon: Hash,
   },
   {
     id: 2,
-    title: "AI/ML",
-    slug: "ai-ml",
-    description:
-      "Deep dive into Large Language Models, neural networks, computer vision, and predictive analytics.",
-    icon: Cpu,
+    title: "Shounen Zone",
+    slug: "shounen-zone",
+    description: "Discussions about action, adventure, and shounen series like Jujutsu Kaisen, Demon Slayer, Naruto.",
+    icon: Zap,
   },
   {
     id: 3,
-    title: "Cloud",
-    slug: "cloud",
-    description:
-      "Architecture patterns for AWS, Azure, and GCP. Serverless computing and DevOps practices.",
-    icon: Cloud,
+    title: "Slice of Life / Shojo",
+    slug: "slice-of-life",
+    description: "Heartwarming slice of life, romance, shojo, drama, and school-life series.",
+    icon: Heart,
   },
   {
     id: 4,
-    title: "Design",
-    slug: "design",
-    description:
-      "UI/UX principles, design systems, accessibility standards, and creative workshops.",
-    icon: Palette,
+    title: "Manga & Novels",
+    slug: "manga-novels",
+    description: "Discussing raw chapters, upcoming spoilers, art styles, manga reviews, and light novels.",
+    icon: BookOpen,
   },
   {
     id: 5,
-    title: "Frontend",
-    slug: "frontend",
-    description:
-      "Modern web development with React, state management, performance optimization, and CSS architecture.",
-    icon: Layout,
+    title: "Cosplay & Fan Art",
+    slug: "cosplay-art",
+    description: "Share your amazing cosplay photos, digital artwork, character sketches, and creative builds.",
+    icon: Palette,
   },
   {
     id: 6,
-    title: "Backend",
-    slug: "backend",
-    description:
-      "API design, database scalability, microservices, and high-performance system engineering.",
-    icon: Server,
+    title: "Movies & Ghibli",
+    slug: "movies-ghibli",
+    description: "Special anime film screenings, Studio Ghibli, watch parties, and movie reviews.",
+    icon: Film,
   },
   {
     id: 7,
-    title: "Yaps",
-    slug: "yaps",
-    description:
-      "The digital watercooler. Casual conversations, daily banter, and non-technical discussions.",
-    icon: Hash,
+    title: "Gaming & Music",
+    slug: "gaming-music",
+    description: "Anime games, J-RPGs, visual novels, Japanese music, OSTs, and J-Pop/J-Rock.",
+    icon: Gamepad2,
   },
 ];
 
@@ -163,7 +156,7 @@ const ChatRoomCard = ({ room }: { room: Room }) => {
   };
 
   return (
-    <div className="group relative flex flex-col justify-between h-full p-8 bg-white/90 dark:bg-[#1e1f22]/90 backdrop-blur-md rounded-2xl border border-slate-200/60 dark:border-slate-700/40 shadow-lg hover:shadow-xl hover:shadow-pink-500/5 hover:-translate-y-1 transition-all duration-300">
+    <div className="group relative flex flex-col justify-between h-full p-8 bg-white dark:bg-[#1e1f22] rounded-2xl border border-slate-200/60 dark:border-slate-700/40 shadow-lg hover:shadow-xl hover:shadow-pink-500/5 hover:-translate-y-1 transition-all duration-300">
       {/* Content Section */}
       <div className="space-y-4">
         {/* Header with Icon */}
@@ -217,8 +210,8 @@ const JoinActiveRoom = () => {
           Active Rooms
         </h1>
         <p className="text-slate-600 dark:text-slate-300 text-lg max-w-2xl mx-auto font-medium">
-          Select a domain to connect with peers. Real-time discussions for
-          engineering, design, and casual conversations.
+          Join a themed room to chat with peers. Real-time discussions for
+          anime genres, manga, creative showcases, and movie nights.
         </p>
       </div>
 
