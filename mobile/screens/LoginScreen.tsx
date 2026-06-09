@@ -73,7 +73,7 @@ export default function LoginScreen({ navigation }: any) {
               <View style={styles.inputCard}>
                 <TextInput
                   style={styles.input}
-                  placeholder="john@example.com"
+                  placeholder="example@gmail.com"
                   placeholderTextColor={colors.subText}
                   value={email}
                   onChangeText={setEmail}

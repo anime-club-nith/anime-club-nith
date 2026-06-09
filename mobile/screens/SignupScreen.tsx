@@ -75,7 +75,7 @@ export default function SignupScreen({ navigation }: any) {
               <View style={styles.inputCard}>
                 <TextInput
                   style={styles.input}
-                  placeholder="John Doe"
+                  placeholder="Your Name"
                   placeholderTextColor={colors.subText}
                   value={name}
                   onChangeText={setName}
@@ -89,7 +89,7 @@ export default function SignupScreen({ navigation }: any) {
               <View style={styles.inputCard}>
                 <TextInput
                   style={styles.input}
-                  placeholder="john@example.com"
+                  placeholder="example@gmail.com"
                   placeholderTextColor={colors.subText}
                   value={email}
                   onChangeText={setEmail}

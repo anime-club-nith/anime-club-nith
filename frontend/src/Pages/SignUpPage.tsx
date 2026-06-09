@@ -218,7 +218,7 @@ export default function SignUpPage() {
               </div>
               <input
                 type="text"
-                placeholder="John Doe"
+                placeholder="Your Name"
                 className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-4 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
                 value={formData.name}
                 onChange={(e) =>
@@ -239,7 +239,7 @@ export default function SignUpPage() {
               </div>
               <input
                 type="email"
-                placeholder="john@example.com"
+                placeholder="example@gmail.com"
                 className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-4 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
                 value={formData.email}
                 onChange={(e) =>
