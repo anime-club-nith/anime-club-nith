@@ -169,7 +169,14 @@ export const deleteBlogHandler = async (req: Request, res: Response) => {
     
     try{
         const reqBlog = await Blog.findOne({ _id: blogId });
-        if( reqBlog?.user._id.toString() !== req.user?._id.toString() ) {
+        if (!reqBlog) {
+            return res.status(404).json({ message: "Blog not found" });
+        }
+
+        const isAuthor = reqBlog.user._id.toString() === req.user?._id.toString();
+        const isAdminOrMod = req.user?.role === "admin" || req.user?.role === "moderator";
+
+        if (!isAuthor && !isAdminOrMod) {
             return res.status(400).json({ message: "You are not authorized to delete this blog" });
         }
 

@@ -355,7 +355,10 @@ export const deleteMessage = async (req: Request, res: Response) => {
         const message = await Chat.findById(messageId);
         if (!message) return res.status(404).json({ message: "Message not found" });
 
-        if (message.sender.toString() !== userId.toString()) {
+        const isSender = message.sender.toString() === userId.toString();
+        const isAdminOrMod = req.user?.role === "admin" || req.user?.role === "moderator";
+
+        if (!isSender && !isAdminOrMod) {
             return res.status(403).json({ message: "You can only delete your own messages" });
         }
 

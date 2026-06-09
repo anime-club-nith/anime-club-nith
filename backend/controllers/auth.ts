@@ -25,12 +25,15 @@ export const handleUserSignUp = async (req: Request, res: Response) => {
     const salt = generateSalt();
     const hash = hashPassword(password, salt);
 
+    const isAdmin = email.toLowerCase() === "animeclubnith@gmail.com" || email.toLowerCase() === "vismaygawai@gmail.com";
+
     const newUser = new Auth({
       name,
       email,
       password: hash,
       salt: salt,
       isVerified: false,
+      role: isAdmin ? "admin" : "user",
     });
     await newUser.save();
     verifyAcc(newUser);
@@ -114,6 +117,7 @@ export const handleUserLogIn = async (req: Request, res: Response) => {
         _id: existingUser._id,
         name: existingUser.name,
         email: existingUser.email,
+        role: existingUser.role,
       },
     });
   } catch (error) {
@@ -290,12 +294,14 @@ export const handleGoogleLoginSuccess = async (req: Request, res: Response) => {
       const randomPassword = Math.random().toString(36).substring(2, 15);
       const hash = hashPassword(randomPassword, salt);
 
+      const isAdmin = email.toLowerCase() === "animeclubnith@gmail.com" || email.toLowerCase() === "vismaygawai@gmail.com";
       user = new Auth({
         name,
         email,
         password: hash,
         salt,
         isVerified: true,
+        role: isAdmin ? "admin" : "user",
       });
       await user.save();
     } else if (!user.isVerified) {
@@ -318,6 +324,7 @@ export const handleGoogleLoginSuccess = async (req: Request, res: Response) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {

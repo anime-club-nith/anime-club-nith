@@ -304,6 +304,7 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
           _id: string;
           email?: string;
           name?: string;
+          role?: string;
         };
         const displayName =
           parsed.name || (parsed.email ? parsed.email.split("@")[0] : "You");
@@ -315,6 +316,7 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
           avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
             avatarSeed
           )}`,
+          role: parsed.role,
         });
       } else {
         setCurrentUser(MOCK_DB.user);
@@ -1097,7 +1099,9 @@ export default function ChatWindow({ roomId, onOpenSidebar, setCurrentRoom }: Ch
           isOwnMessage={
             contextMenu.message.sender?.id === effectiveUser.id ||
             contextMenu.message.sender?._id === effectiveUser.id ||
-            contextMenu.message.userId === effectiveUser.id
+            contextMenu.message.userId === effectiveUser.id ||
+            effectiveUser.role === "admin" ||
+            effectiveUser.role === "moderator"
           }
           messageText={contextMenu.message.content || contextMenu.message.text || ""}
           onPin={() => handlePinMessage(contextMenu.message._id)}

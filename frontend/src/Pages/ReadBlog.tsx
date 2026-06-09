@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronRight, Terminal as TerminalIcon, X } from 'lucide-react';
+import { ChevronRight, Terminal as TerminalIcon, X, Trash2 } from 'lucide-react';
 import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
 import ReactMarkdown from 'react-markdown';
@@ -18,6 +18,7 @@ interface BlogPost {
     readTime: string;
     createdAt: string;
     user?: {
+        _id?: string;
         name: string;
         email: string;
     };
@@ -30,6 +31,34 @@ const ReadBlog = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [expandedImage, setExpandedImage] = useState<string | null>(null);
+
+    const authUser = localStorage.getItem("authUser");
+    const loggedInUser = authUser ? JSON.parse(authUser) : null;
+    const isAuthor = loggedInUser && post && post.user && (post.user.email === loggedInUser.email || post.user._id === loggedInUser._id);
+    const isAdminOrMod = loggedInUser && (loggedInUser.role === 'admin' || loggedInUser.role === 'moderator');
+    const canDelete = isAuthor || isAdminOrMod;
+
+    const handleDeleteBlog = async () => {
+        if (!window.confirm("Are you sure you want to delete this blog post? This action cannot be undone.")) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/blog/delete/${blogId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.message || 'Failed to delete blog post');
+            }
+
+            navigate('/blogs');
+        } catch (err) {
+            console.error('Error deleting blog:', err);
+            alert(err instanceof Error ? err.message : 'Failed to delete blog post');
+        }
+    };
 
     const formatDate = (isoString: string) => {
         if (!isoString) return '';
@@ -242,6 +271,16 @@ const ReadBlog = () => {
                                 <ChevronRight className="rotate-180" size={16} strokeWidth={2.5} />
                                 <span>Return to Index</span>
                             </button>
+
+                            {canDelete && (
+                                <button
+                                    onClick={handleDeleteBlog}
+                                    className="flex items-center gap-2 border-4 border-black px-6 py-3 bg-red-500 hover:bg-red-400 text-black font-black uppercase text-xs tracking-wider shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
+                                >
+                                    <Trash2 size={16} strokeWidth={2.5} />
+                                    <span>Delete Entry</span>
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

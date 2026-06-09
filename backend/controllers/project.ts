@@ -68,7 +68,17 @@ export const deleteProjectById = async(req: Request, res: Response) => {
 
   try{
     const reqProject = await Project.findOne({ "_id": projectId });
-    if (reqProject?.user._id.toString() !== userId?.toString()) {
+    if (!reqProject) {
+      return res.status(404).json({
+        "success": "false",
+        "message": "Project not found"
+      });
+    }
+
+    const isOwner = reqProject.user._id.toString() === userId?.toString();
+    const isAdminOrMod = req.user?.role === "admin" || req.user?.role === "moderator";
+
+    if (!isOwner && !isAdminOrMod) {
       return res.status(401).json({
         "success": "false",
         "message": "You are not authorized for this action"

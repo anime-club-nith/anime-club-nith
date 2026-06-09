@@ -13,6 +13,7 @@ export interface IAuth {
     avatarUrl?: string,
     displayName?: string,
     status?: 'online' | 'idle' | 'dnd' | 'invisible',
+    role?: 'user' | 'moderator' | 'admin',
 }
 
 const authSchema: Schema = new Schema({
@@ -57,6 +58,11 @@ const authSchema: Schema = new Schema({
         type: String,
         default: 'online',
         enum: ['online', 'idle', 'dnd', 'invisible'],
+    },
+    role: {
+        type: String,
+        enum: ['user', 'moderator', 'admin'],
+        default: 'user',
     },
 }, { timestamps: true });
 
