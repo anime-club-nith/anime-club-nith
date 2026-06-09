@@ -49,34 +49,38 @@ export default function VerifyEmail() {
     }, [searchParams, navigate]);
 
     return (
-        <div className="min-h-screen bg-pink-100/35 text-black font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden selection:bg-pink-500/30">
+        <div className="min-h-screen bg-[#f2f3f5] dark:bg-[#0c0d12] text-black dark:text-white font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden selection:bg-pink-500/30 transition-colors">
             <Navbar />
             
-            <div className="w-full max-w-md border-4 border-black bg-white p-8 shadow-[10px_10px_0px_#000] relative z-10 mt-24">
+            {/* Background glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-500/5 dark:bg-pink-500/8 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="w-full max-w-md bg-white/90 dark:bg-[#1e1f22]/90 backdrop-blur-md rounded-2xl border border-slate-200/60 dark:border-slate-700/40 shadow-2xl shadow-slate-900/10 dark:shadow-black/40 p-8 relative z-10 mt-24">
                 {/* Status Icon Area */}
                 <div className="flex justify-center mb-8">
-                    <div className={`w-20 h-20 border-4 border-black flex items-center justify-center shadow-[4px_4px_0px_#000] transition-colors duration-500 ${status === 'loading' ? 'bg-pink-100' :
-                            status === 'success' ? 'bg-emerald-100' :
-                                'bg-red-100'
-                        }`}>
+                    <div className={`w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg transition-colors duration-500 ${
+                        status === 'loading' ? 'bg-pink-100 dark:bg-pink-500/10' :
+                        status === 'success' ? 'bg-emerald-50 dark:bg-emerald-950/20' :
+                        'bg-red-50 dark:bg-red-950/20'
+                    }`}>
                         {status === "loading" && (
-                            <Loader2 className="w-10 h-10 text-black animate-spin" strokeWidth={2.5} />
+                            <Loader2 className="w-10 h-10 text-pink-500 animate-spin" strokeWidth={2.5} />
                         )}
                         {status === "success" && (
-                            <CheckCircle2 className="w-10 h-10 text-emerald-600 animate-in zoom-in duration-300" strokeWidth={2.5} />
+                            <CheckCircle2 className="w-10 h-10 text-emerald-500 animate-in zoom-in duration-300" strokeWidth={2.5} />
                         )}
                         {status === "error" && (
-                            <XCircle className="w-10 h-10 text-red-600 animate-in zoom-in duration-300" strokeWidth={2.5} />
+                            <XCircle className="w-10 h-10 text-red-500 animate-in zoom-in duration-300" strokeWidth={2.5} />
                         )}
                     </div>
                 </div>
 
                 {/* Text Content */}
-                <h1 className="text-2xl font-black uppercase text-black text-center mb-3">
+                <h1 className="text-2xl font-black text-black dark:text-white text-center mb-3">
                     {status === "loading" ? "Verifying..." : status === "success" ? "Verified!" : "Verification Failed"}
                 </h1>
 
-                <p className="text-gray-700 font-semibold leading-relaxed text-center mb-10 min-h-[48px]">
+                <p className="text-slate-500 dark:text-slate-400 font-semibold leading-relaxed text-center mb-10 min-h-[48px]">
                     {message}
                 </p>
 
@@ -84,17 +88,17 @@ export default function VerifyEmail() {
                 {status !== "loading" && (
                     <button
                         onClick={() => navigate("/login")}
-                        className="w-full py-4 px-6 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
+                        className="w-full py-3.5 px-6 rounded-xl bg-pink-500 hover:bg-pink-400 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-pink-500/25 hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-200 cursor-pointer"
                     >
                         <span>Go to Login</span>
-                        <ArrowRight className="w-4 h-4" strokeWidth={3} />
+                        <ArrowRight className="w-4 h-4" />
                     </button>
                 )}
 
                 {/* Footer Brand */}
-                <div className="mt-8 text-center">
-                    <ShieldCheck className="w-5 h-5 mx-auto text-black mb-2" strokeWidth={2} />
-                    <p className="text-xs text-black font-black tracking-widest uppercase">Secure Verification</p>
+                <div className="mt-8 text-center text-slate-400 dark:text-slate-500">
+                    <ShieldCheck className="w-5 h-5 mx-auto mb-2" strokeWidth={2} />
+                    <p className="text-xs font-semibold tracking-wider uppercase">Secure Verification</p>
                 </div>
             </div>
         </div>

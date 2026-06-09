@@ -17,30 +17,98 @@ export const handleUserSignUp = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "All the fields are required" });
     }
 
+    const isAdmin = email.toLowerCase() === "animeclubnith@gmail.com" || email.toLowerCase() === "vismaygawai@gmail.com";
+
     const existingUser = await Auth.findOne({ email });
-    if(existingUser) {
-      return res.status(400).json({ message: "You already have an account, login instead OR if you want to verify your email then check your email inbox" });
+    if (existingUser) {
+      if (existingUser.isVerified && !isAdmin) {
+        return res.status(400).json({ message: "You already have an account, login instead" });
+      }
+
+      // Resolve unverified account deadlock: update user credentials and re-trigger verification
+      const salt = generateSalt();
+      const hash = hashPassword(password, salt);
+
+      existingUser.name = name;
+      existingUser.password = hash;
+      existingUser.salt = salt;
+      existingUser.role = isAdmin ? "admin" : "user";
+      
+      if (isAdmin) {
+        existingUser.isVerified = true;
+      }
+
+      await existingUser.save();
+
+      if (isAdmin) {
+        const token = generateToken(existingUser);
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: false,
+          sameSite: "lax",
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+        });
+
+        return res.status(200).json({
+          message: "Admin account verified and logged in successfully!",
+          token,
+          user: {
+            _id: existingUser._id,
+            name: existingUser.name,
+            email: existingUser.email,
+            role: existingUser.role,
+          },
+        });
+      }
+
+      verifyAcc(existingUser).catch((err) => {
+        console.error("Failed to send verification email for existing user:", err);
+      });
+
+      return res.status(200).json({ message: "Check your inbox for account verification email" });
     }
 
     const salt = generateSalt();
     const hash = hashPassword(password, salt);
-
-    const isAdmin = email.toLowerCase() === "animeclubnith@gmail.com" || email.toLowerCase() === "vismaygawai@gmail.com";
 
     const newUser = new Auth({
       name,
       email,
       password: hash,
       salt: salt,
-      isVerified: false,
+      isVerified: isAdmin ? true : false,
       role: isAdmin ? "admin" : "user",
     });
     await newUser.save();
-    verifyAcc(newUser);
+
+    if (isAdmin) {
+      const token = generateToken(newUser);
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+
+      return res.status(200).json({
+        message: "Admin account registered and logged in successfully!",
+        token,
+        user: {
+          _id: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          role: newUser.role,
+        },
+      });
+    }
+
+    verifyAcc(newUser).catch((err) => {
+      console.error("Failed to send verification email for new user:", err);
+    });
 
     return res.status(200).json({ message: "Check your inbox for account verification email" });
   } catch (error) {
-    console.log(`While signing up`);
+    console.error(`Error while signing up: ${error}`);
     return res.status(500).json({ message: 'An internal server error occurred.' });
   }
 };

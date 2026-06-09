@@ -159,6 +159,16 @@ export default function SignUpPage() {
         return;
       }
 
+      if (data.user) {
+        try {
+          localStorage.setItem("authUser", JSON.stringify(data.user));
+        } catch {
+          // ignore storage failures
+        }
+        await fetchAndNavigate();
+        return;
+      }
+
       try {
         const storedUser = {
           name: formData.name,
@@ -179,47 +189,53 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-pink-100/35 text-black font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden selection:bg-pink-500/30">
+    <div className="min-h-screen bg-[#f2f3f5] dark:bg-[#0c0d12] text-black dark:text-white font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden selection:bg-pink-500/30 transition-colors">
       <Navbar />
       
-      <div className="w-full max-w-md border-4 border-black bg-white p-8 shadow-[10px_10px_0px_#000] relative z-10 mt-24">
+      {/* Background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-500/5 dark:bg-pink-500/8 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="w-full max-w-md bg-white/90 dark:bg-[#1e1f22]/90 backdrop-blur-md rounded-2xl border border-slate-200/60 dark:border-slate-700/40 shadow-2xl shadow-slate-900/10 dark:shadow-black/40 p-8 relative z-10 mt-24">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-black uppercase tracking-tight text-black mb-2">
+          <div className="w-12 h-12 rounded-2xl bg-pink-500 flex items-center justify-center mx-auto mb-4 shadow-md shadow-pink-500/30">
+            <User className="w-5 h-5 text-white" />
+          </div>
+          <h1 className="text-2xl font-black text-black dark:text-white mb-1">
             Create an account
           </h1>
-          <p className="text-gray-600 font-semibold text-sm">
+          <p className="text-slate-500 dark:text-slate-400 text-sm">
             Join the community of anime enthusiasts.
           </p>
         </div>
 
         {/* Form Card */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Status Messages */}
           {error && (
-            <p className="text-xs font-black uppercase text-red-600 border-2 border-black bg-red-100 p-3 shadow-[3px_3px_0px_#000] text-center mb-2">
-              {error}
-            </p>
+            <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 text-red-600 dark:text-red-400 text-sm">
+              <span>{error}</span>
+            </div>
           )}
           {success && (
-            <p className="text-xs font-black uppercase text-emerald-600 border-2 border-black bg-emerald-100 p-3 shadow-[3px_3px_0px_#000] text-center mb-2">
-              {success}
-            </p>
+            <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/40 text-emerald-600 dark:text-emerald-400 text-sm">
+              <span>{success}</span>
+            </div>
           )}
 
           {/* Name Field */}
           <div className="space-y-2">
-            <label className="text-xs font-black uppercase text-black tracking-wider ml-1">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Full Name
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <User className="h-5 w-5 text-black" strokeWidth={2.5} />
+                <User className="h-4 w-4 text-slate-400" />
               </div>
               <input
                 type="text"
                 placeholder="Your Name"
-                className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-4 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
+                className="w-full bg-[#f2f3f5] dark:bg-[#2b2d31] border border-slate-200 dark:border-slate-700/60 rounded-xl py-3 pl-10 pr-4 text-black dark:text-white placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500/40 focus:border-pink-500 transition-all"
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -230,17 +246,17 @@ export default function SignUpPage() {
 
           {/* Email Field */}
           <div className="space-y-2">
-            <label className="text-xs font-black uppercase text-black tracking-wider ml-1">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Email Address
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-black" strokeWidth={2.5} />
+                <Mail className="h-4 w-4 text-slate-400" />
               </div>
               <input
                 type="email"
                 placeholder="example@gmail.com"
-                className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-4 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
+                className="w-full bg-[#f2f3f5] dark:bg-[#2b2d31] border border-slate-200 dark:border-slate-700/60 rounded-xl py-3 pl-10 pr-4 text-black dark:text-white placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500/40 focus:border-pink-500 transition-all"
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
@@ -251,17 +267,17 @@ export default function SignUpPage() {
 
           {/* Password Field */}
           <div className="space-y-2">
-            <label className="text-xs font-black uppercase text-black tracking-wider ml-1">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Password
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-black" strokeWidth={2.5} />
+                <Lock className="h-4 w-4 text-slate-400" />
               </div>
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-10 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
+                className="w-full bg-[#f2f3f5] dark:bg-[#2b2d31] border border-slate-200 dark:border-slate-700/60 rounded-xl py-3 pl-10 pr-11 text-black dark:text-white placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500/40 focus:border-pink-500 transition-all"
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
@@ -270,13 +286,13 @@ export default function SignUpPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-black hover:text-pink-500"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-pink-500 transition-colors cursor-pointer"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
-                  <EyeOff className="w-5 h-5" strokeWidth={2.5} />
+                  <EyeOff className="w-4 h-4" />
                 ) : (
-                  <Eye className="w-5 h-5" strokeWidth={2.5} />
+                  <Eye className="w-4 h-4" />
                 )}
               </button>
             </div>
@@ -284,17 +300,17 @@ export default function SignUpPage() {
 
           {/* Confirm Password Field */}
           <div className="space-y-2">
-            <label className="text-xs font-black uppercase text-black tracking-wider ml-1">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Confirm Password
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <ShieldCheck className="h-5 w-5 text-black" strokeWidth={2.5} />
+                <ShieldCheck className="h-4 w-4 text-slate-400" />
               </div>
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-10 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
+                className="w-full bg-[#f2f3f5] dark:bg-[#2b2d31] border border-slate-200 dark:border-slate-700/60 rounded-xl py-3 pl-10 pr-11 text-black dark:text-white placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500/40 focus:border-pink-500 transition-all"
                 value={formData.confirmPassword}
                 onChange={(e) =>
                   setFormData({ ...formData, confirmPassword: e.target.value })
@@ -303,49 +319,47 @@ export default function SignUpPage() {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-black hover:text-pink-500"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-pink-500 transition-colors cursor-pointer"
                 aria-label={
                   showConfirmPassword ? "Hide password" : "Show password"
                 }
               >
                 {showConfirmPassword ? (
-                  <EyeOff className="w-5 h-5" strokeWidth={2.5} />
+                  <EyeOff className="w-4 h-4" />
                 ) : (
-                  <Eye className="w-5 h-5" strokeWidth={2.5} />
+                  <Eye className="w-4 h-4" />
                 )}
               </button>
             </div>
           </div>
 
           {/* Action Button */}
-          <div className="pt-2">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-4 px-6 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
-            >
-              <span>
-                {isSubmitting ? "Creating account..." : "Create Account"}
-              </span>
-              <ArrowRight className="w-4 h-4" strokeWidth={3} />
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full py-3.5 px-6 rounded-xl bg-pink-500 hover:bg-pink-400 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-pink-500/25 hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-200 cursor-pointer"
+          >
+            <span>
+              {isSubmitting ? "Creating account..." : "Create Account"}
+            </span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </form>
 
         {/* OR divider */}
-        <div className="relative flex py-4 items-center">
-          <div className="flex-grow border-t-2 border-black"></div>
-          <span className="flex-shrink mx-4 text-xs font-black uppercase text-black">OR</span>
-          <div className="flex-grow border-t-2 border-black"></div>
+        <div className="relative flex py-5 items-center">
+          <div className="flex-grow h-px bg-slate-200 dark:bg-slate-700/60" />
+          <span className="flex-shrink mx-4 text-xs font-semibold text-slate-400 dark:text-slate-500">OR</span>
+          <div className="flex-grow h-px bg-slate-200 dark:bg-slate-700/60" />
         </div>
 
         {/* Google Auth Button */}
         <button
           type="button"
           onClick={handleGoogleSignIn}
-          className="w-full py-4 px-6 border-4 border-black bg-white hover:bg-gray-50 text-black font-black uppercase text-sm tracking-wider flex items-center justify-center gap-3 shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
+          className="w-full py-3 px-6 rounded-xl bg-white dark:bg-[#2b2d31] hover:bg-slate-50 dark:hover:bg-[#383a40] border border-slate-200 dark:border-slate-700/60 text-black dark:text-white font-semibold text-sm flex items-center justify-center gap-3 transition-all duration-200 cursor-pointer shadow-sm"
         >
-          <svg className="w-5 h-5" viewBox="0 0 24 24">
+          <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
               fill="#EA4335"
               d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.359 0 3.373 2.673 1.455 6.573L5.266 9.765z"
@@ -367,11 +381,11 @@ export default function SignUpPage() {
         </button>
 
         {/* Footer Link */}
-        <p className="mt-8 text-center text-gray-500 text-sm font-semibold">
+        <p className="mt-6 text-center text-slate-500 dark:text-slate-400 text-sm">
           Already have an account?{" "}
           <a
             href="/login"
-            className="text-pink-600 hover:text-pink-700 transition-colors font-black uppercase hover:underline"
+            className="text-pink-500 hover:text-pink-400 transition-colors font-semibold"
           >
             Log in
           </a>
@@ -380,12 +394,12 @@ export default function SignUpPage() {
 
       {/* Mock Google Account Chooser Modal */}
       {showGoogleMockModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-sm border-4 border-black bg-white p-6 shadow-[8px_8px_0px_#000] relative">
-            <h2 className="text-xl font-black uppercase text-black mb-1">Sign in with Google</h2>
-            <p className="text-gray-600 text-xs font-semibold mb-6">Demo mode: select a sandbox Google account.</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm bg-white dark:bg-[#1e1f22] rounded-2xl border border-slate-200/60 dark:border-slate-700/40 shadow-2xl p-6 relative">
+            <h2 className="text-lg font-black text-black dark:text-white mb-1">Sign in with Google</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mb-5">Demo mode: select a sandbox Google account.</p>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
               {[
                 { name: "Vismay Gawai", email: "vismay@nith.ac.in", token: "mock-access-token-otaku" },
                 { name: "Anime Fan", email: "fan@nith.ac.in", token: "mock-access-token-fan" },
@@ -395,14 +409,14 @@ export default function SignUpPage() {
                   key={acc.email}
                   type="button"
                   onClick={() => handleMockLogin(acc.token)}
-                  className="w-full text-left p-3 border-2 border-black bg-pink-50 hover:bg-pink-100 flex items-center gap-3 shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer"
+                  className="w-full text-left p-3 rounded-xl bg-slate-50 dark:bg-[#2b2d31] hover:bg-pink-50 dark:hover:bg-pink-500/10 border border-slate-200/60 dark:border-slate-700/40 flex items-center gap-3 transition-all cursor-pointer"
                 >
-                  <div className="w-8 h-8 border-2 border-black bg-pink-505 text-black flex items-center justify-center font-black rounded-full uppercase text-xs" style={{ backgroundColor: '#ec4899' }}>
+                  <div className="w-9 h-9 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
                     {acc.name[0]}
                   </div>
                   <div>
-                    <div className="font-black text-sm text-black">{acc.name}</div>
-                    <div className="text-xs font-semibold text-gray-500">{acc.email}</div>
+                    <div className="font-semibold text-sm text-black dark:text-white">{acc.name}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">{acc.email}</div>
                   </div>
                 </button>
               ))}
@@ -411,7 +425,7 @@ export default function SignUpPage() {
             <button
               type="button"
               onClick={() => setShowGoogleMockModal(false)}
-              className="mt-6 w-full py-2 border-4 border-black bg-gray-200 hover:bg-gray-300 text-black font-black uppercase text-xs tracking-wider shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer"
+              className="mt-5 w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-700 text-black dark:text-white font-semibold text-sm transition-all cursor-pointer"
             >
               Cancel
             </button>

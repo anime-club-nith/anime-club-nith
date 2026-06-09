@@ -76,23 +76,26 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-pink-100/35 text-black font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden selection:bg-pink-500/30">
+    <div className="min-h-screen bg-[#f2f3f5] dark:bg-[#0c0d12] text-black dark:text-white font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden selection:bg-pink-500/30 transition-colors">
       <Navbar />
       
-      <div className="w-full max-w-md border-4 border-black bg-white p-8 shadow-[10px_10px_0px_#000] relative z-10 mt-24">
+      {/* Background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-500/5 dark:bg-pink-500/8 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="w-full max-w-md bg-white/90 dark:bg-[#1e1f22]/90 backdrop-blur-md rounded-2xl border border-slate-200/60 dark:border-slate-700/40 shadow-2xl shadow-slate-900/10 dark:shadow-black/40 p-8 relative z-10 mt-24">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-black uppercase tracking-tight text-black mb-2">Reset Password</h1>
-          <p className="text-gray-600 font-semibold text-sm">Choose a method to recover your account.</p>
+          <h1 className="text-2xl font-black text-black dark:text-white mb-1">Reset Password</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">Choose a method to recover your account.</p>
         </div>
 
         {/* Tab Switcher */}
-        <div className="border-4 border-black bg-white flex shadow-[4px_4px_0px_#000] mb-8 overflow-hidden">
+        <div className="bg-[#f2f3f5] dark:bg-[#2b2d31] p-1 rounded-xl flex gap-1 mb-8 border border-slate-200 dark:border-slate-700/60">
           <button
             onClick={() => { setActiveTab('viaOldPass'); setMessage(null); }}
             className={`
-              flex-1 py-3 text-xs font-black uppercase tracking-widest text-center transition-colors duration-200 border-r-4 border-black cursor-pointer
-              ${activeTab === 'viaOldPass' ? 'bg-pink-500 text-black' : 'bg-white text-black hover:bg-pink-100'}
+              flex-1 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider text-center transition-all duration-200 cursor-pointer
+              ${activeTab === 'viaOldPass' ? 'bg-white dark:bg-[#1e1f22] text-pink-500 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'}
             `}
           >
             Use Old Password
@@ -100,8 +103,8 @@ export default function ForgotPassword() {
           <button
             onClick={() => { setActiveTab('viaEmail'); setMessage(null); }}
             className={`
-              flex-1 py-3 text-xs font-black uppercase tracking-widest text-center transition-colors duration-200 cursor-pointer
-              ${activeTab === 'viaEmail' ? 'bg-pink-500 text-black' : 'bg-white text-black hover:bg-pink-100'}
+              flex-1 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider text-center transition-all duration-200 cursor-pointer
+              ${activeTab === 'viaEmail' ? 'bg-white dark:bg-[#1e1f22] text-pink-500 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'}
             `}
           >
             Use Email Link
@@ -116,16 +119,16 @@ export default function ForgotPassword() {
             <form onSubmit={handleViaOldPass} className="space-y-5">
 
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase text-black tracking-wider ml-1">Email Address</label>
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">Email Address</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-black" strokeWidth={2.5} />
+                    <Mail className="h-4 w-4 text-slate-400" />
                   </div>
                   <input
                     type="email"
                     required
                     placeholder="john@example.com"
-                    className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-4 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
+                    className="w-full bg-[#f2f3f5] dark:bg-[#2b2d31] border border-slate-200 dark:border-slate-700/60 rounded-xl py-3 pl-10 pr-4 text-black dark:text-white placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500/40 focus:border-pink-500 transition-all"
                     value={oldPassForm.email}
                     onChange={(e) => setOldPassForm({ ...oldPassForm, email: e.target.value })}
                   />
@@ -133,49 +136,49 @@ export default function ForgotPassword() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase text-black tracking-wider ml-1">Old Password</label>
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">Old Password</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-black" strokeWidth={2.5} />
+                    <Lock className="h-4 w-4 text-slate-400" />
                   </div>
                   <input
                     type={showOldPassword ? "text" : "password"}
                     required
                     placeholder="••••••••"
-                    className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-12 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
+                    className="w-full bg-[#f2f3f5] dark:bg-[#2b2d31] border border-slate-200 dark:border-slate-700/60 rounded-xl py-3 pl-10 pr-11 text-black dark:text-white placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500/40 focus:border-pink-500 transition-all"
                     value={oldPassForm.oldPassword}
                     onChange={(e) => setOldPassForm({ ...oldPassForm, oldPassword: e.target.value })}
                   />
                   <button
                     type="button"
                     onClick={() => setShowOldPassword(!showOldPassword)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-black hover:text-pink-500 cursor-pointer"
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-pink-500 transition-colors cursor-pointer"
                   >
-                    {showOldPassword ? <EyeOff className="h-5 w-5" strokeWidth={2.5} /> : <Eye className="h-5 w-5" strokeWidth={2.5} />}
+                    {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase text-black tracking-wider ml-1">New Password</label>
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">New Password</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <ShieldCheck className="h-5 w-5 text-black" strokeWidth={2.5} />
+                    <ShieldCheck className="h-4 w-4 text-slate-400" />
                   </div>
                   <input
                     type={showNewPassword ? "text" : "password"}
                     required
                     placeholder="••••••••"
-                    className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-12 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
+                    className="w-full bg-[#f2f3f5] dark:bg-[#2b2d31] border border-slate-200 dark:border-slate-700/60 rounded-xl py-3 pl-10 pr-11 text-black dark:text-white placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500/40 focus:border-pink-500 transition-all"
                     value={oldPassForm.newPassword}
                     onChange={(e) => setOldPassForm({ ...oldPassForm, newPassword: e.target.value })}
                   />
                   <button
                     type="button"
                     onClick={() => setShowNewPassword(!showNewPassword)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-black hover:text-pink-500 cursor-pointer"
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-pink-500 transition-colors cursor-pointer"
                   >
-                    {showNewPassword ? <EyeOff className="h-5 w-5" strokeWidth={2.5} /> : <Eye className="h-5 w-5" strokeWidth={2.5} />}
+                    {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
@@ -184,10 +187,10 @@ export default function ForgotPassword() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-4 px-6 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
+                  className="w-full py-3.5 px-6 rounded-xl bg-pink-500 hover:bg-pink-400 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-pink-500/25 hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-200 cursor-pointer"
                 >
                   <span>{isLoading ? 'Updating...' : 'Change Password'}</span>
-                  {!isLoading && <ArrowRight className="w-4 h-4" strokeWidth={3} />}
+                  {!isLoading && <ArrowRight className="w-4 h-4" />}
                 </button>
               </div>
             </form>
@@ -195,22 +198,22 @@ export default function ForgotPassword() {
 
           {/* METHOD 2: VIA EMAIL LINK */}
           <div className={`transition-all duration-300 col-start-1 row-start-1 w-full ${activeTab === 'viaEmail' ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 translate-x-8 pointer-events-none'}`}>
-            <div className="mb-6 p-4 border-4 border-black bg-pink-100 text-black text-xs font-semibold leading-relaxed shadow-[4px_4px_0px_#000]">
+            <div className="mb-5 p-4 rounded-xl bg-pink-50 dark:bg-pink-900/10 border border-pink-100 dark:border-pink-900/20 text-slate-600 dark:text-slate-300 text-xs font-semibold leading-relaxed">
               We will send a secure link to your email address to reset your password. The link will expire in 30 minutes.
             </div>
 
-            <form onSubmit={handleViaEmail} className="space-y-6">
+            <form onSubmit={handleViaEmail} className="space-y-5">
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase text-black tracking-wider ml-1">Email Address</label>
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">Email Address</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-black" strokeWidth={2.5} />
+                    <Mail className="h-4 w-4 text-slate-400" />
                   </div>
                   <input
                     type="email"
                     required
                     placeholder="john@example.com"
-                    className="w-full bg-white border-4 border-black py-3.5 pl-11 pr-4 text-black placeholder:text-gray-400 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition"
+                    className="w-full bg-[#f2f3f5] dark:bg-[#2b2d31] border border-slate-200 dark:border-slate-700/60 rounded-xl py-3 pl-10 pr-4 text-black dark:text-white placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500/40 focus:border-pink-500 transition-all"
                     value={emailForm.email}
                     onChange={(e) => setEmailForm({ ...emailForm, email: e.target.value })}
                   />
@@ -221,10 +224,10 @@ export default function ForgotPassword() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-4 px-6 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
+                  className="w-full py-3.5 px-6 rounded-xl bg-pink-500 hover:bg-pink-400 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-pink-500/25 hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-200 cursor-pointer"
                 >
                   <span>{isLoading ? 'Sending...' : 'Send Reset Link'}</span>
-                  {!isLoading && <ArrowRight className="w-4 h-4" strokeWidth={3} />}
+                  {!isLoading && <ArrowRight className="w-4 h-4" />}
                 </button>
               </div>
             </form>
@@ -234,7 +237,7 @@ export default function ForgotPassword() {
 
         {/* Message Alert */}
         {message && (
-          <div className={`mt-6 p-4 border-4 border-black flex items-start gap-3 text-xs font-black uppercase shadow-[4px_4px_0px_#000] ${message.type === 'success' ? 'bg-emerald-100 text-emerald-800 border-emerald-500' : 'bg-red-100 text-red-800 border-red-500'}`}>
+          <div className={`mt-6 p-4 rounded-xl border flex items-start gap-3 text-sm transition-all ${message.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-400'}`}>
             <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
             <p>{message.text}</p>
           </div>
@@ -242,8 +245,8 @@ export default function ForgotPassword() {
 
         {/* Footer Link */}
         <div className="mt-8 text-center">
-          <a href="/login" className="text-sm text-pink-600 hover:text-pink-700 transition-colors font-black uppercase hover:underline">
-            ← Back to Login
+          <a href="/login" className="text-sm text-pink-500 hover:text-pink-400 transition-colors font-semibold">
+            &larr; Back to Login
           </a>
         </div>
       </div>

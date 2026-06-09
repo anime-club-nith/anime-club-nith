@@ -8,24 +8,48 @@ interface Feature {
   status: string;
 }
 
+const DEFAULT_FEATURES: Feature[] = [
+  {
+    _id: "default-1",
+    title: "Real-time Watch Parties",
+    description: "Synchronized anime streaming with integrated voice and text chat rooms for club members.",
+    status: "In Progress"
+  },
+  {
+    _id: "default-2",
+    title: "Manga Reader Integration",
+    description: "Ad-free, high-speed built-in manga reader with chapter discussion threads.",
+    status: "Planned"
+  },
+  {
+    _id: "default-3",
+    title: "Club Events & Merch",
+    description: "Cosplay contest hosting, annual registrations, and official club merch shop.",
+    status: "Planned"
+  }
+];
+
 export default function ProposedFeatures() {
-  const [features, setFeatures] = useState<Feature[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [features, setFeatures] = useState<Feature[]>(DEFAULT_FEATURES);
 
   useEffect(() => {
     const fetchFeatures = async () => {
       try {
         const response = await fetch('/api/features');
-        const data = await response.json();
-        if (Array.isArray(data)) {
-          setFeatures(data);
-        } else if (data.features && Array.isArray(data.features)) {
-          setFeatures(data.features);
+        if (response.ok) {
+          const data = await response.json();
+          let loadedFeatures: Feature[] = [];
+          if (Array.isArray(data)) {
+            loadedFeatures = data;
+          } else if (data && data.features && Array.isArray(data.features)) {
+            loadedFeatures = data.features;
+          }
+          if (loadedFeatures.length > 0) {
+            setFeatures(loadedFeatures);
+          }
         }
       } catch (error) {
-        console.error("Failed to fetch features:", error);
-      } finally {
-        setIsLoading(false);
+        console.error("Background fetch for features failed:", error);
       }
     };
 
@@ -52,46 +76,33 @@ export default function ProposedFeatures() {
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {isLoading ? (
-            [1, 2, 3].map((i) => (
-              <div key={i} className="card-modern p-8 h-64 animate-pulse flex flex-col justify-between">
-                <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800" />
-                <div className="space-y-3">
-                  <div className="h-5 w-3/4 bg-slate-100 dark:bg-slate-800 rounded-lg" />
-                  <div className="h-4 w-full bg-slate-100 dark:bg-slate-800 rounded-lg" />
-                  <div className="h-4 w-2/3 bg-slate-100 dark:bg-slate-800 rounded-lg" />
+          {features.map((feature, index) => (
+            <div 
+              key={feature._id || index}
+              className="card-modern p-8 hover:shadow-xl hover:shadow-pink-500/10 hover:-translate-y-1 transition-all duration-200"
+            >
+              <div className="flex items-start justify-between mb-7">
+                <div className="w-12 h-12 rounded-2xl bg-pink-500 flex items-center justify-center shadow-md shadow-pink-500/30">
+                  <Zap size={22} className="text-white" />
                 </div>
+                <span className="px-2.5 py-1 rounded-lg bg-pink-100 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400 text-[10px] font-semibold border border-pink-200 dark:border-pink-500/20 uppercase tracking-wide">
+                  {feature.status || "Planned"}
+                </span>
               </div>
-            ))
-          ) : (
-            features.map((feature, index) => (
-              <div 
-                key={feature._id || index}
-                className="card-modern p-8 hover:shadow-xl hover:shadow-pink-500/10 hover:-translate-y-1 transition-all duration-200"
-              >
-                <div className="flex items-start justify-between mb-7">
-                  <div className="w-12 h-12 rounded-2xl bg-pink-500 flex items-center justify-center shadow-md shadow-pink-500/30">
-                    <Zap size={22} className="text-white" />
-                  </div>
-                  <span className="px-2.5 py-1 rounded-lg bg-pink-100 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400 text-[10px] font-semibold border border-pink-200 dark:border-pink-500/20 uppercase tracking-wide">
-                    {feature.status || "Planned"}
-                  </span>
-                </div>
-                
-                <h3 className="text-xl font-black uppercase text-black dark:text-white mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-slate-600 dark:text-slate-300 text-sm font-medium leading-relaxed mb-6">
-                  {feature.description}
-                </p>
+              
+              <h3 className="text-xl font-black uppercase text-black dark:text-white mb-3">
+                {feature.title}
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300 text-sm font-medium leading-relaxed mb-6">
+                {feature.description}
+              </p>
 
-                {/* Progress Bar */}
-                <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                  <div className="h-full bg-pink-500 w-1/3 rounded-full" />
-                </div>
+              {/* Progress Bar */}
+              <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                <div className="h-full bg-pink-500 w-1/3 rounded-full" />
               </div>
-            ))
-          )}
+            </div>
+          ))}
         </div>
 
         {/* Call to Action */}

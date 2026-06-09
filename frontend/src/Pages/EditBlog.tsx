@@ -275,33 +275,36 @@ const EditBlog = () => {
     }
 
     return (
-        <div className="min-h-screen bg-pink-100/35 text-black font-sans selection:bg-pink-500/30">
+        <div className="min-h-screen bg-[#f2f3f5] dark:bg-[#0c0d12] text-black dark:text-white font-sans selection:bg-pink-500/30 transition-colors relative overflow-hidden">
             <Navbar />
+
+            {/* Background glow */}
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-pink-500/5 dark:bg-pink-500/8 rounded-full blur-3xl pointer-events-none" />
             
-            <div className="pt-24 pb-32">
-                <div className="max-w-4xl mx-auto px-6 lg:px-12 mt-8 border-4 border-black bg-white p-8 md:p-12 shadow-[10px_10px_0px_#000]">
+            <div className="pt-24 pb-32 relative z-10">
+                <div className="max-w-4xl mx-auto px-6 lg:px-12 mt-8 card-modern p-8 md:p-12">
                     {/* Mode Toggle & Status */}
-                    <div className="flex justify-between items-center mb-12 border-b-4 border-black pb-6">
+                    <div className="flex justify-between items-center mb-12 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
                         <button
                             type="button"
                             onClick={() => navigate('/my-blogs')}
-                            className="flex items-center gap-2 border-4 border-black px-4 py-2 bg-white hover:bg-pink-100 text-black font-black uppercase text-xs shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer"
+                            className="btn-outline-modern py-2 px-4 text-xs flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200"
                         >
-                            <ArrowLeft size={16} strokeWidth={2.5} />
+                            <ArrowLeft size={16} />
                             <span>Abort & Return</span>
                         </button>
                         
                         <div className="flex items-center gap-6">
-                            <div className="flex flex-col items-end gap-1 border-r-4 border-black pr-6">
+                            <div className="flex flex-col items-end gap-1 border-r border-slate-200 dark:border-slate-700 pr-6">
                                 <div className="flex gap-4">
                                     <button
                                         type="button"
                                         onClick={() => {
                                             if (viewMode === 'preview') setViewMode('write');
                                         }}
-                                        className={`text-xs font-black uppercase tracking-widest transition-colors cursor-pointer ${viewMode === 'write' ? 'text-pink-500 border-b-2 border-pink-500' : 'text-black hover:text-pink-500'}`}
+                                        className={`text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${viewMode === 'write' ? 'text-pink-500 border-b-2 border-pink-500' : 'text-slate-400 hover:text-pink-500'}`}
                                     >
-                                        [ Write ]
+                                        Write
                                     </button>
                                     <button
                                         type="button"
@@ -311,16 +314,16 @@ const EditBlog = () => {
                                                 setViewMode('preview');
                                             }
                                         }}
-                                        className={`text-xs font-black uppercase tracking-widest transition-colors cursor-pointer ${viewMode === 'preview' ? 'text-emerald-600 border-b-2 border-emerald-600' : 'text-black hover:text-pink-500'}`}
+                                        className={`text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${viewMode === 'preview' ? 'text-emerald-500 border-b-2 border-emerald-500' : 'text-slate-400 hover:text-pink-500'}`}
                                     >
-                                        [ Preview ]
+                                        Preview
                                     </button>
                                 </div>
-                                <span className="text-[9px] font-black text-gray-500 uppercase tracking-tighter">Ctrl + Esc to toggle</span>
+                                <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Ctrl + Esc to toggle</span>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <div className={`w-3 h-3 border-2 border-black ${viewMode === 'write' ? 'bg-pink-500 animate-pulse' : 'bg-emerald-500'}`}></div>
-                                <span className={`font-black text-xs uppercase tracking-widest ${viewMode === 'write' ? 'text-pink-500' : 'text-emerald-600'}`}>
+                            <div className="flex items-center gap-2 bg-pink-500/10 dark:bg-pink-500/20 text-pink-600 dark:text-pink-400 px-3 py-1.5 rounded-full text-xs font-semibold">
+                                <div className={`w-1.5 h-1.5 rounded-full ${viewMode === 'write' ? 'bg-pink-500 animate-pulse' : 'bg-emerald-500'}`}></div>
+                                <span>
                                     {viewMode === 'write' ? 'Write Mode' : 'Preview Mode'}
                                 </span>
                             </div>
@@ -329,8 +332,8 @@ const EditBlog = () => {
 
                     <form onSubmit={handleSubmit}>
                         {error && (
-                            <div className="mb-12 border-4 border-black bg-red-100 text-red-800 p-4 font-black text-xs flex items-center gap-3 shadow-[4px_4px_0px_#000]">
-                                <AlertCircle size={14} strokeWidth={2.5} />
+                            <div className="mb-12 border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 p-4 rounded-xl font-semibold text-xs flex items-center gap-3">
+                                <AlertCircle size={14} />
                                 <span>ERROR: {error}</span>
                             </div>
                         )}
@@ -339,36 +342,38 @@ const EditBlog = () => {
                             <div className="space-y-12">
                                 {/* Title Input */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black uppercase text-black tracking-wider ml-1">Entry Title</label>
+                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">Entry Title</label>
                                     <input
                                         type="text"
                                         value={title}
                                         onChange={(e) => setTitle(e.target.value)}
-                                        placeholder="TITLE_HERE"
-                                        className="w-full bg-white border-4 border-black p-4 text-black text-3xl font-black uppercase focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition placeholder:text-gray-400"
+                                        placeholder="Enter title..."
+                                        className="w-full input-modern text-xl md:text-2xl font-bold uppercase"
                                     />
                                 </div>
 
                                 {/* Abstract Input */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black uppercase text-black tracking-wider ml-1">Abstract / Description</label>
+                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">Abstract / Description</label>
                                     <textarea
                                         value={excerpt}
                                         onChange={(e) => setExcerpt(e.target.value)}
                                         placeholder="Briefly describe this entry..."
-                                        className="w-full bg-white border-4 border-black p-4 text-black text-base font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition placeholder:text-gray-400 h-24 resize-none leading-relaxed"
+                                        className="w-full input-modern h-24 resize-none leading-relaxed text-sm font-medium"
                                     />
                                 </div>
 
                                 {/* Metadata & Tags */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase text-black tracking-wider ml-1">Metadata Tags [{tags.length}/4]</label>
-                                        <div className="flex flex-wrap gap-2 p-2 border-4 border-black bg-white min-h-12 shadow-[4px_4px_0px_#000] items-center">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">Metadata Tags [{tags.length}/4]</label>
+                                        <div className="flex flex-wrap gap-2 p-2 bg-[#f2f3f5] dark:bg-[#2b2d31] border border-slate-200 dark:border-slate-700 rounded-xl min-h-12 items-center">
                                             {tags.map(tag => (
-                                                <span key={tag} className="flex items-center gap-2 border-2 border-black bg-pink-100 text-black px-3 py-1 text-[10px] font-black uppercase shadow-[2px_2px_0px_#000]">
+                                                <span key={tag} className="flex items-center gap-1.5 rounded-lg bg-pink-500/10 text-pink-600 dark:text-pink-400 text-xs font-semibold border border-pink-500/20 px-2 py-1">
                                                     {tag}
-                                                    <button type="button" onClick={() => removeTag(tag)} className="text-black hover:text-red-500 cursor-pointer"><X size={10} strokeWidth={2.5} /></button>
+                                                    <button type="button" onClick={() => removeTag(tag)} className="text-pink-500 hover:text-red-500 cursor-pointer transition-colors ml-1">
+                                                        <X size={10} />
+                                                    </button>
                                                 </span>
                                             ))}
                                             {tags.length < 4 && (
@@ -377,8 +382,8 @@ const EditBlog = () => {
                                                     value={currentTag}
                                                     onChange={(e) => setCurrentTag(e.target.value)}
                                                     onKeyDown={handleTagKeyDown}
-                                                    placeholder="ADD_TAG"
-                                                    className="bg-transparent border-none text-[10px] font-black uppercase focus:outline-none w-20 py-1 text-black placeholder:text-gray-500"
+                                                    placeholder="Add tag..."
+                                                    className="bg-transparent border-none text-xs font-semibold focus:outline-none w-20 py-1 text-black dark:text-white placeholder:text-slate-400"
                                                 />
                                             )}
                                         </div>
@@ -388,14 +393,14 @@ const EditBlog = () => {
                                             type="button"
                                             onClick={handleSaveDraft}
                                             disabled={isSubmitting}
-                                            className="px-4 py-2.5 border-4 border-black bg-white hover:bg-pink-100 text-black font-black uppercase tracking-widest text-xs shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer disabled:opacity-50"
+                                            className="btn-outline-modern py-2.5 px-5 text-xs uppercase flex items-center gap-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200"
                                         >
                                             Save Draft
                                         </button>
                                         <button
                                             type="submit"
                                             disabled={isSubmitting}
-                                            className="px-4 py-2.5 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase tracking-widest text-xs shadow-[3px_3px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer disabled:opacity-50"
+                                            className="btn-pink-modern py-2.5 px-5 text-xs uppercase flex items-center gap-2"
                                         >
                                             Commit Entry
                                         </button>
@@ -404,10 +409,10 @@ const EditBlog = () => {
 
                                 {/* Content Input */}
                                 <div className="space-y-2 relative group">
-                                    <label className="text-xs font-black uppercase text-black tracking-wider ml-1">Main Content (Markdown)</label>
-                                    <p className="text-[10px] font-black uppercase tracking-wider text-gray-500 ml-1">Paste images directly into the editor to upload and embed them.</p>
+                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">Main Content (Markdown)</label>
+                                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 ml-1">Paste images directly into the editor to upload and embed them.</p>
                                     {isImageUploading && (
-                                        <p className="text-[10px] font-black uppercase tracking-wider text-pink-600 ml-1 animate-pulse">Uploading image...</p>
+                                        <p className="text-[10px] font-bold uppercase tracking-wider text-pink-500 ml-1 animate-pulse">Uploading image...</p>
                                     )}
                                     <textarea
                                         ref={editorRef}
@@ -415,43 +420,43 @@ const EditBlog = () => {
                                         onPaste={handlePaste}
                                         onChange={(e) => setContent(e.target.value)}
                                         placeholder="Begin entry... Markdown and HTML supported."
-                                        className="w-full bg-white text-black text-lg font-semibold p-8 h-[600px] border-4 border-black focus:outline-none focus:bg-pink-100 shadow-[8px_8px_0px_#000] focus:shadow-[4px_4px_0px_#000] transition placeholder:text-gray-500 scrollbar-hide"
+                                        className="w-full bg-white dark:bg-[#1e1f22] text-black dark:text-white text-base font-medium p-6 h-[500px] border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 transition-all placeholder:text-slate-400 scrollbar-hide"
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setIsFullscreen(true)}
-                                        className="absolute bottom-4 right-4 p-2 bg-white border-2 border-black hover:bg-pink-100 text-black rounded shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer"
+                                        className="absolute bottom-4 right-4 p-2 bg-white dark:bg-[#2b2d31] border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-pink-500/10 hover:text-pink-500 rounded-xl transition-all shadow-md cursor-pointer"
                                     >
-                                        <Maximize2 size={16} strokeWidth={2.5} />
+                                        <Maximize2 size={16} />
                                     </button>
                                 </div>
                             </div>
                         ) : (
-                            <div className="border-4 border-black bg-white p-8 md:p-12 shadow-[10px_10px_0px_#000]">
+                            <div className="bg-white/95 dark:bg-[#1e1f22]/90 backdrop-blur-md rounded-2xl border border-slate-200/60 dark:border-slate-700/40 p-8 md:p-12 shadow-lg">
                                 <div className="max-w-6xl mx-auto">
                                     {/* Title Block Mock */}
-                                    <div className="mb-12 border-b-4 border-black pb-8">
+                                    <div className="mb-12 border-b border-slate-200/60 dark:border-slate-800/60 pb-8">
                                         {tags.length > 0 && (
                                             <div className="flex flex-wrap gap-2 mb-8">
                                                 {tags.map(tag => (
-                                                    <span key={tag} className="px-2 py-1 border-2 border-black bg-pink-100 text-xs font-black uppercase text-black shadow-[2px_2px_0px_#000]">
+                                                    <span key={tag} className="px-2.5 py-1 rounded-lg bg-pink-500/10 text-pink-600 dark:text-pink-400 text-[10px] font-semibold border border-pink-500/20 uppercase tracking-wider">
                                                         {tag}
                                                     </span>
                                                 ))}
                                             </div>
                                         )}
-                                        <h1 className="text-3xl md:text-5xl font-black uppercase text-black mb-6 leading-tight">
+                                        <h1 className="text-3xl md:text-5xl font-black uppercase text-black dark:text-white mb-6 leading-tight">
                                             {title || 'Untitled Entry'}
                                         </h1>
-                                        <div className="flex flex-col md:flex-row md:items-center gap-4 text-gray-700 text-xs font-black uppercase border-l-4 border-black pl-4">
+                                        <div className="flex flex-col md:flex-row md:items-center gap-4 text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase border-l-2 border-pink-500 pl-4">
                                             <span>{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                                             <span className="hidden md:inline">/</span>
-                                            <span className="text-pink-600">Reading Time: Est. ~{Math.ceil(content.split(' ').length / 200)} min</span>
+                                            <span className="text-pink-500 font-bold font-semibold">Reading Time: Est. ~{Math.ceil(content.split(' ').length / 200)} min</span>
                                         </div>
                                     </div>
 
                                     {/* Content Mock */}
-                                    <div className="prose prose-lg mx-auto max-w-3xl text-black leading-relaxed selection:bg-pink-500/30">
+                                    <div className="prose prose-lg mx-auto max-w-3xl text-slate-800 dark:text-slate-200 leading-relaxed selection:bg-pink-500/30 dark:prose-invert">
                                         {content ? (
                                             <ReactMarkdown
                                                 rehypePlugins={[rehypeRaw, rehypeHighlight]}
@@ -460,7 +465,7 @@ const EditBlog = () => {
                                                 {content}
                                             </ReactMarkdown>
                                         ) : (
-                                            <div className="h-48 flex items-center justify-center text-gray-400 font-black uppercase text-xs tracking-widest border-4 border-dashed border-black">
+                                            <div className="h-48 flex items-center justify-center text-slate-400 dark:text-slate-500 font-semibold uppercase text-xs tracking-wider border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
                                                 Empty Content State
                                             </div>
                                         )}
@@ -470,22 +475,22 @@ const EditBlog = () => {
                         )}
                         
                         {/* Submit */}
-                        <div className="flex justify-between pt-12 border-t-4 border-black mt-12">
+                        <div className="flex justify-between pt-12 border-t border-slate-200/60 dark:border-slate-800/60 mt-12">
                             <button
                                 type="button"
                                 onClick={handleSaveDraft}
                                 disabled={isSubmitting}
-                                className="px-6 py-4 border-4 border-black bg-white hover:bg-pink-100 text-black font-black uppercase shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer text-sm flex items-center gap-2"
+                                className="btn-outline-modern py-2.5 px-5 text-sm flex items-center justify-center gap-2 border border-slate-350 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold"
                             >
-                                <Save size={16} strokeWidth={2.5} />
+                                <Save size={16} />
                                 {isSubmitting ? 'Saving...' : 'Save Draft'}
                             </button>
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="px-6 py-4 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer text-sm flex items-center gap-2"
+                                className="btn-pink-modern py-2.5 px-5 text-sm flex items-center justify-center gap-2"
                             >
-                                <Save size={16} strokeWidth={2.5} />
+                                <Save size={16} />
                                 {isSubmitting ? 'Publishing...' : 'Publish Entry'}
                             </button>
                         </div>
@@ -495,19 +500,19 @@ const EditBlog = () => {
 
             {/* Fullscreen Content Editor */}
             {isFullscreen && (
-                <div className="fixed inset-0 z-50 bg-pink-100/35 flex flex-col p-8 animate-in fade-in duration-300">
-                    <div className="flex-1 flex flex-col p-8 border-4 border-black bg-white shadow-[10px_10px_0px_#000] min-h-0">
+                <div className="fixed inset-0 z-50 bg-[#f2f3f5]/95 dark:bg-[#0c0d12]/95 backdrop-blur-md flex flex-col p-8 animate-in fade-in duration-300">
+                    <div className="flex-1 flex flex-col p-8 card-modern min-h-0">
                         {/* Header with Toggles */}
-                        <div className="flex items-center justify-between mb-8 pb-4 border-b-4 border-black">
+                        <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-700">
                             <div className="flex gap-8">
                                 <button
                                     type="button"
                                     onClick={() => {
                                         if (viewMode === 'preview') setViewMode('write');
                                     }}
-                                    className={`text-sm font-black uppercase tracking-widest transition-colors cursor-pointer ${viewMode === 'write' ? 'text-pink-500 border-b-2 border-pink-500' : 'text-black hover:text-pink-500'}`}
+                                    className={`text-sm font-bold uppercase tracking-wider transition-colors cursor-pointer ${viewMode === 'write' ? 'text-pink-500 border-b-2 border-pink-500' : 'text-slate-400 hover:text-pink-500'}`}
                                 >
-                                    [ Write ]
+                                    Write
                                 </button>
                                 <button
                                     type="button"
@@ -517,20 +522,20 @@ const EditBlog = () => {
                                             setViewMode('preview');
                                         }
                                     }}
-                                    className={`text-sm font-black uppercase tracking-widest transition-colors cursor-pointer ${viewMode === 'preview' ? 'text-emerald-600 border-b-2 border-emerald-600' : 'text-black hover:text-pink-500'}`}
+                                    className={`text-sm font-bold uppercase tracking-wider transition-colors cursor-pointer ${viewMode === 'preview' ? 'text-emerald-500 border-b-2 border-emerald-500' : 'text-slate-400 hover:text-pink-500'}`}
                                 >
-                                    [ Preview ]
+                                    Preview
                                 </button>
                             </div>
                             <div className="flex items-center gap-6">
-                                <span className={`text-xs font-black uppercase tracking-widest ${viewMode === 'write' ? 'text-pink-500' : 'text-emerald-600'}`}>
+                                <span className={`text-xs font-semibold uppercase tracking-wider ${viewMode === 'write' ? 'text-pink-500' : 'text-emerald-500'}`}>
                                     {viewMode === 'write' ? 'Active Workflow: Editing' : 'Active Workflow: Reviewing'}
                                 </span>
                                 <button
                                     onClick={() => setIsFullscreen(false)}
-                                    className="p-2 bg-white border-2 border-black hover:bg-pink-100 text-black rounded shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition cursor-pointer"
+                                    className="p-2 bg-white dark:bg-[#2b2d31] border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-pink-500/10 hover:text-pink-500 rounded-xl transition-all shadow-md cursor-pointer"
                                 >
-                                    <Minimize2 size={20} strokeWidth={2.5} />
+                                    <Minimize2 size={20} />
                                 </button>
                             </div>
                         </div>
@@ -543,21 +548,21 @@ const EditBlog = () => {
                                     value={content}
                                     onPaste={handlePaste}
                                     onChange={(e) => setContent(e.target.value)}
-                                    className="w-full h-full bg-white text-black text-xl font-semibold p-12 border-4 border-black shadow-[10px_10px_0px_#000] focus:outline-none focus:bg-pink-100/10 max-w-5xl mx-auto block resize-none"
+                                    className="w-full h-full bg-white dark:bg-[#1e1f22] text-black dark:text-white text-lg font-medium p-8 border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 transition-all max-w-5xl mx-auto block resize-none"
                                     autoFocus
                                     placeholder="Begin log entry..."
                                 />
                             ) : (
                                 <div className="w-full h-full overflow-y-auto px-12 py-8 scrollbar-hide">
                                     <div className="max-w-4xl mx-auto">
-                                        <div className="flex justify-between items-center mb-8 pb-4 border-b-4 border-black">
-                                            <div className="flex items-center gap-2 text-black font-black uppercase text-xs">
-                                                <TerminalIcon size={14} strokeWidth={2.5} />
+                                        <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-200 dark:border-slate-700">
+                                            <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 font-semibold uppercase text-xs">
+                                                <TerminalIcon size={14} />
                                                 <span>~/fullscreen/preview</span>
                                             </div>
                                         </div>
-                                        <h1 className="text-4xl font-black uppercase text-black mb-12">{title || 'Untitled Entry'}</h1>
-                                        <div className="prose prose-lg mx-auto max-w-3xl text-black leading-relaxed">
+                                        <h1 className="text-4xl font-black uppercase mb-12">{title || 'Untitled Entry'}</h1>
+                                        <div className="prose prose-lg mx-auto max-w-3xl text-slate-800 dark:text-slate-200 leading-relaxed dark:prose-invert">
                                             <ReactMarkdown
                                                 rehypePlugins={[rehypeRaw, rehypeHighlight]}
                                                 remarkPlugins={[remarkBreaks]}

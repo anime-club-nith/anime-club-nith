@@ -163,19 +163,21 @@ const ChatRoomCard = ({ room }: { room: Room }) => {
   };
 
   return (
-    <div className="group relative flex flex-col justify-between h-full p-8 border-4 border-black bg-white shadow-[8px_8px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_#000] transition-all duration-200">
+    <div className="group relative flex flex-col justify-between h-full p-8 bg-white/90 dark:bg-[#1e1f22]/90 backdrop-blur-md rounded-2xl border border-slate-200/60 dark:border-slate-700/40 shadow-lg hover:shadow-xl hover:shadow-pink-500/5 hover:-translate-y-1 transition-all duration-300">
       {/* Content Section */}
       <div className="space-y-4">
         {/* Header with Icon */}
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-black uppercase text-black tracking-wide">
+          <h3 className="text-xl font-black uppercase text-black dark:text-white tracking-wide">
             {room.title}
           </h3>
-          <room.icon className="w-6 h-6 text-black" strokeWidth={2.5} />
+          <div className="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-500 flex items-center justify-center">
+            <room.icon className="w-5 h-5" />
+          </div>
         </div>
 
         {/* Description */}
-        <p className="text-gray-700 text-sm font-semibold leading-relaxed min-h-[48px]">
+        <p className="text-slate-600 dark:text-slate-300 text-sm font-medium leading-relaxed min-h-[48px]">
           {room.description}
         </p>
       </div>
@@ -187,14 +189,14 @@ const ChatRoomCard = ({ room }: { room: Room }) => {
             void handleJoinRoom(room.slug);
           }}
           disabled={isJoining}
-          className="w-full py-3 px-6 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-[4px_4px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition duration-200 cursor-pointer"
+          className="w-full py-3 px-6 rounded-xl bg-pink-500 hover:bg-pink-400 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-pink-500/25 hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-200 cursor-pointer"
         >
           <span>{isJoining ? "Joining..." : "Join Room"}</span>
-          <ArrowRight className="w-4 h-4" strokeWidth={3} />
+          <ArrowRight className="w-4 h-4" />
         </button>
 
         {joinError && (
-          <p className="text-xs font-black uppercase text-red-600 text-center">{joinError}</p>
+          <p className="text-xs font-semibold text-red-500 text-center">{joinError}</p>
         )}
       </div>
     </div>
@@ -203,22 +205,25 @@ const ChatRoomCard = ({ room }: { room: Room }) => {
 
 const JoinActiveRoom = () => {
   return (
-    <div className="min-h-screen bg-pink-100/35 text-black font-sans selection:bg-pink-500/30">
+    <div className="min-h-screen bg-[#f2f3f5] dark:bg-[#0c0d12] text-black dark:text-white font-sans selection:bg-pink-500/30 transition-colors relative overflow-hidden">
       <Navbar />
+
+      {/* Background glow */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-pink-500/5 dark:bg-pink-500/8 rounded-full blur-3xl pointer-events-none" />
       
       {/* Header Section */}
-      <div className="max-w-7xl mx-auto px-6 pt-24 pb-12 mt-8 text-center">
-        <h1 className="text-4xl md:text-5xl font-black uppercase text-black tracking-tight mb-4">
+      <div className="max-w-7xl mx-auto px-6 pt-32 pb-12 text-center relative z-10">
+        <h1 className="text-4xl md:text-5xl font-black uppercase text-black dark:text-white tracking-tight mb-4">
           Active Rooms
         </h1>
-        <p className="text-gray-700 text-lg max-w-2xl mx-auto font-semibold">
+        <p className="text-slate-600 dark:text-slate-300 text-lg max-w-2xl mx-auto font-medium">
           Select a domain to connect with peers. Real-time discussions for
           engineering, design, and casual conversations.
         </p>
       </div>
 
       {/* Grid Layout Section */}
-      <main className="max-w-7xl mx-auto px-6 pb-24">
+      <main className="max-w-7xl mx-auto px-6 pb-24 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {ROOM_DATA.map((room) => (
             <ChatRoomCard key={room.id} room={room} />

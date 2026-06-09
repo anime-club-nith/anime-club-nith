@@ -79,26 +79,30 @@ export default function GoogleCallback() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-pink-100/35 text-black font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden selection:bg-pink-500/30">
+    <div className="min-h-screen bg-[#f2f3f5] dark:bg-[#0c0d12] text-black dark:text-white font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden selection:bg-pink-500/30 transition-colors">
       <Navbar />
-      <div className="w-full max-w-md border-4 border-black bg-white p-8 shadow-[10px_10px_0px_#000] relative z-10 text-center mt-24">
+      
+      {/* Background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-500/5 dark:bg-pink-500/8 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="w-full max-w-md bg-white/90 dark:bg-[#1e1f22]/90 backdrop-blur-md rounded-2xl border border-slate-200/60 dark:border-slate-700/40 shadow-2xl shadow-slate-900/10 dark:shadow-black/40 p-8 relative z-10 text-center mt-24">
         {error ? (
           <>
-            <h1 className="text-2xl font-black uppercase text-red-600 mb-4 border-2 border-black bg-red-100 py-2">Auth Error</h1>
-            <p className="font-semibold mb-6">{error}</p>
-            <a href="/login" className="w-full py-4 px-6 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-sm tracking-wider flex items-center justify-center gap-2 shadow-[6px_6px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer">
+            <h1 className="text-xl font-black text-red-500 mb-4">Auth Error</h1>
+            <p className="font-semibold text-slate-600 dark:text-slate-300 mb-6">{error}</p>
+            <a href="/login" className="w-full py-3.5 px-6 rounded-xl bg-pink-500 hover:bg-pink-400 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-pink-500/25 hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-200 cursor-pointer">
               Back to Login
             </a>
           </>
         ) : (
           <>
-            <h1 className="text-2xl font-black uppercase text-black mb-4">Authenticating</h1>
+            <h1 className="text-2xl font-black text-black dark:text-white mb-4">Authenticating</h1>
             <div className="flex justify-center items-center gap-2 mb-4">
               <span className="w-3 h-3 bg-pink-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
               <span className="w-3 h-3 bg-pink-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
               <span className="w-3 h-3 bg-pink-500 rounded-full animate-bounce"></span>
             </div>
-            <p className="font-semibold text-gray-600">Please wait while we sync with Google...</p>
+            <p className="font-semibold text-slate-500 dark:text-slate-400">Please wait while we sync with Google...</p>
           </>
         )}
       </div>

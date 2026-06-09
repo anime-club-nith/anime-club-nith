@@ -126,13 +126,11 @@ const ReadBlog = () => {
     if (loading) {
         return (
             <>
-                <div className="min-h-screen bg-pink-100/35 text-black font-sans">
+                <div className="min-h-screen bg-[#f2f3f5] dark:bg-[#0c0d12] text-black dark:text-white font-sans flex flex-col items-center justify-center transition-colors">
                     <Navbar />
-                    <div className="pt-24 pb-32 flex items-center justify-center min-h-screen">
-                        <div className="text-center">
-                            <div className="w-16 h-16 border-8 border-black border-t-pink-500 rounded-full animate-spin mx-auto mb-4"></div>
-                            <p className="text-black font-black uppercase text-xs tracking-wider">Loading entry...</p>
-                        </div>
+                    <div className="flex flex-col items-center justify-center pt-24 pb-32">
+                        <div className="w-12 h-12 border-4 border-pink-500/20 border-t-pink-500 rounded-full animate-spin mb-4"></div>
+                        <p className="text-slate-500 dark:text-slate-400 font-semibold text-xs tracking-wider uppercase">Loading entry...</p>
                     </div>
                 </div>
                 <Footer />
@@ -143,16 +141,17 @@ const ReadBlog = () => {
     if (error || !post) {
         return (
             <>
-                <div className="min-h-screen bg-pink-100/35 text-black font-sans">
+                <div className="min-h-screen bg-[#f2f3f5] dark:bg-[#0c0d12] text-black dark:text-white font-sans flex flex-col items-center justify-center transition-colors relative overflow-hidden">
                     <Navbar />
-                    <div className="pt-24 pb-32 flex items-center justify-center min-h-screen">
-                        <div className="text-center max-w-md border-4 border-black bg-white p-8 shadow-[8px_8px_0px_#000]">
-                            <X size={64} className="text-red-600 mx-auto mb-4" strokeWidth={2.5} />
-                            <h2 className="text-3xl font-black uppercase text-black mb-4">Entry Not Found</h2>
-                            <p className="text-gray-700 font-semibold mb-8">{error || 'The blog post you are looking for does not exist.'}</p>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-500/5 dark:bg-pink-500/8 rounded-full blur-3xl pointer-events-none" />
+                    <div className="pt-24 pb-32 flex items-center justify-center relative z-10 w-full max-w-md p-6">
+                        <div className="card-modern w-full p-8 text-center">
+                            <X size={48} className="text-red-500 mx-auto mb-4" />
+                            <h2 className="text-2xl font-black uppercase mb-4">Entry Not Found</h2>
+                            <p className="text-slate-500 dark:text-slate-400 font-medium mb-8 text-sm">{error || 'The blog post you are looking for does not exist.'}</p>
                             <button
                                 onClick={() => navigate('/blogs')}
-                                className="px-6 py-3 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer text-sm"
+                                className="w-full btn-pink-modern text-sm"
                             >
                                 Return to Index
                             </button>
@@ -166,57 +165,60 @@ const ReadBlog = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-pink-100/35 text-black font-sans selection:bg-pink-500/30">
+            <div className="min-h-screen bg-[#f2f3f5] dark:bg-[#0c0d12] text-black dark:text-white font-sans selection:bg-pink-500/30 transition-colors relative overflow-hidden">
                 <Navbar />
 
-                <div className="pt-24 pb-32">
-                    <div className="max-w-4xl mx-auto px-6 lg:px-12 mt-8 border-4 border-black bg-white p-8 md:p-12 shadow-[10px_10px_0px_#000]">
+                {/* Background glow */}
+                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-pink-500/5 dark:bg-pink-500/8 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="pt-24 pb-32 relative z-10">
+                    <div className="max-w-4xl mx-auto px-6 lg:px-12 mt-8 card-modern p-8 md:p-12">
                         
                         {/* Reader Header */}
-                        <div className="flex justify-between items-center mb-8 pb-4 border-b-4 border-black">
-                            <div className="flex items-center gap-2 text-black font-black uppercase text-xs">
-                                <TerminalIcon size={14} strokeWidth={2.5} />
+                        <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-200/60 dark:border-slate-800/60">
+                            <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 font-semibold uppercase text-xs">
+                                <TerminalIcon size={14} />
                                 <span>~/logs/{post._id}</span>
                             </div>
                             <button
                                 onClick={() => navigate('/blogs')}
-                                className="p-2 bg-white border-2 border-black hover:bg-pink-100 text-black shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer group"
+                                className="p-2 bg-white dark:bg-[#2b2d31] border border-slate-200 dark:border-slate-700/60 hover:bg-pink-500/10 text-slate-500 dark:text-slate-400 hover:text-pink-500 rounded-xl transition-all cursor-pointer group"
                             >
-                                <X size={20} strokeWidth={2.5} className="group-hover:rotate-90 transition-transform duration-300" />
+                                <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
                             </button>
                         </div>
 
                         {/* Title Block */}
-                        <div className="mb-12 border-b-4 border-black pb-8">
+                        <div className="mb-12 border-b border-slate-200/60 dark:border-slate-800/60 pb-8">
                             {post.tags && post.tags.length > 0 && (
                                 <div className="flex flex-wrap gap-2 mb-8">
                                     {post.tags.map(tag => (
                                         <span
                                             key={tag}
-                                            className="px-2 py-1 border-2 border-black bg-pink-100 text-xs font-black uppercase text-black shadow-[2px_2px_0px_#000]"
+                                            className="px-2.5 py-1 rounded-lg bg-pink-500/10 text-pink-600 dark:text-pink-400 text-[10px] font-semibold border border-pink-500/20 uppercase tracking-wider"
                                         >
                                             {tag}
                                         </span>
                                     ))}
                                 </div>
                             )}
-                            <h1 className="text-3xl md:text-5xl font-black uppercase text-black mb-6 leading-tight">
+                            <h1 className="text-3xl md:text-5xl font-black uppercase text-black dark:text-white mb-6 leading-tight">
                                 {post.title}
                             </h1>
-                            <div className="flex flex-col md:flex-row md:items-center gap-4 text-gray-700 text-xs font-black uppercase border-l-4 border-black pl-4">
+                            <div className="flex flex-col md:flex-row md:items-center gap-4 text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase border-l-2 border-pink-500 pl-4">
                                 <span>{formatDate(post.createdAt)}</span>
                                 <span className="hidden md:inline">/</span>
-                                <span className="text-pink-600">{post.readTime}</span>
+                                <span className="text-pink-500 font-bold">{post.readTime}</span>
                             </div>
                             {post.user && (
-                                <div className="flex flex-col gap-0.5 mt-8 text-xs font-black uppercase text-pink-600">
+                                <div className="flex flex-col gap-0.5 mt-8 text-xs font-bold uppercase text-pink-500">
                                     <span>Author: {post.user.name}</span>
                                 </div>
                             )}
                         </div>
 
                         {/* Content */}
-                        <div className="prose prose-lg mx-auto max-w-3xl text-black leading-relaxed selection:bg-pink-500/30">
+                        <div className="prose prose-lg mx-auto max-w-3xl text-slate-800 dark:text-slate-200 leading-relaxed selection:bg-pink-500/30 dark:prose-invert">
                             <ReactMarkdown
                                 rehypePlugins={[rehypeRaw, rehypeHighlight]}
                                 remarkPlugins={[remarkBreaks]}
@@ -226,7 +228,7 @@ const ReadBlog = () => {
                                             src={src}
                                             alt={alt}
                                             onClick={() => setExpandedImage(src || '')}
-                                            className="cursor-pointer hover:opacity-75 transition-opacity border-4 border-black shadow-[4px_4px_0px_#000]"
+                                            className="cursor-pointer hover:opacity-75 transition-opacity border border-slate-200 dark:border-slate-850 rounded-xl shadow-md"
                                             title="Click to expand"
                                         />
                                     )
@@ -243,41 +245,41 @@ const ReadBlog = () => {
                                 onClick={() => setExpandedImage(null)}
                             >
                                 <div
-                                    className="relative max-w-8xl max-h-[90vh] animate-in zoom-in-95 duration-200"
+                                    className="relative max-w-5xl max-h-[90vh] animate-in zoom-in-95 duration-200"
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     <img
                                         src={expandedImage}
                                         alt="Expanded view"
-                                        className="w-full h-full object-contain border-4 border-black bg-white shadow-[10px_10px_0px_#000]"
+                                        className="w-full h-full object-contain border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1e1f22] p-2 rounded-2xl shadow-2xl"
                                     />
                                     <button
                                         onClick={() => setExpandedImage(null)}
-                                        className="absolute -top-12 -right-12 p-2 bg-white border-2 border-black hover:bg-pink-100 text-black rounded-full transition-colors cursor-pointer"
+                                        className="absolute -top-12 -right-12 p-2 bg-white dark:bg-[#1e1f22] border border-slate-200 dark:border-slate-750 text-slate-600 dark:text-slate-400 hover:text-pink-500 rounded-full transition-colors cursor-pointer"
                                         aria-label="Close expanded image"
                                     >
-                                        <X size={24} strokeWidth={2.5} />
+                                        <X size={24} />
                                     </button>
                                 </div>
                             </div>
                         )}
 
                         {/* Footer Navigation */}
-                        <div className="mt-20 pt-8 border-t-4 border-black flex justify-between items-center">
+                        <div className="mt-20 pt-8 border-t border-slate-200/60 dark:border-slate-800/60 flex justify-between items-center">
                             <button
                                 onClick={() => navigate('/blogs')}
-                                className="flex items-center gap-2 border-4 border-black px-6 py-3 bg-white hover:bg-pink-100 text-black font-black uppercase text-xs tracking-wider shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
+                                className="flex items-center gap-2 btn-outline-modern py-2.5 px-5 text-xs uppercase border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200"
                             >
-                                <ChevronRight className="rotate-180" size={16} strokeWidth={2.5} />
+                                <ChevronRight className="rotate-180" size={16} />
                                 <span>Return to Index</span>
                             </button>
 
                             {canDelete && (
                                 <button
                                     onClick={handleDeleteBlog}
-                                    className="flex items-center gap-2 border-4 border-black px-6 py-3 bg-red-500 hover:bg-red-400 text-black font-black uppercase text-xs tracking-wider shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
+                                    className="flex items-center gap-2 bg-red-500 hover:bg-red-400 text-white font-bold rounded-xl px-5 py-2.5 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-md hover:shadow-red-500/30 text-xs uppercase"
                                 >
-                                    <Trash2 size={16} strokeWidth={2.5} />
+                                    <Trash2 size={16} />
                                     <span>Delete Entry</span>
                                 </button>
                             )}

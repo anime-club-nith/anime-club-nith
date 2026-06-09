@@ -88,18 +88,19 @@ const BlogPage = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-pink-100/35 text-black font-sans selection:bg-pink-500/30 relative">
-
-                {/* MAIN LIST */}
+            <div className="min-h-screen bg-[#f2f3f5] dark:bg-[#0c0d12] text-black dark:text-white font-sans selection:bg-pink-500/30 transition-colors relative overflow-hidden">
                 <Navbar />
-                <div className="pt-24 pb-32">
 
+                {/* Background glow */}
+                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-pink-500/5 dark:bg-pink-500/8 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="pt-24 pb-32 relative z-10">
                     <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
 
                         {/* HEADER */}
-                        <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-12 pb-8 border-b-4 border-black mt-8">
+                        <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-12 pb-8 border-b border-slate-200/60 dark:border-slate-800/60 mt-8">
                             <div className="flex-1">
-                                <h1 className="text-6xl md:text-8xl lg:text-9xl font-black text-black tracking-tighter uppercase leading-tight">
+                                <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-black dark:text-white tracking-tighter uppercase leading-tight">
                                     CLUB<br />BLOGS.
                                 </h1>
                             </div>
@@ -108,19 +109,19 @@ const BlogPage = () => {
                                     <input
                                         type="text"
                                         placeholder="Search entries..."
-                                        className="w-full md:w-80 bg-white border-4 border-black text-black px-4 py-3 pr-10 focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition placeholder:text-gray-500 font-semibold"
+                                        className="w-full md:w-80 bg-white dark:bg-[#1e1f22] border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 pr-10 text-black dark:text-white placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500/40 focus:border-pink-500 transition-all font-semibold"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                     />
-                                    <Search size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-black" strokeWidth={2.5} />
+                                    <Search size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                 </div>
                                 <div className="flex gap-3">
                                     {localStorage.getItem("authUser") && (
                                         <button
                                             onClick={() => navigate('/my-blogs')}
-                                            className="flex items-center justify-center cursor-pointer gap-2 px-6 py-3 border-4 border-black bg-white hover:bg-pink-100 text-black shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition font-black uppercase text-xs tracking-wider"
+                                            className="flex-1 md:flex-none btn-outline-modern py-2.5 px-5 text-sm flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200"
                                         >
-                                            <User size={16} strokeWidth={2.5} />
+                                            <User size={15} />
                                             <span>My Blogs</span>
                                         </button>
                                     )}
@@ -133,9 +134,9 @@ const BlogPage = () => {
                                             }
                                             navigate('/write-blog');
                                         }}
-                                        className="flex items-center justify-center cursor-pointer gap-2 px-6 py-3 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition font-black uppercase text-xs tracking-wider"
+                                        className="flex-1 md:flex-none btn-pink-modern py-2.5 px-5 text-sm flex items-center justify-center gap-2"
                                     >
-                                        <PenTool size={16} strokeWidth={2.5} />
+                                        <PenTool size={15} />
                                         <span>Write Blog</span>
                                     </button>
                                 </div>
@@ -144,61 +145,67 @@ const BlogPage = () => {
 
                         {/* NO-IMAGE POST LIST */}
                         <div className="flex flex-col gap-8">
-                            {Array.isArray(filteredPosts) && filteredPosts.map((post, index) => (
-                                <div
-                                    key={post._id || post.id || index}
-                                    className="group relative border-4 border-black bg-white p-8 md:p-12 shadow-[8px_8px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_#000] transition-all duration-200 cursor-pointer"
-                                    onClick={() => navigate(`/blogs/${post._id}`)}
-                                >
-                                    <div className="flex flex-col md:flex-row gap-8 md:gap-20 items-start">
+                            {Array.isArray(filteredPosts) && filteredPosts.length === 0 ? (
+                                <div className="text-center py-16 bg-white/40 dark:bg-[#1e1f22]/40 border border-slate-200/50 dark:border-slate-800/40 rounded-2xl p-8">
+                                    <p className="text-slate-500 dark:text-slate-400 font-medium">No blog entries found matching your query.</p>
+                                </div>
+                            ) : (
+                                filteredPosts.map((post, index) => (
+                                    <div
+                                        key={post._id || post.id || index}
+                                        className="group relative bg-white/95 dark:bg-[#1e1f22]/90 backdrop-blur-md rounded-2xl border border-slate-200/60 dark:border-slate-700/40 p-8 md:p-12 shadow-lg hover:shadow-xl hover:shadow-pink-500/5 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+                                        onClick={() => navigate(`/blogs/${post._id}`)}
+                                    >
+                                        <div className="flex flex-col md:flex-row gap-8 md:gap-20 items-start">
 
-                                        {/* Column 1: Index & Meta */}
-                                        <div className="w-full md:w-32 flex flex-row md:flex-col justify-between md:justify-start gap-4 shrink-0">
-                                            <span className="font-black text-4xl md:text-6xl text-pink-500 select-none">
-                                                {(index + 1).toString().padStart(2, '0')}
-                                            </span>
-                                            <div className="flex flex-col text-xs font-black uppercase tracking-widest text-gray-500">
-                                                <span>{formatDate(post.createdAt)}</span>
-                                                <span className="mt-1 text-pink-600">{post.readTime}</span>
-                                            </div>
-                                        </div>
-
-                                        {/* Column 2: Main Content */}
-                                        <div className="flex-1 min-w-0">
-                                            {/* Tags */}
-                                            <div className="flex flex-wrap gap-2 mb-6">
-                                                {post.tags.map(tag => (
-                                                    <span key={tag} className="px-2 py-1 border-2 border-black bg-pink-100 text-xs font-black uppercase text-black shadow-[2px_2px_0px_#000]">
-                                                        {tag}
-                                                    </span>
-                                                ))}
-                                            </div>
-
-                                            {/* Title */}
-                                            <h2 className="text-3xl md:text-5xl font-black uppercase text-black mb-4 leading-tight">
-                                                {post.title}
-                                            </h2>
-
-                                            {/* Excerpt */}
-                                            <p className="text-gray-700 text-base md:text-lg font-semibold leading-relaxed mb-6">
-                                                {post.excerpt}
-                                            </p>
-
-                                            {/* User Info */}
-                                            {post.user && (
-                                                <div className="flex flex-col gap-0.5 text-xs font-black uppercase text-pink-600">
-                                                    <span>By {post.user.name}</span>
+                                            {/* Column 1: Index & Meta */}
+                                            <div className="w-full md:w-32 flex flex-row md:flex-col justify-between md:justify-start gap-4 shrink-0">
+                                                <span className="font-black text-4xl md:text-6xl text-pink-500 select-none opacity-80 group-hover:opacity-100 transition-opacity">
+                                                    {(index + 1).toString().padStart(2, '0')}
+                                                </span>
+                                                <div className="flex flex-col text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                                                    <span>{formatDate(post.createdAt)}</span>
+                                                    <span className="mt-1 text-pink-500 font-bold">{post.readTime}</span>
                                                 </div>
-                                            )}
+                                            </div>
 
-                                            {/* Action */}
-                                            <div className="flex items-center gap-2 text-black font-black uppercase tracking-widest text-xs mt-6">
-                                                Read Entry <ArrowUpRight size={16} strokeWidth={2.5} />
+                                            {/* Column 2: Main Content */}
+                                            <div className="flex-1 min-w-0">
+                                                {/* Tags */}
+                                                <div className="flex flex-wrap gap-2 mb-6">
+                                                    {post.tags.map(tag => (
+                                                        <span key={tag} className="px-2.5 py-1 rounded-lg bg-pink-500/10 text-pink-600 dark:text-pink-400 text-[10px] font-semibold border border-pink-500/20 uppercase tracking-wider">
+                                                            {tag}
+                                                        </span>
+                                                    ))}
+                                                </div>
+
+                                                {/* Title */}
+                                                <h2 className="text-2xl md:text-4xl font-black uppercase text-black dark:text-white mb-4 leading-tight group-hover:text-pink-500 transition-colors">
+                                                    {post.title}
+                                                </h2>
+
+                                                {/* Excerpt */}
+                                                <p className="text-slate-600 dark:text-slate-300 text-base font-medium leading-relaxed mb-6">
+                                                    {post.excerpt}
+                                                </p>
+
+                                                {/* User Info */}
+                                                {post.user && (
+                                                    <div className="flex flex-col gap-0.5 text-xs font-bold uppercase text-pink-500">
+                                                        <span>By {post.user.name}</span>
+                                                    </div>
+                                                )}
+
+                                                {/* Action */}
+                                                <div className="flex items-center gap-2 text-pink-500 dark:text-pink-400 font-bold uppercase tracking-widest text-xs mt-6 group-hover:text-pink-400 transition-colors">
+                                                    Read Entry <ArrowUpRight size={14} />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            )}
                         </div>
 
                     </div>
@@ -208,35 +215,35 @@ const BlogPage = () => {
                 {showAuthModal && (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
                         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowAuthModal(false)} />
-                        <div className="relative bg-white border-4 border-black p-8 max-w-md w-full shadow-[10px_10px_0px_#000] animate-in fade-in zoom-in duration-200">
+                        <div className="relative bg-white dark:bg-[#1e1f22] rounded-2xl border border-slate-200/60 dark:border-slate-700/40 p-8 max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-200">
                             <button
                                 onClick={() => setShowAuthModal(false)}
-                                className="absolute top-4 right-4 text-black hover:text-pink-500 transition-colors cursor-pointer"
+                                className="absolute top-4 right-4 text-slate-400 hover:text-pink-500 transition-colors cursor-pointer"
                             >
-                                <X size={20} strokeWidth={2.5} />
+                                <X size={20} />
                             </button>
 
                             <div className="flex flex-col items-center text-center space-y-4">
-                                <div className="w-12 h-12 border-4 border-black bg-pink-500 text-black flex items-center justify-center mb-2">
-                                    <PenTool size={24} strokeWidth={2.5} />
+                                <div className="w-12 h-12 rounded-xl bg-pink-500/10 text-pink-500 flex items-center justify-center mb-2">
+                                    <PenTool size={22} />
                                 </div>
-                                <h3 className="text-xl font-black uppercase text-black">
+                                <h3 className="text-xl font-black uppercase text-black dark:text-white">
                                     Login to Write
                                 </h3>
-                                <p className="text-gray-600 font-semibold text-sm">
+                                <p className="text-slate-500 dark:text-slate-400 font-medium text-sm">
                                     Join the community to share your reviews and thoughts.
                                 </p>
 
                                 <div className="grid grid-cols-2 gap-4 w-full pt-4">
                                     <button
                                         onClick={() => navigate('/login')}
-                                        className="w-full py-2.5 px-4 border-4 border-black bg-pink-500 hover:bg-pink-400 text-black font-black uppercase text-sm shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
+                                        className="w-full btn-pink-modern py-2.5 text-xs font-bold uppercase tracking-wide shadow-none"
                                     >
                                         Log In
                                     </button>
                                     <button
                                         onClick={() => navigate('/signup')}
-                                        className="w-full py-2.5 px-4 border-4 border-black bg-white hover:bg-pink-100 text-black font-black uppercase text-sm shadow-[4px_4px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] transition cursor-pointer"
+                                        className="w-full btn-outline-modern py-2.5 text-xs font-bold uppercase tracking-wide border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200"
                                     >
                                         Sign Up
                                     </button>
