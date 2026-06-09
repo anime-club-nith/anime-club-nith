@@ -21,11 +21,11 @@ interface MembersModalProps {
 }
 
 const MOCK_MEMBERS: Member[] = [
-  { id: 1, name: "Alex Dev", avatar: "https://api.dicebear.com/7.x/avataaars/png?seed=Alex" },
-  { id: 2, name: "Sarah Chen", avatar: "https://api.dicebear.com/7.x/avataaars/png?seed=Sarah" },
-  { id: 3, name: "Mike Ross", avatar: "https://api.dicebear.com/7.x/avataaars/png?seed=Mike" },
-  { id: 4, name: "Jessica Suits", avatar: "https://api.dicebear.com/7.x/avataaars/png?seed=Jessica" },
-  { id: 5, name: "Harvey Specter", avatar: "https://api.dicebear.com/7.x/avataaars/png?seed=Harvey" },
+  { id: 1, name: "Alex Dev", avatar: "https://api.dicebear.com/7.x/initials/png?seed=Alex" },
+  { id: 2, name: "Sarah Chen", avatar: "https://api.dicebear.com/7.x/initials/png?seed=Sarah" },
+  { id: 3, name: "Mike Ross", avatar: "https://api.dicebear.com/7.x/initials/png?seed=Mike" },
+  { id: 4, name: "Jessica Suits", avatar: "https://api.dicebear.com/7.x/initials/png?seed=Jessica" },
+  { id: 5, name: "Harvey Specter", avatar: "https://api.dicebear.com/7.x/initials/png?seed=Harvey" },
 ];
 
 export default function MembersModal({ visible, onClose, members = MOCK_MEMBERS, roomTitle = "Room Members", currentUserId }: MembersModalProps) {
