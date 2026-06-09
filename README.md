@@ -75,7 +75,24 @@ This repository is organized as a monorepo containing the following components:
 
 For detailed configuration options and API documentation, please refer to the README files within each subdirectory.
 
+## Branding Assets
+
+This project utilizes unified branding logo assets located in the following configurations:
+-   **Dark Logo (`logo-dark.png`)**: Designed for dark mode themes.
+-   **Light Logo (`logo-light.png`)**: Designed for light mode themes.
+-   **Vertical Logo (`logo-vertical.png`)**: Used for the landing page hero section.
+-   **Horizontal Logo (`logo-horizontal.png`)**: Horizontal variant for wide banner containers.
+
+### Updating Branding Assets
+
+To refresh the app and website branding:
+1. Copy the new PNG assets to their respective paths in `frontend/public/` (for the website) and `mobile/assets/` (for the mobile application).
+2. Run `npx expo prebuild --platform android` inside the `mobile` directory to regenerate native Android icons and splash assets.
+3. Build the new release APK in `mobile/android/` by running `.\gradlew assembleRelease` and copy the resulting `app-release.apk` output to `frontend/public/`.
+4. Rebuild the frontend web assets by running `npm run build` in the `frontend` directory.
+
 ## Contributing
+
 
 1.  Fork the repository.
 2.  Create a feature branch (`git checkout -b feature/your-feature`).

@@ -280,7 +280,29 @@ The mobile client is built on top of Expo Go.
 
 ---
 
-## 8. Recommendations & Code Improvements
+## 8. Branding & Asset Pipeline
+
+Anime Club NITH features custom-tailored branding elements designed to maintain a consistent aesthetic across all client implementations.
+
+### Branding Assets Hierarchy
+
+The branding assets consist of four distinct layout variants of the official logo:
+1. **Dark Logo (`logo-dark.png` / `logo-3.png`)**: High-contrast, dark-background logo optimized for dark mode themes.
+2. **Light Logo (`logo-light.png` / `logo-2.png`)**: Vibrant-colored logo tailored for clean, light backgrounds.
+3. **Vertical Logo (`logo-vertical.png` / `logo-4.png`)**: Portrait-oriented banner configuration displayed in high resolution in the website's main Hero Section.
+4. **Horizontal Logo (`logo-horizontal.png` / `logo-1.png`)**: Landscape-oriented configuration utilized for wide layout interfaces.
+
+### Cross-Platform Asset Propagation
+
+The logo update workflow propagates assets dynamically to both platforms:
+- **Web Frontend**: Assets reside under `frontend/public/` and are automatically bundled into `frontend/dist/` during Vite production compilation (`npm run build`).
+- **Mobile Application**: The Expo mobile client references its assets from `mobile/assets/` (e.g. `icon.png`, `adaptive-icon.png`, `splash-icon.png`, and `favicon.png`).
+  - Running `npx expo prebuild --platform android` processes the update and automatically builds the corresponding mipmap launcher graphics and launcher splash resources in the native Android container `./android`.
+  - Compiling the Android package via Gradle wrapper (`./gradlew assembleRelease`) packages the updated logos inside a fresh compilation of the mobile app (`app-release.apk`), which is then served directly from the website's public download path.
+
+---
+
+## 9. Recommendations & Code Improvements
 
 1. **Standardize Socket Events**:
    Align the backend websocket receive event with frontend expectations. Clean up the unused `send_message` listener on the socket server or completely transition to socket-based message delivery if REST POST request overhead becomes a bottleneck.
@@ -288,3 +310,4 @@ The mobile client is built on top of Expo Go.
    Extract shared model interfaces (e.g., `Message`, `Room`, `User`) into a shared types directory in the root of the monorepo to reduce duplicate type declarations between `frontend/src`, `backend/types`, and `mobile/types`.
 3. **Cloudinary Asset Optimization**:
    Leverage Cloudinary's dynamic URL transformations (e.g., cropping, resolution scaling, and auto-format/auto-quality params like `f_auto,q_auto`) on the frontend to deliver responsive, optimized images for both web and mobile clients.
+
