@@ -100,6 +100,20 @@ app.get("/", allowOnlyAuthenticatedUser, (req, res) => {
     .json({ message: "Hey welcome to the Anime Club NITH server" });
 });
 
+// Diagnostic health endpoint (no auth required)
+app.get("/api/health", (req, res) => {
+  const mongoose = require("mongoose");
+  return res.status(200).json({
+    status: "ok",
+    nodeEnv: process.env.NODE_ENV,
+    dbState: mongoose.connection.readyState, // 0=disconnected,1=connected,2=connecting,3=disconnecting
+    hasMongoUri: !!process.env.MONGO_URI,
+    hasJwt: !!process.env.JWT_ENCRYP_KEY,
+    hasGoogleClientId: !!process.env.GOOGLE_CLIENT_ID,
+    mongoUriStart: process.env.MONGO_URI?.substring(0, 30) + "...",
+  });
+});
+
 app.use('/api/chat', allowOnlyAuthenticatedUser, chatRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/room', allowOnlyAuthenticatedUser, roomRoute);
