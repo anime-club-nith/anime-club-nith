@@ -13,17 +13,17 @@ export default function WelcomeScreen({ navigation }: any) {
 
             <View style={styles.contentContainer}>
 
-                {/* Logo Image */}
-                <Image
-                    source={require('../assets/icon.png')}
-                    style={styles.logoImage}
-                    resizeMode="contain"
-                />
+                {/* Club Name Tag */}
+                <Text style={styles.clubTag}>Anime Club NITH</Text>
 
-                {/* Club Name */}
-                <Text style={styles.title}>
-                    Anime Club <Text style={styles.titleAccent}>NITH</Text>
-                </Text>
+                {/* Logo Image */}
+                <View style={styles.logoWrapper}>
+                    <Image
+                        source={require('../assets/icon.png')}
+                        style={styles.logoImage}
+                        resizeMode="cover"
+                    />
+                </View>
 
                 {/* Hero Text */}
                 <Text style={styles.headline}>
@@ -39,6 +39,7 @@ export default function WelcomeScreen({ navigation }: any) {
                 <TouchableOpacity
                     style={styles.button}
                     onPress={() => navigation.navigate('Signup')}
+                    activeOpacity={0.85}
                 >
                     <Text style={styles.buttonText}>Join the Club</Text>
                 </TouchableOpacity>
@@ -46,6 +47,7 @@ export default function WelcomeScreen({ navigation }: any) {
                 <TouchableOpacity
                     style={styles.secondaryButton}
                     onPress={() => navigation.navigate('Login')}
+                    activeOpacity={0.85}
                 >
                     <Text style={styles.secondaryButtonText}>Log In</Text>
                 </TouchableOpacity>
@@ -64,87 +66,88 @@ const createStyles = (colors: any) => StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 24,
+        paddingHorizontal: 28,
+    },
+    clubTag: {
+        fontSize: 13,
+        fontWeight: '600',
+        letterSpacing: 2,
+        color: colors.subText,
+        textTransform: 'uppercase',
+        marginBottom: 28,
+    },
+    logoWrapper: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        overflow: 'hidden',
+        marginBottom: 32,
+        shadowColor: '#E56DB1',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.25,
+        shadowRadius: 20,
+        elevation: 10,
     },
     logoImage: {
-        width: 100,
-        height: 100,
-        marginBottom: 16,
-        borderWidth: 4,
-        borderColor: colors.border,
-        shadowColor: colors.shadow,
-        shadowOffset: { width: 4, height: 4 },
-        shadowOpacity: 1,
-        shadowRadius: 0,
-    },
-    title: {
-        fontSize: 22,
-        fontWeight: '900',
-        color: colors.text,
-        marginBottom: 36,
-        letterSpacing: 0.5,
-        textTransform: 'uppercase',
-    },
-    titleAccent: {
-        color: '#E56DB1',
+        width: 120,
+        height: 120,
+        borderRadius: 60,
     },
     headline: {
-        fontSize: 32,
-        fontWeight: '900',
+        fontSize: 34,
+        fontWeight: '800',
         color: colors.text,
         textAlign: 'center',
+        letterSpacing: -0.5,
         marginBottom: 16,
-        lineHeight: 40,
-        textTransform: 'uppercase',
+        lineHeight: 42,
     },
     highlight: {
         color: '#E56DB1',
     },
     subtitle: {
-        fontSize: 15,
+        fontSize: 16,
         color: colors.subText,
         textAlign: 'center',
         marginBottom: 48,
         lineHeight: 24,
-        fontWeight: '600',
     },
     button: {
         width: '100%',
         backgroundColor: '#E56DB1',
-        paddingVertical: 18,
-        borderWidth: 4,
-        borderColor: colors.border,
+        borderRadius: 16,
+        paddingVertical: 16,
         alignItems: 'center',
-        marginBottom: 16,
-        shadowColor: colors.shadow,
-        shadowOffset: { width: 6, height: 6 },
-        shadowOpacity: 1,
-        shadowRadius: 0,
-        elevation: 4,
+        marginBottom: 12,
+        shadowColor: '#E56DB1',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 12,
+        elevation: 8,
     },
     buttonText: {
-        color: '#000000',
+        color: '#ffffff',
         fontSize: 16,
-        fontWeight: '900',
-        textTransform: 'uppercase',
+        fontWeight: '700',
+        letterSpacing: 0.3,
     },
     secondaryButton: {
         width: '100%',
         backgroundColor: colors.cardBg,
-        borderWidth: 4,
-        borderColor: colors.border,
-        paddingVertical: 18,
+        borderRadius: 16,
+        paddingVertical: 16,
         alignItems: 'center',
+        borderWidth: 1,
+        borderColor: colors.border,
         shadowColor: colors.shadow,
-        shadowOffset: { width: 6, height: 6 },
-        shadowOpacity: 1,
-        shadowRadius: 0,
-        elevation: 4,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 2,
     },
     secondaryButtonText: {
         color: colors.text,
         fontSize: 16,
-        fontWeight: '900',
-        textTransform: 'uppercase',
+        fontWeight: '600',
     },
 });

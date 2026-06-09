@@ -36,7 +36,7 @@ export default function MembersModal({ visible, onClose, members = MOCK_MEMBERS,
     <View style={styles.memberRow}>
       {/* Avatar */}
       <View style={styles.avatarContainer}>
-        <Image source={{ uri: item.avatar }} style={styles.avatar} />
+        <Image source={{ uri: item.avatar }} style={styles.avatar as any} />
       </View>
 
       {/* Info */}
@@ -184,7 +184,7 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   inviteText: {
     color: '#000000',
-    fontWeight: '950',
+    fontWeight: '900',
     fontSize: 16,
     textTransform: 'uppercase',
   },

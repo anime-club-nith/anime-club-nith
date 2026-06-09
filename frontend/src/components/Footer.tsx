@@ -1,80 +1,94 @@
 import { Github, Instagram, GitPullRequest, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
-    <footer className="border-t-4 border-black dark:border-white bg-white dark:bg-[#0c0d12] py-12 px-6 transition-colors">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+    <footer className="bg-white dark:bg-[#0c0d12] border-t border-slate-200/60 dark:border-slate-800/60 py-12 px-6 transition-colors">
+      <div className="max-w-7xl mx-auto">
 
-        {/* Brand Identity */}
-        <div className="flex flex-col items-center md:items-start gap-4">
-          <div className="flex items-center gap-3">
-            <img
-              src="/logo-dark.png"
-              alt="Anime Club NITH"
-              className="h-8 w-auto dark:hidden"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-            />
-            <img
-              src="/logo-light.png"
-              alt="Anime Club NITH"
-              className="h-8 w-auto hidden dark:block"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-            />
-            <span className="text-lg font-black text-black dark:text-white uppercase tracking-tighter">
-              Anime Club <span className="text-pink-500">NITH</span>
-            </span>
+        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+
+          {/* Brand Identity */}
+          <div className="flex flex-col items-center md:items-start gap-5">
+            <div className="flex items-center gap-3">
+              <img
+                src="/logo-dark.png"
+                alt="Anime Club NITH"
+                className="h-7 w-auto dark:hidden"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+              <img
+                src="/logo-light.png"
+                alt="Anime Club NITH"
+                className="h-7 w-auto hidden dark:block"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+              <span className="text-base font-bold text-black dark:text-white">
+                Anime Club <span className="text-pink-500">NITH</span>
+              </span>
+            </div>
+
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xs text-center md:text-left leading-relaxed">
+              The official anime appreciation society of NIT Hamirpur. Connect, discuss, and celebrate anime culture.
+            </p>
+
+            {/* Social Links */}
+            <div className="flex items-center gap-2">
+              <a
+                href="https://instagram.com/animeclub_nith"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-pink-100 dark:hover:bg-pink-500/10 text-slate-600 dark:text-slate-400 hover:text-pink-500 dark:hover:text-pink-400 flex items-center justify-center transition-all duration-200"
+                aria-label="Instagram"
+                title="@animeclub_nith"
+              >
+                <Instagram size={17} />
+              </a>
+              <a
+                href="https://github.com/anime-club-nith"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-pink-100 dark:hover:bg-pink-500/10 text-slate-600 dark:text-slate-400 hover:text-pink-500 dark:hover:text-pink-400 flex items-center justify-center transition-all duration-200"
+                aria-label="GitHub"
+                title="anime-club-nith on GitHub"
+              >
+                <Github size={17} />
+              </a>
+              <a
+                href="mailto:animeclubnith@gmail.com"
+                className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-pink-100 dark:hover:bg-pink-500/10 text-slate-600 dark:text-slate-400 hover:text-pink-500 dark:hover:text-pink-400 flex items-center justify-center transition-all duration-200"
+                aria-label="Email"
+                title="animeclubnith@gmail.com"
+              >
+                <Mail size={17} />
+              </a>
+            </div>
           </div>
 
-          {/* Official Social Links */}
-          <div className="flex items-center gap-3">
-            <a
-              href="https://instagram.com/animeclub_nith"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 border-4 border-black dark:border-white bg-white dark:bg-[#161822] text-black dark:text-white hover:bg-pink-100 dark:hover:bg-[#2b1724] shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1] active:translate-x-[1px] active:translate-y-[1px] transition-all"
-              aria-label="Instagram"
-              title="@animeclub_nith"
-            >
-              <Instagram size={20} />
-            </a>
+          {/* Right Side */}
+          <div className="flex flex-col items-center md:items-end gap-4">
             <a
               href="https://github.com/anime-club-nith"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 border-4 border-black dark:border-white bg-white dark:bg-[#161822] text-black dark:text-white hover:bg-pink-100 dark:hover:bg-[#2b1724] shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1] active:translate-x-[1px] active:translate-y-[1px] transition-all"
-              aria-label="GitHub"
-              title="anime-club-nith on GitHub"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-pink-500 hover:bg-pink-400 text-white text-sm font-semibold transition-all duration-200 hover:scale-[1.02] shadow-md shadow-pink-500/25 cursor-pointer"
             >
-              <Github size={20} />
+              <GitPullRequest size={15} />
+              <span>Contribute on GitHub</span>
             </a>
-            <a
-              href="mailto:animeclubnith@gmail.com"
-              className="p-2 border-4 border-black dark:border-white bg-white dark:bg-[#161822] text-black dark:text-white hover:bg-pink-100 dark:hover:bg-[#2b1724] shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1] active:translate-x-[1px] active:translate-y-[1px] transition-all"
-              aria-label="Email"
-              title="animeclubnith@gmail.com"
-            >
-              <Mail size={20} />
-            </a>
+
+            <div className="flex items-center gap-4 text-xs text-slate-400 dark:text-slate-500">
+              <Link to="/blogs" className="hover:text-pink-500 transition-colors">Blogs</Link>
+              <Link to="/download" className="hover:text-pink-500 transition-colors">Get the App</Link>
+              <Link to="/join-room" className="hover:text-pink-500 transition-colors">Community</Link>
+            </div>
+
+            <p className="text-xs text-slate-400 dark:text-slate-500">
+              © {new Date().getFullYear()} Anime Club NITH · All rights reserved.
+            </p>
           </div>
+
         </div>
-
-        {/* Contribution & Copyright */}
-        <div className="flex flex-col items-center md:items-end gap-3">
-          <a
-            href="https://github.com/anime-club-nith"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center gap-2 px-4 py-2 border-4 border-black dark:border-white bg-pink-500 hover:bg-pink-400 text-black dark:text-white shadow-[4px_4px_0px_#000] dark:shadow-[4px_4px_0px_#E56DB1] active:translate-x-[2px] active:translate-y-[2px] transition-all cursor-pointer font-black uppercase text-xs"
-          >
-            <GitPullRequest size={16} className="text-black dark:text-white" />
-            <span>Contribute on GitHub</span>
-          </a>
-
-          <p className="text-xs font-black uppercase text-gray-600 dark:text-gray-400">
-            © {new Date().getFullYear()} Anime Club NITH. All rights reserved.
-          </p>
-        </div>
-
       </div>
     </footer>
   );

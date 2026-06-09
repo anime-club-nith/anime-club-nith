@@ -55,10 +55,11 @@ export default function SignupScreen({ navigation }: any) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Text style={styles.backText}>← Back</Text>
+            <Feather name="chevron-left" size={20} color={colors.text} />
+            <Text style={styles.backText}>Back</Text>
           </TouchableOpacity>
 
           <View style={styles.header}>
@@ -71,67 +72,75 @@ export default function SignupScreen({ navigation }: any) {
             {/* Name Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Full Name</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="John Doe"
-                placeholderTextColor={colors.subText}
-                value={name}
-                onChangeText={setName}
-              />
+              <View style={styles.inputCard}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="John Doe"
+                  placeholderTextColor={colors.subText}
+                  value={name}
+                  onChangeText={setName}
+                />
+              </View>
             </View>
 
             {/* Email Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Email Address</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="john@example.com"
-                placeholderTextColor={colors.subText}
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-              />
+              <View style={styles.inputCard}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="john@example.com"
+                  placeholderTextColor={colors.subText}
+                  value={email}
+                  onChangeText={setEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                />
+              </View>
             </View>
 
             {/* Password Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Password</Text>
-              <View style={styles.passwordContainer}>
-                <TextInput
-                  style={[styles.input, styles.passwordInput]}
-                  placeholder="••••••••"
-                  placeholderTextColor={colors.subText}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                  <Feather name={showPassword ? "eye" : "eye-off"} size={20} color={colors.subText} />
-                </TouchableOpacity>
+              <View style={styles.inputCard}>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={[styles.input, styles.passwordInput]}
+                    placeholder="••••••••"
+                    placeholderTextColor={colors.subText}
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!showPassword}
+                  />
+                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                    <Feather name={showPassword ? "eye" : "eye-off"} size={20} color={colors.subText} />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
 
             {/* Confirm Password Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Confirm Password</Text>
-              <View style={styles.passwordContainer}>
-                <TextInput
-                  style={[styles.input, styles.passwordInput]}
-                  placeholder="••••••••"
-                  placeholderTextColor={colors.subText}
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  secureTextEntry={!showConfirmPassword}
-                />
-                <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
-                  <Feather name={showConfirmPassword ? "eye" : "eye-off"} size={20} color={colors.subText} />
-                </TouchableOpacity>
+              <View style={styles.inputCard}>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={[styles.input, styles.passwordInput]}
+                    placeholder="••••••••"
+                    placeholderTextColor={colors.subText}
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    secureTextEntry={!showConfirmPassword}
+                  />
+                  <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
+                    <Feather name={showConfirmPassword ? "eye" : "eye-off"} size={20} color={colors.subText} />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
 
             {/* Action Button */}
-            <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
+            <TouchableOpacity style={styles.signupButton} onPress={handleSignup} activeOpacity={0.85}>
               <Text style={styles.signupButtonText}>Create Account</Text>
             </TouchableOpacity>
 
@@ -164,117 +173,117 @@ const createStyles = (colors: any) => StyleSheet.create({
     justifyContent: 'center',
   },
   backButton: {
-    position: 'absolute',
-    top: 50,
-    left: 24,
-    borderWidth: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    borderRadius: 10,
+    borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.cardBg,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     paddingVertical: 8,
+    gap: 4,
+    marginBottom: 8,
     shadowColor: colors.shadow,
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
-    zIndex: 10,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   backText: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '900',
-    textTransform: 'uppercase',
+    fontWeight: '500',
   },
   header: {
     marginBottom: 32,
-    marginTop: 80,
+    marginTop: 24,
   },
   title: {
     fontSize: 32,
-    fontWeight: '900',
+    fontWeight: '800',
+    letterSpacing: -0.5,
     color: colors.text,
-    marginBottom: 12,
-    textTransform: 'uppercase',
+    marginBottom: 8,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     color: colors.subText,
-    lineHeight: 24,
-    fontWeight: '600',
+    lineHeight: 22,
   },
   form: {
-    gap: 24,
+    gap: 20,
   },
   inputGroup: {
-    gap: 8,
+    gap: 6,
   },
   label: {
-    fontSize: 12,
-    fontWeight: '900',
-    color: colors.text,
-    letterSpacing: 1,
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.subText,
+    letterSpacing: 0.5,
     textTransform: 'uppercase',
+    marginBottom: 6,
+  },
+  inputCard: {
+    backgroundColor: colors.cardBg,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 1,
   },
   passwordContainer: {
     position: 'relative',
     justifyContent: 'center',
   },
   input: {
-    backgroundColor: colors.cardBg,
-    borderWidth: 4,
-    borderColor: colors.border,
-    padding: 16,
-    color: colors.text,
     fontSize: 16,
-    fontWeight: '600',
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 4, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 2,
+    color: colors.text,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
   passwordInput: {
     paddingRight: 50,
   },
   eyeIcon: {
     position: 'absolute',
-    right: 16,
+    right: 14,
     zIndex: 10,
   },
   signupButton: {
     backgroundColor: '#E56DB1',
-    paddingVertical: 18,
-    borderWidth: 4,
-    borderColor: colors.border,
+    borderRadius: 16,
+    paddingVertical: 16,
     alignItems: 'center',
-    marginTop: 8,
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 6, height: 6 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 4,
+    marginTop: 4,
+    shadowColor: '#E56DB1',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
   },
   signupButtonText: {
-    color: '#000000',
+    color: '#ffffff',
     fontSize: 16,
-    fontWeight: '900',
-    textTransform: 'uppercase',
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 16,
+    marginTop: 8,
   },
   footerText: {
     color: colors.subText,
     fontSize: 14,
-    fontWeight: '600',
   },
   linkText: {
     color: '#E56DB1',
     fontSize: 14,
-    fontWeight: '900',
-    textTransform: 'uppercase',
-    textDecorationLine: 'underline',
+    fontWeight: '600',
   },
 });

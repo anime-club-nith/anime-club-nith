@@ -80,8 +80,8 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-[#0c0d12] border-b-4 border-black dark:border-white transition-colors">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <nav className="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-white/75 dark:bg-[#0c0d12]/80 border-b border-slate-200/50 dark:border-slate-800/60 transition-all">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
         {/* Left: Logo */}
         <Link
@@ -91,33 +91,30 @@ export default function Navbar() {
           <img
             src="/logo-dark.png"
             alt="Anime Club NITH"
-            className="h-9 w-auto dark:hidden"
+            className="h-8 w-auto dark:hidden"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
           <img
             src="/logo-light.png"
             alt="Anime Club NITH"
-            className="h-9 w-auto hidden dark:block"
+            className="h-8 w-auto hidden dark:block"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
-          <span className="text-xl font-black text-black dark:text-white uppercase tracking-tighter hover:text-pink-500 transition-colors">
-            Anime Club <span className="text-pink-500">NITH</span>
-          </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-5">
 
           <Link
             to="/blogs"
-            className={`font-black uppercase text-xs tracking-widest transition-colors ${isActive('/blogs') ? 'text-pink-500' : 'text-black dark:text-white hover:text-pink-500'}`}
+            className={`font-medium text-sm transition-colors ${isActive('/blogs') ? 'text-pink-500' : 'text-slate-600 dark:text-slate-300 hover:text-pink-500 dark:hover:text-pink-400'}`}
           >
             Blogs
           </Link>
 
           {isAuthenticated ? (
             <Link to="/room">
-              <button className="border-4 border-black dark:border-white px-4 py-2 font-black uppercase text-xs bg-pink-500 hover:bg-pink-400 text-black dark:text-white shadow-[4px_4px_0px_#000] dark:shadow-[4px_4px_0px_#E56DB1] transition active:translate-x-[2px] active:translate-y-[2px] flex items-center gap-2 cursor-pointer">
+              <button className="btn-pink-modern flex items-center gap-2 py-2 px-4 text-sm">
                 <MessageSquare size={14} />
                 Community Chat
               </button>
@@ -126,25 +123,25 @@ export default function Navbar() {
             <>
               <Link
                 to="/login"
-                className={`font-black uppercase text-xs tracking-widest transition-colors ${isActive('/login') ? 'text-pink-500' : 'text-black dark:text-white hover:text-pink-500'}`}
+                className={`font-medium text-sm transition-colors ${isActive('/login') ? 'text-pink-500' : 'text-slate-600 dark:text-slate-300 hover:text-pink-500 dark:hover:text-pink-400'}`}
               >
                 Login
               </Link>
 
               <Link to="/signup">
-                <button className="border-4 border-black dark:border-white px-4 py-2 font-black uppercase text-xs bg-pink-500 hover:bg-pink-400 text-black dark:text-white shadow-[4px_4px_0px_#000] dark:shadow-[4px_4px_0px_#E56DB1] transition active:translate-x-[2px] active:translate-y-[2px] cursor-pointer">
+                <button className="btn-pink-modern py-2 px-4 text-sm">
                   Sign Up
                 </button>
               </Link>
             </>
           )}
 
-          <div className="h-5 w-[4px] bg-black dark:bg-white mx-1" />
+          <div className="h-4 w-px bg-slate-300 dark:bg-slate-700 mx-1" />
 
           {/* Get the App Link */}
           <Link
             to="/download"
-            className="font-black uppercase text-xs tracking-widest text-pink-500 hover:text-pink-600 transition-colors"
+            className="font-medium text-sm text-pink-500 hover:text-pink-400 transition-colors"
           >
             Get the App
           </Link>
@@ -154,10 +151,10 @@ export default function Navbar() {
             href="https://github.com/anime-club-nith"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-black dark:text-white hover:text-pink-500 transition-colors"
+            className="text-slate-600 dark:text-slate-300 hover:text-pink-500 dark:hover:text-pink-400 transition-colors"
             title="Anime Club NITH on GitHub"
           >
-            <Github size={20} />
+            <Github size={18} />
           </a>
 
           {/* Instagram Link */}
@@ -165,84 +162,82 @@ export default function Navbar() {
             href="https://instagram.com/animeclub_nith"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-black dark:text-white hover:text-pink-500 transition-colors"
+            className="text-slate-600 dark:text-slate-300 hover:text-pink-500 dark:hover:text-pink-400 transition-colors"
             title="Anime Club NITH on Instagram"
           >
-            <Instagram size={20} />
+            <Instagram size={18} />
           </a>
 
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="flex items-center justify-center w-10 h-10 cursor-pointer border-4 border-black dark:border-white bg-pink-100 hover:bg-pink-200 dark:bg-[#2b1724] dark:hover:bg-[#3d2033] text-black dark:text-white shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1] active:translate-x-[1px] active:translate-y-[1px] transition-all"
+            className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition-all cursor-pointer border border-slate-200 dark:border-slate-700"
             title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
-            {theme === 'dark' ? <Sun size={18} strokeWidth={3} /> : <Moon size={18} strokeWidth={3} />}
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
           {/* Logout Icon - Only for authenticated users */}
           {isAuthenticated && (
             <button
               onClick={() => setShowLogoutModal(true)}
-              className="flex items-center justify-center w-10 h-10 cursor-pointer border-4 border-black dark:border-white bg-red-100 hover:bg-red-200 text-black dark:text-white shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1] active:translate-x-[1px] active:translate-y-[1px] transition-all"
+              className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-red-100 dark:hover:bg-red-900/30 flex items-center justify-center transition-all cursor-pointer border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-red-500 dark:hover:text-red-400"
               title="Logout"
             >
-              <LogOut size={18} strokeWidth={3} />
+              <LogOut size={16} />
             </button>
           )}
         </div>
 
         {/* Mobile Menu Button */}
-        <div className="flex md:hidden items-center gap-3">
+        <div className="flex md:hidden items-center gap-2">
           {/* Mobile Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="flex items-center justify-center w-10 h-10 cursor-pointer border-4 border-black dark:border-white bg-pink-100 hover:bg-pink-200 dark:bg-[#2b1724] dark:hover:bg-[#3d2033] text-black dark:text-white shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#E56DB1] active:translate-x-[1px] active:translate-y-[1px] transition-all"
+            className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition-all cursor-pointer border border-slate-200 dark:border-slate-700"
             title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
-            {theme === 'dark' ? <Sun size={18} strokeWidth={3} /> : <Moon size={18} strokeWidth={3} />}
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
           <button
-            className="p-2 text-black dark:text-white hover:text-pink-500"
+            className="p-2 text-slate-600 dark:text-slate-300 hover:text-pink-500"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-20 left-0 w-full bg-white dark:bg-[#0c0d12] border-b-4 border-black dark:border-white p-6 flex flex-col gap-4 animate-in slide-in-from-top-5 duration-200">
-          <Link to="/blogs" className="font-black uppercase text-xs tracking-widest text-black dark:text-white hover:text-pink-500 py-2" onClick={() => setIsMobileMenuOpen(false)}>Blogs</Link>
+        <div className="md:hidden absolute top-16 left-0 w-full bg-white/95 dark:bg-[#0c0d12]/95 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/60 p-5 flex flex-col gap-4 animate-in slide-in-from-top-5 duration-200">
+          <Link to="/blogs" className="font-medium text-sm text-slate-700 dark:text-slate-300 hover:text-pink-500 py-1.5" onClick={() => setIsMobileMenuOpen(false)}>Blogs</Link>
           {isAuthenticated ? (
-            <Link to="/room" className="py-2" onClick={() => setIsMobileMenuOpen(false)}>
-              <button className="w-full border-4 border-black dark:border-white px-4 py-2 font-black uppercase text-xs bg-pink-500 hover:bg-pink-400 text-black dark:text-white shadow-[4px_4px_0px_#000] dark:shadow-[4px_4px_0px_#E56DB1] flex items-center justify-center gap-2 cursor-pointer">
+            <Link to="/room" className="py-1" onClick={() => setIsMobileMenuOpen(false)}>
+              <button className="w-full btn-pink-modern flex items-center justify-center gap-2 text-sm">
                 <MessageSquare size={14} />
                 Community Chat
               </button>
             </Link>
           ) : (
             <>
-              <Link to="/login" className="font-black uppercase text-xs tracking-widest text-black dark:text-white hover:text-pink-500 py-2" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
-              <Link to="/signup" className="py-2" onClick={() => setIsMobileMenuOpen(false)}>
-                <button className="w-full border-4 border-black dark:border-white px-4 py-2 font-black uppercase text-xs bg-pink-500 hover:bg-pink-400 text-black dark:text-white shadow-[4px_4px_0px_#000] dark:shadow-[4px_4px_0px_#E56DB1] cursor-pointer">
-                  Sign Up
-                </button>
+              <Link to="/login" className="font-medium text-sm text-slate-700 dark:text-slate-300 hover:text-pink-500 py-1.5" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
+              <Link to="/signup" className="py-1" onClick={() => setIsMobileMenuOpen(false)}>
+                <button className="w-full btn-pink-modern text-sm">Sign Up</button>
               </Link>
             </>
           )}
-          <Link to="/download" className="font-black uppercase text-xs tracking-widest text-pink-500 hover:text-pink-600 py-2" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link to="/download" className="font-medium text-sm text-pink-500 hover:text-pink-400 py-1.5" onClick={() => setIsMobileMenuOpen(false)}>
             Get the App
           </Link>
-          <div className="h-[4px] bg-black dark:bg-white w-full my-2" />
-          <div className="flex items-center gap-6 pt-2">
-            <a href="https://github.com/anime-club-nith" target="_blank" rel="noopener noreferrer" className="font-black uppercase text-xs text-black dark:text-white hover:text-pink-500 flex items-center gap-2">
-              <Github size={20} /> <span className="text-xs tracking-widest">GitHub</span>
+          <div className="h-px bg-slate-200 dark:bg-slate-800 w-full my-1" />
+          <div className="flex items-center gap-5 pt-1">
+            <a href="https://github.com/anime-club-nith" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-600 dark:text-slate-400 hover:text-pink-500 flex items-center gap-2">
+              <Github size={18} /> <span>GitHub</span>
             </a>
-            <a href="https://instagram.com/animeclub_nith" target="_blank" rel="noopener noreferrer" className="font-black uppercase text-xs text-black dark:text-white hover:text-pink-500 flex items-center gap-2">
-              <Instagram size={20} /> <span className="text-xs tracking-widest">Instagram</span>
+            <a href="https://instagram.com/animeclub_nith" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-600 dark:text-slate-400 hover:text-pink-500 flex items-center gap-2">
+              <Instagram size={18} /> <span>Instagram</span>
             </a>
           </div>
           {isAuthenticated && (
@@ -251,9 +246,9 @@ export default function Navbar() {
                 setIsMobileMenuOpen(false);
                 setShowLogoutModal(true);
               }}
-              className="text-red-600 hover:text-red-700 flex items-center gap-2 py-2 font-black uppercase text-xs tracking-widest cursor-pointer"
+              className="text-red-500 hover:text-red-600 flex items-center gap-2 py-1.5 text-sm font-medium cursor-pointer"
             >
-              <LogOut size={18} strokeWidth={3} /> Logout
+              <LogOut size={16} /> Logout
             </button>
           )}
         </div>

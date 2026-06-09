@@ -4,34 +4,28 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-pink-100: #FFF2F9;
+  --color-pink-100: #FFF0F8;
   --color-pink-400: #f09dce;
   --color-pink-500: #E56DB1;
   --color-pink-600: #c94e92;
-  
+  --color-slate-700: #2b2d31;
+  --color-slate-800: #1e1f22;
+  --color-slate-900: #0c0d12;
+  --color-dc-chat: #313338;
+  --color-dc-input: #383a40;
   --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
 
-/* ═══════════════════════════════════════
-   ANIME CLUB NITH — Brand Tokens & Neo-Brutalisim
-   ═══════════════════════════════════════ */
 :root {
-  --color-brand:        #E56DB1;  /* Club pink */
-  --color-brand-light:  #f09dce;  /* Hover/lighter tint */
-  --color-brand-dark:   #c94e92;  /* Pressed/active */
-  --color-bg:           #ffffff;  /* Pure white */
+  --color-brand: #E56DB1;
+  --color-brand-light: #f09dce;
+  --color-brand-dark: #c94e92;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
-html,
-body,
-#root {
+html, body, #root {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -40,50 +34,58 @@ body,
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-html.dark,
-html.dark body,
-html.dark #root {
+html.dark, html.dark body, html.dark #root {
   background-color: #0c0d12;
   color: #ffffff;
 }
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #ffffff;
-  color: #000000;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Base Brutalist Card */
+/* Modern Glass Card */
+.card-modern {
+  @apply bg-white/80 dark:bg-[#1e1f22]/80 backdrop-blur-md rounded-2xl border border-slate-200/60 dark:border-slate-700/60 shadow-lg;
+}
+
+/* Modern Pink Button */
+.btn-pink-modern {
+  @apply bg-pink-500 hover:bg-pink-400 text-white font-semibold rounded-xl px-6 py-3 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-md hover:shadow-pink-500/30;
+}
+
+/* Modern Outline Button */
+.btn-outline-modern {
+  @apply bg-transparent hover:bg-white/10 text-current font-semibold rounded-xl px-6 py-3 border border-slate-300 dark:border-slate-600 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer;
+}
+
+/* Modern Input */
+.input-modern {
+  @apply bg-white dark:bg-[#1e1f22] border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 transition-all duration-200 placeholder:text-slate-400;
+}
+
+/* Keep legacy brutalist classes for compatibility */
 .card-brutalist {
   @apply bg-white border-4 border-black p-6 shadow-[8px_8px_0px_#000] text-black
          dark:bg-[#161822] dark:text-white dark:border-white dark:shadow-[8px_8px_0px_#E56DB1];
 }
-
-/* Pink Emphasis Card */
 .card-pink {
   @apply bg-pink-100 border-4 border-black p-6 shadow-[8px_8px_0px_#000] text-black
          dark:bg-[#2b1724] dark:text-white dark:border-white dark:shadow-[8px_8px_0px_#E56DB1];
 }
-
-/* Primary Pink Button */
 .btn-pink {
   @apply bg-pink-500 hover:bg-pink-400 text-black border-4 border-black
          font-black uppercase tracking-wide px-4 py-3
          shadow-[6px_6px_0px_#000] transition active:translate-x-[2px] active:translate-y-[2px] cursor-pointer
          dark:text-white dark:border-white dark:shadow-[6px_6px_0px_#E56DB1];
 }
-
-/* Secondary Brutalist Button */
 .btn-brutalist {
   @apply bg-white hover:bg-gray-100 text-black border-4 border-black
          font-black uppercase tracking-wide px-4 py-3
          shadow-[6px_6px_0px_#000] transition active:translate-x-[2px] active:translate-y-[2px] cursor-pointer
          dark:bg-[#161822] dark:hover:bg-[#1e2030] dark:text-white dark:border-white dark:shadow-[6px_6px_0px_#E56DB1];
 }
-
-/* Brutalist Text Inputs */
 .input-brutalist {
   @apply bg-white border-4 border-black text-black px-4 py-3 font-semibold focus:outline-none focus:bg-pink-100 shadow-[4px_4px_0px_#000] focus:shadow-[2px_2px_0px_#000] transition
          dark:bg-[#161822] dark:text-white dark:border-white dark:focus:bg-[#2b1724] dark:shadow-[4px_4px_0px_#E56DB1] dark:focus:shadow-[2px_2px_0px_#E56DB1];

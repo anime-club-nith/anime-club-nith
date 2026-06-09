@@ -358,28 +358,26 @@ export default function ChatScreen({ navigation, route }: any) {
             String(prevMessage.sender._id || prevMessage.sender) === String(item.sender._id || item.sender);
 
         return (
-            <View style={[styles.messageRow, isSequence && styles.sequenceRow]}>
-                {/* Avatar */}
-                <View style={styles.avatarContainer}>
-                    {!isSequence && (
-                        <Image
-                            source={{ uri: item.sender?.avatar || `https://api.dicebear.com/7.x/initials/png?seed=${item.sender?.name || 'Unknown'}` }}
-                            style={styles.avatar}
-                        />
-                    )}
-                </View>
+            <View style={[styles.messageRow, isMe ? styles.myMessageRow : styles.otherMessageRow, isSequence && styles.sequenceRow]}>
+                {/* Avatar (only for other messages) */}
+                {!isMe && (
+                    <View style={styles.avatarContainer}>
+                        {!isSequence && (
+                            <Image
+                                source={{ uri: item.sender?.avatar || `https://api.dicebear.com/7.x/initials/png?seed=${item.sender?.name || 'Unknown'}` }}
+                                style={styles.avatar}
+                            />
+                        )}
+                        {isSequence && <View style={styles.avatarPlaceholder} />}
+                    </View>
+                )}
 
                 {/* Content */}
-                <View style={styles.messageContent}>
-                    {!isSequence && (
-                        <View style={styles.messageHeader}>
-                            <Text style={[styles.userName, isMe && styles.myUserName]}>
-                                {item.sender?.name || "Unknown User"} {isMe && "(You)"}
-                            </Text>
-                            <Text style={styles.timestamp}>
-                                {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </Text>
-                        </View>
+                <View style={[styles.messageContent, isMe && styles.myMessageContent]}>
+                    {!isSequence && !isMe && (
+                        <Text style={styles.userName}>
+                            {item.sender?.name || "Unknown User"}
+                        </Text>
                     )}
                     {item.imageURL && item.imageURL.trim() ? (
                         <TouchableOpacity onPress={() => setPreviewImageUrl(item.imageURL || '')}>
@@ -391,25 +389,27 @@ export default function ChatScreen({ navigation, route }: any) {
                         </TouchableOpacity>
                     ) : (
                         <View style={[styles.bubble, isMe ? styles.myBubble : styles.otherBubble]}>
-                            <Text style={styles.messageText}>{item.text}</Text>
+                            <Text style={[styles.messageText, isMe ? styles.myMessageText : styles.otherMessageText]}>
+                                {item.text}
+                            </Text>
                         </View>
                     )}
-                    {isSequence && (
-                        <Text style={styles.sequenceTimestamp}>
+                    <View style={[styles.timestampRow, isMe && styles.myTimestampRow]}>
+                        <Text style={styles.timestamp}>
                             {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </Text>
-                    )}
-                    {isMe && (
-                        <View style={styles.statusContainer}>
-                            {item.status === 'sending' ? (
-                                <Feather name="more-horizontal" size={12} color="#E56DB1" />
-                            ) : item.status === 'failed' ? (
-                                <Ionicons name="alert-circle" size={12} color="#ef4444" />
-                            ) : (
-                                <Feather name="check" size={14} color="#4ade80" />
-                            )}
-                        </View>
-                    )}
+                        {isMe && (
+                            <View style={styles.statusContainer}>
+                                {item.status === 'sending' ? (
+                                    <Feather name="more-horizontal" size={12} color={colors.subText} />
+                                ) : item.status === 'failed' ? (
+                                    <Ionicons name="alert-circle" size={12} color="#ef4444" />
+                                ) : (
+                                    <Feather name="check" size={12} color="#4ade80" />
+                                )}
+                            </View>
+                        )}
+                    </View>
                 </View>
             </View>
         );
@@ -426,20 +426,17 @@ export default function ChatScreen({ navigation, route }: any) {
                     </TouchableOpacity>
 
                     <View style={styles.headerInfo}>
-                        <View style={styles.roomIcon}>
-                            <Feather name="hash" size={16} color={colors.text} />
-                        </View>
                         <Text style={styles.headerTitle}>{roomTitle}</Text>
                     </View>
 
                     <View style={styles.headerActions}>
                         {/* Theme Toggling */}
-                        <TouchableOpacity style={styles.themeButton} onPress={toggleTheme}>
-                            <Feather name={theme === 'dark' ? "sun" : "moon"} size={20} color={colors.text} />
+                        <TouchableOpacity style={styles.headerActionButton} onPress={toggleTheme}>
+                            <Feather name={theme === 'dark' ? "sun" : "moon"} size={16} color={colors.text} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.headerAction} onPress={() => setShowMembersModal(true)}>
-                            <Feather name="users" size={20} color={colors.text} />
+                        <TouchableOpacity style={styles.headerActionButton} onPress={() => setShowMembersModal(true)}>
+                            <Feather name="users" size={16} color={colors.text} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -461,7 +458,7 @@ export default function ChatScreen({ navigation, route }: any) {
                             onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
                             onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
                             ListEmptyComponent={
-                                <Text style={{ color: colors.subText, textAlign: 'center', marginTop: 20, fontWeight: '700' }}>No messages yet. Say hi!</Text>
+                                <Text style={{ color: colors.subText, textAlign: 'center', marginTop: 20, fontSize: 15 }}>No messages yet. Say hi!</Text>
                             }
                             ListFooterComponent={
                                 <View style={{ height: 120 }} />
@@ -498,22 +495,22 @@ export default function ChatScreen({ navigation, route }: any) {
                             style={styles.attachButton}
                             onPress={() => setShowAttachmentModal(true)}
                         >
-                            <Feather name="plus" size={24} color={colors.text} />
+                            <Feather name="plus" size={22} color={colors.subText} />
                         </TouchableOpacity>
                     </View>
 
                     <TouchableOpacity
                         style={[
                             styles.sendButton,
-                            ((text.trim() || selectedImage) && !isSending) ? styles.sendButtonActive : {}
+                            ((text.trim() || selectedImage) && !isSending) ? styles.sendButtonActive : styles.sendButtonInactive
                         ]}
                         onPress={handleSend}
                         disabled={(!text.trim() && !selectedImage) || isSending}
                     >
                         {isSending ? (
-                            <ActivityIndicator size="small" color="#000000" />
+                            <ActivityIndicator size="small" color="#ffffff" />
                         ) : (
-                            <Ionicons name="send" size={18} color={((text.trim() || selectedImage) && !isSending) ? "#000000" : colors.subText} />
+                            <Ionicons name="send" size={16} color={((text.trim() || selectedImage) && !isSending) ? "#ffffff" : colors.subText} />
                         )}
                     </TouchableOpacity>
                 </View>
@@ -578,8 +575,8 @@ export default function ChatScreen({ navigation, route }: any) {
 
             {/* Connection Status Indicator */}
             {!socketConnected && (
-                <View style={{ position: 'absolute', top: 120, alignSelf: 'center', backgroundColor: 'rgba(239, 68, 68, 0.9)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 0, borderWidth: 3, borderColor: '#000', zIndex: 100 }}>
-                    <Text style={{ color: 'white', fontSize: 12, fontWeight: '900', textTransform: 'uppercase' }}>Disconnected - Connecting...</Text>
+                <View style={{ position: 'absolute', top: 120, alignSelf: 'center', backgroundColor: 'rgba(239, 68, 68, 0.9)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, zIndex: 100 }}>
+                    <Text style={{ color: 'white', fontSize: 12, fontWeight: '600' }}>Disconnected — Reconnecting…</Text>
                 </View>
             )}
         </View>
@@ -603,15 +600,13 @@ const createStyles = (colors: any) => StyleSheet.create({
     messageImage: {
         width: 200,
         height: 150,
-        borderWidth: 3,
-        borderColor: colors.border,
+        borderRadius: 12,
         marginTop: 4,
     },
     codeBlock: {
         backgroundColor: '#0d1117',
         padding: 12,
-        borderWidth: 2,
-        borderColor: colors.border,
+        borderRadius: 8,
         marginTop: 4,
     },
     codeText: {
@@ -623,133 +618,145 @@ const createStyles = (colors: any) => StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        borderBottomWidth: 4,
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: colors.border,
         backgroundColor: colors.bg,
     },
     backButton: {
-        padding: 8,
-        marginLeft: -8,
+        padding: 4,
     },
     headerInfo: {
         flex: 1,
-        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-    },
-    roomIcon: {
-        marginRight: 6,
     },
     headerTitle: {
         color: colors.text,
-        fontSize: 18,
-        fontWeight: '900',
-        textTransform: 'uppercase',
+        fontSize: 17,
+        fontWeight: '600',
     },
     headerActions: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 12,
+        gap: 8,
     },
-    themeButton: {
-        width: 36,
-        height: 36,
-        borderWidth: 2,
-        borderColor: colors.border,
+    headerActionButton: {
+        width: 32,
+        height: 32,
+        borderRadius: 16,
         backgroundColor: colors.cardBg,
         alignItems: 'center',
         justifyContent: 'center',
         shadowColor: colors.shadow,
-        shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 1,
-        shadowRadius: 0,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
         elevation: 2,
-    },
-    headerAction: {
-        padding: 8,
     },
     list: {
         flex: 1,
     },
     listContent: {
-        paddingVertical: 16,
-        paddingHorizontal: 16,
+        paddingVertical: 12,
+        paddingHorizontal: 12,
         paddingBottom: 100,
     },
     messageRow: {
         flexDirection: 'row',
-        marginBottom: 24,
+        marginBottom: 4,
+        alignItems: 'flex-end',
+    },
+    myMessageRow: {
+        justifyContent: 'flex-end',
+    },
+    otherMessageRow: {
+        justifyContent: 'flex-start',
     },
     sequenceRow: {
-        marginBottom: 5,
-        marginTop: -10,
+        marginBottom: 2,
     },
     avatarContainer: {
-        width: 40,
-        marginRight: 12,
+        width: 32,
+        marginRight: 8,
+        alignSelf: 'flex-end',
+    },
+    avatarPlaceholder: {
+        width: 32,
     },
     avatar: {
-        width: 40,
-        height: 40,
-        borderWidth: 2,
-        borderColor: colors.border,
+        width: 32,
+        height: 32,
+        borderRadius: 16,
         backgroundColor: colors.cardBg,
     },
     messageContent: {
-        flex: 1,
+        maxWidth: '75%',
     },
-    messageHeader: {
-        flexDirection: 'row',
-        alignItems: 'baseline',
-        marginBottom: 4,
+    myMessageContent: {
+        alignItems: 'flex-end',
     },
     userName: {
-        color: colors.text,
-        fontWeight: '900',
-        fontSize: 15,
-        marginRight: 8,
-        textTransform: 'uppercase',
+        fontSize: 13,
+        fontWeight: '600',
+        color: colors.subText,
+        marginBottom: 3,
+        paddingLeft: 4,
     },
-    myUserName: {
-        color: '#E56DB1',
+    timestampRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        marginTop: 3,
+        paddingHorizontal: 4,
+    },
+    myTimestampRow: {
+        justifyContent: 'flex-end',
     },
     timestamp: {
         color: colors.subText,
         fontSize: 11,
-        fontWeight: '600',
     },
-    sequenceTimestamp: {
-        color: colors.subText,
-        fontSize: 10,
-        alignSelf: 'flex-end',
-        marginTop: 4,
-        fontWeight: '600',
+    statusContainer: {
+        marginLeft: 2,
     },
     bubble: {
-        borderWidth: 3,
-        borderColor: colors.border,
-        paddingHorizontal: 16,
+        paddingHorizontal: 14,
         paddingVertical: 10,
-        shadowColor: colors.shadow,
-        shadowOffset: { width: 3, height: 3 },
-        shadowOpacity: 1,
-        shadowRadius: 0,
-        elevation: 2,
-        marginTop: 4,
     },
     myBubble: {
-        backgroundColor: colors.accentLight,
+        backgroundColor: '#E56DB1',
+        borderTopLeftRadius: 18,
+        borderTopRightRadius: 4,
+        borderBottomLeftRadius: 18,
+        borderBottomRightRadius: 18,
+        shadowColor: '#E56DB1',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        elevation: 2,
     },
     otherBubble: {
         backgroundColor: colors.cardBg,
+        borderTopLeftRadius: 4,
+        borderTopRightRadius: 18,
+        borderBottomLeftRadius: 18,
+        borderBottomRightRadius: 18,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 1,
     },
     messageText: {
-        color: colors.text,
         fontSize: 15,
         lineHeight: 22,
-        fontWeight: '600',
+    },
+    myMessageText: {
+        color: '#ffffff',
+    },
+    otherMessageText: {
+        color: colors.text,
     },
     inputContainer: {
         position: 'absolute',
@@ -757,85 +764,78 @@ const createStyles = (colors: any) => StyleSheet.create({
         right: 0,
         bottom: 0,
         backgroundColor: colors.bg,
-        borderTopWidth: 4,
+        borderTopWidth: StyleSheet.hairlineWidth,
         borderTopColor: colors.border,
-        paddingBottom: Platform.OS === 'ios' ? 44 : 20,
+        paddingBottom: Platform.OS === 'ios' ? 28 : 12,
+        paddingTop: 8,
     },
     inputWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 12,
-        paddingTop: 12,
-        paddingBottom: 8,
+        gap: 8,
     },
     combinedInput: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: colors.cardBg,
-        borderWidth: 4,
-        borderColor: colors.border,
-        borderRadius: 0,
-        paddingRight: 4,
+        borderRadius: 24,
         shadowColor: colors.shadow,
-        shadowOffset: { width: 4, height: 4 },
-        shadowOpacity: 1,
-        shadowRadius: 0,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
         elevation: 2,
+        paddingRight: 4,
     },
     input: {
         flex: 1,
         color: colors.text,
-        paddingHorizontal: 16,
-        paddingTop: 10,
-        paddingBottom: 10,
+        paddingHorizontal: 14,
+        paddingVertical: 10,
         maxHeight: 100,
-        fontSize: 17,
-        fontWeight: '600',
+        fontSize: 16,
     },
     attachButton: {
         padding: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     sendButton: {
-        width: 45,
-        height: 45,
-        borderWidth: 4,
-        borderColor: colors.border,
-        borderRadius: 0,
-        backgroundColor: colors.cardBg,
+        width: 36,
+        height: 36,
+        borderRadius: 18,
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: 8,
-        shadowColor: colors.shadow,
-        shadowOffset: { width: 4, height: 4 },
-        shadowOpacity: 1,
-        shadowRadius: 0,
-        elevation: 2,
     },
     sendButtonActive: {
         backgroundColor: '#E56DB1',
+        shadowColor: '#E56DB1',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+        elevation: 4,
+    },
+    sendButtonInactive: {
+        backgroundColor: colors.border,
     },
     previewContainer: {
         paddingHorizontal: 16,
         paddingTop: 8,
+        paddingBottom: 4,
         flexDirection: 'row',
         alignItems: 'center',
     },
     previewImage: {
-        width: 80,
-        height: 80,
-        borderWidth: 2,
-        borderColor: colors.border,
+        width: 72,
+        height: 72,
+        borderRadius: 10,
         marginRight: 8,
     },
     removePreviewButton: {
         position: 'absolute',
-        top: 0,
-        left: 85,
-    },
-    statusContainer: {
-        alignSelf: 'flex-end',
-        marginTop: 4,
+        top: 2,
+        left: 72,
     },
     imagePreviewOverlay: {
         flex: 1,
@@ -864,19 +864,17 @@ const createStyles = (colors: any) => StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 16,
-        paddingHorizontal: 16,
+        paddingHorizontal: 8,
     },
     dateSeparatorLine: {
         flex: 1,
-        height: 2,
+        height: StyleSheet.hairlineWidth,
         backgroundColor: colors.border,
     },
     dateSeparatorText: {
-        color: colors.text,
+        color: colors.subText,
         fontSize: 12,
-        fontWeight: '900',
-        marginHorizontal: 12,
-        textTransform: 'uppercase',
-        letterSpacing: 0.5,
+        fontWeight: '500',
+        marginHorizontal: 10,
     },
 });

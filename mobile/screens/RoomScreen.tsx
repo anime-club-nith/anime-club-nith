@@ -82,8 +82,8 @@ export default function RoomScreen({ navigation }: any) {
         onPress={() => handleJoinRoom(item)}
         activeOpacity={0.8}
       >
-        <View style={[styles.iconContainer, { backgroundColor: `${color}15` }]}>
-          <Feather name={iconName} size={24} color={color} />
+        <View style={[styles.iconContainer, { backgroundColor: `${color}20` }]}>
+          <Feather name={iconName} size={22} color={color} />
         </View>
 
         <Text style={styles.cardTitle}>{item.title}</Text>
@@ -93,7 +93,7 @@ export default function RoomScreen({ navigation }: any) {
 
         <View style={styles.cardFooter}>
           <Text style={styles.joinText}>Join</Text>
-          <Ionicons name="arrow-forward" size={14} color={colors.text} />
+          <Ionicons name="chevron-forward" size={14} color="#E56DB1" />
         </View>
       </TouchableOpacity>
     );
@@ -112,13 +112,11 @@ export default function RoomScreen({ navigation }: any) {
         <View style={styles.headerButtons}>
           {/* Theme Toggling */}
           <TouchableOpacity style={styles.themeButton} onPress={toggleTheme}>
-            <Feather name={theme === 'dark' ? "sun" : "moon"} size={20} color={colors.text} />
+            <Feather name={theme === 'dark' ? "sun" : "moon"} size={18} color={colors.text} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.profileButton} onPress={handleLogout}>
-            <View style={styles.logoutContainer}>
-              <Feather name="log-out" size={18} color="#ef4444" />
-            </View>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Feather name="log-out" size={18} color="#ef4444" />
           </TouchableOpacity>
         </View>
       </View>
@@ -138,7 +136,7 @@ export default function RoomScreen({ navigation }: any) {
           columnWrapperStyle={styles.gridRow}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
-            <Text style={{ color: colors.text, textAlign: 'center', marginTop: 50, fontWeight: '700' }}>No active rooms found.</Text>
+            <Text style={{ color: colors.subText, textAlign: 'center', marginTop: 50, fontSize: 15 }}>No active rooms found.</Text>
           }
         />
       )}
@@ -163,55 +161,49 @@ const createStyles = (colors: any) => StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingVertical: 24,
+    paddingVertical: 20,
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
   },
   greeting: {
     fontSize: 14,
     color: colors.subText,
-    marginBottom: 4,
-    fontWeight: '600',
+    marginBottom: 2,
   },
   title: {
     fontSize: 28,
+    fontWeight: '800',
+    letterSpacing: -0.5,
     color: colors.text,
-    fontWeight: '900',
-    textTransform: 'uppercase',
   },
   themeButton: {
-    width: 40,
-    height: 40,
-    borderWidth: 3,
-    borderColor: colors.border,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: colors.cardBg,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: colors.shadow,
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 2,
   },
-  profileButton: {
-    padding: 0,
-  },
-  logoutContainer: {
-    width: 40,
-    height: 40,
-    borderWidth: 3,
-    borderColor: colors.border,
+  logoutButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: 'rgba(239, 68, 68, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
+    shadowColor: '#ef4444',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 2,
   },
   gridContent: {
     paddingHorizontal: 16,
@@ -224,34 +216,27 @@ const createStyles = (colors: any) => StyleSheet.create({
   card: {
     width: COLUMN_WIDTH,
     backgroundColor: colors.cardBg,
-    borderWidth: 4,
-    borderColor: colors.border,
-    padding: 16,
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 6, height: 6 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 4,
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   iconContainer: {
-    width: 48,
-    height: 48,
-    borderWidth: 3,
-    borderColor: colors.border,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
+    marginBottom: 14,
   },
   cardTitle: {
-    fontSize: 18,
-    fontWeight: '900',
+    fontSize: 17,
+    fontWeight: '700',
     color: colors.text,
     marginBottom: 6,
-    textTransform: 'uppercase',
   },
   cardDesc: {
     fontSize: 13,
@@ -259,7 +244,6 @@ const createStyles = (colors: any) => StyleSheet.create({
     lineHeight: 18,
     marginBottom: 16,
     height: 36,
-    fontWeight: '600',
   },
   cardFooter: {
     flexDirection: 'row',
@@ -267,9 +251,8 @@ const createStyles = (colors: any) => StyleSheet.create({
     gap: 4,
   },
   joinText: {
-    fontSize: 12,
-    fontWeight: '900',
-    color: colors.text,
-    textTransform: 'uppercase',
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#E56DB1',
   },
 });

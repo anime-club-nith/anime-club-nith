@@ -17,27 +17,27 @@ export interface ThemeColors {
 }
 
 export const lightColors: ThemeColors = {
-  bg: '#ffffff',
+  bg: '#f2f2f7',
   cardBg: '#ffffff',
   text: '#000000',
-  subText: '#64748b',
-  border: '#000000',
+  subText: '#8e8e93',
+  border: '#e5e5ea',
   accent: '#E56DB1',
   accentHover: '#f09dce',
-  accentLight: '#FFF2F9',
-  shadow: '#000000',
+  accentLight: '#fff0f8',
+  shadow: '#c8c8c8',
 };
 
 export const darkColors: ThemeColors = {
-  bg: '#0c0d12',
-  cardBg: '#161822',
+  bg: '#000000',
+  cardBg: '#1c1c1e',
   text: '#ffffff',
-  subText: '#94a3b8',
-  border: '#ffffff',
+  subText: '#8e8e93',
+  border: '#38383a',
   accent: '#E56DB1',
   accentHover: '#f09dce',
-  accentLight: '#2b1724',
-  shadow: '#E56DB1',
+  accentLight: '#2d1a26',
+  shadow: '#3a3a3c',
 };
 
 interface ThemeContextType {
@@ -97,7 +97,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   if (!themeLoaded) {
     return (
-      <View style={{ flex: 1, backgroundColor: theme === 'dark' ? '#0c0d12' : '#ffffff', justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, backgroundColor: theme === 'dark' ? '#000000' : '#f2f2f7', justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#E56DB1" />
       </View>
     );

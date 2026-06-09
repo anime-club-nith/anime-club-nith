@@ -16,6 +16,7 @@ import MyBlogsPage from "./Pages/MyBlogsPage";
 import EditBlog from "./Pages/EditBlog";
 import GoogleCallback from "./Pages/GoogleCallback";
 import DownloadPage from "./Pages/DownloadPage";
+import ProfilePage from "./Pages/ProfilePage";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<{ _id: string } | null>(null);
@@ -53,6 +54,7 @@ function App() {
         <Route path="/my-blogs" element={<MyBlogsPage />} />
         <Route path="/write-blog" element={<WriteBlog />} />
         <Route path="/edit-blog/:blogId" element={<EditBlog />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </>
   );

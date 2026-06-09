@@ -18,6 +18,7 @@ import { roomRoute } from "./routes/room";
 import { featureRoute } from "./routes/feature";
 import { blogRoute } from "./routes/blog";
 import { projectRoute } from "./routes/project";
+import { profileRoute } from "./routes/profile";
 
 // middlewares
 import { allowOnlyAuthenticatedUser } from "./middlewares/auth";
@@ -92,6 +93,7 @@ app.use('/api/room', allowOnlyAuthenticatedUser, roomRoute);
 app.use('/api/features', featureRoute);
 app.use('/api/blog', blogRoute);
 app.use('/api/project', projectRoute);
+app.use('/api/profile', profileRoute);
 
 const PORT = process.env.PORT || 8000;
 

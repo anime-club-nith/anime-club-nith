@@ -8,6 +8,11 @@ export interface IAuth {
     salt: string,
     isVerified: boolean,
     expoPushToken?: string,
+    // Profile fields
+    bio?: string,
+    avatarUrl?: string,
+    displayName?: string,
+    status?: 'online' | 'idle' | 'dnd' | 'invisible',
 }
 
 const authSchema: Schema = new Schema({
@@ -34,7 +39,25 @@ const authSchema: Schema = new Schema({
     expoPushToken: {
         type: String,
         default: null,
-    }
+    },
+    bio: {
+        type: String,
+        default: '',
+        maxlength: 180,
+    },
+    avatarUrl: {
+        type: String,
+        default: '',
+    },
+    displayName: {
+        type: String,
+        default: '',
+    },
+    status: {
+        type: String,
+        default: 'online',
+        enum: ['online', 'idle', 'dnd', 'invisible'],
+    },
 }, { timestamps: true });
 
 export default model<IAuth>("Auth", authSchema);

@@ -19,6 +19,8 @@ export const socketSetup = (io: Server) => {
             // Store userId on socket for notification filtering
             if (typeof data === 'object' && data.userId) {
                 (socket as any).userId = data.userId;
+                socket.join(`user:${data.userId}`);
+                console.log(`User ${socket.id} joined personal room user:${data.userId}`);
             }
 
             console.log(`User ${socket.id} (userId: ${(socket as any).userId || 'unknown'}) joined ${room}`);

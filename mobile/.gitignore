@@ -44,3 +44,4 @@ yarn-error.*
 app.json
 eas.json
 google-services.json
+.idea/

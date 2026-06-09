@@ -6,6 +6,15 @@ export interface IChat {
   room: Types.ObjectId,
   text: string;
   imageURL: string;
+  // Mention fields
+  mentions: Types.ObjectId[];
+  mentionsEveryone: boolean;
+  // Pin fields
+  isPinned: boolean;
+  pinnedBy: Types.ObjectId | null;
+  pinnedAt: Date | null;
+  // Delete field
+  isDeleted: boolean;
 }
 
 const chatSchema: Schema = new Schema({
@@ -26,6 +35,37 @@ const chatSchema: Schema = new Schema({
   imageURL: {
     type: String,
     default: " ",
+  },
+  // @Mentions
+  mentions: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Auth',
+    default: [],
+  }],
+  mentionsEveryone: {
+    type: Boolean,
+    default: false,
+  },
+  // Pinning
+  isPinned: {
+    type: Boolean,
+    default: false,
+    index: true,
+  },
+  pinnedBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'Auth',
+    default: null,
+  },
+  pinnedAt: {
+    type: Date,
+    default: null,
+  },
+  // Soft delete
+  isDeleted: {
+    type: Boolean,
+    default: false,
+    index: true,
   },
 },
   { timestamps: true });
