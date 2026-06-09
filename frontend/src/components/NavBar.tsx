@@ -89,11 +89,14 @@ export default function Navbar() {
           className="flex items-center gap-3 group"
         >
           <img
-            src="/logo-horizontal.png"
-            alt="Anime Club NITH"
-            className="h-11 w-auto shrink-0 object-contain"
+            src="/logo-light.png"
+            alt="Anime Club NITH Logo"
+            className="h-10 w-10 shrink-0 object-contain"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
+          <span className="font-black text-lg text-black dark:text-white uppercase tracking-wider group-hover:text-pink-500 transition-colors">
+            Anime Club NITH
+          </span>
         </Link>
 
         {/* Desktop Navigation */}
