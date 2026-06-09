@@ -28,8 +28,8 @@ const server = createServer(app);
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "http://13.202.26.208",
   "https://anime-club-nith.vercel.app",
+  "https://anime-club-backend.onrender.com",
 ];
 
 // Support both FRONTEND_URL and FRONTEND_PROD_URL env variable names
