@@ -1,7 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/NavBar";
+
+// Extend Window type for Google Identity Services
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        oauth2: {
+          initTokenClient: (config: {
+            client_id: string;
+            scope: string;
+            ux_mode?: string;
+            callback: (response: { access_token?: string; error?: string }) => void;
+          }) => { requestAccessToken: () => void };
+        };
+      };
+    };
+  }
+}
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -12,6 +30,34 @@ export default function LoginPage() {
 
   const [googleClientId, setGoogleClientId] = useState("");
   const [showGoogleMockModal, setShowGoogleMockModal] = useState(false);
+  const tokenClientRef = useRef<{ requestAccessToken: () => void } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const fetchAndNavigate = async () => {
+    try {
+      const res = await fetch("/api/rooms", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        navigate("/room");
+        return;
+      }
+      const { roomIds } = data;
+      if (roomIds && roomIds.length > 0) {
+        navigate(`/room/${roomIds[0]}`);
+      } else {
+        navigate("/room");
+      }
+    } catch (err) {
+      console.error("Failed to fetch rooms, navigating to default:", err);
+      navigate("/room");
+    }
+  };
 
   useEffect(() => {
     const fetchGoogleConfig = async () => {
@@ -30,10 +76,77 @@ export default function LoginPage() {
     fetchGoogleConfig();
   }, []);
 
+  // Load GSI script and initialize token client when clientId is available
+  useEffect(() => {
+    if (!googleClientId) return;
+
+    const loadGsi = () => {
+      if (window.google?.accounts?.oauth2) {
+        tokenClientRef.current = window.google.accounts.oauth2.initTokenClient({
+          client_id: googleClientId,
+          scope: "openid profile email",
+          ux_mode: "popup",
+          callback: handleGoogleTokenResponse,
+        });
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        if (window.google?.accounts?.oauth2) {
+          tokenClientRef.current = window.google.accounts.oauth2.initTokenClient({
+            client_id: googleClientId,
+            scope: "openid profile email",
+            ux_mode: "popup",
+            callback: handleGoogleTokenResponse,
+          });
+        }
+      };
+      document.head.appendChild(script);
+    };
+
+    loadGsi();
+  }, [googleClientId]);
+
+  const handleGoogleTokenResponse = async (tokenResponse: { access_token?: string; error?: string }) => {
+    if (tokenResponse.error || !tokenResponse.access_token) {
+      setError("Google sign-in was cancelled or failed.");
+      return;
+    }
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/auth/google-login-success", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accessToken: tokenResponse.access_token }),
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data?.message || "Google sign-in failed");
+        return;
+      }
+      try {
+        localStorage.setItem("authUser", JSON.stringify(data.user));
+      } catch { /* ignore */ }
+      await fetchAndNavigate();
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong during Google sign-in.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleGoogleSignIn = () => {
-    if (googleClientId) {
-      const redirectUri = encodeURIComponent(`${window.location.origin}/google-callback`);
-      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=token&scope=openid%20profile%20email`;
+    if (googleClientId && tokenClientRef.current) {
+      tokenClientRef.current.requestAccessToken();
+    } else if (googleClientId && !tokenClientRef.current) {
+      // GSI script might still be loading, show brief message
+      setError("Google Sign-In is loading, please try again in a moment.");
     } else {
       setShowGoogleMockModal(true);
     }
@@ -72,36 +185,6 @@ export default function LoginPage() {
     }
   };
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
-
-  const fetchAndNavigate = async () => {
-    try {
-      const res = await fetch("/api/rooms", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        navigate("/room");
-        return;
-      }
-
-      const { roomIds } = data;
-      if (roomIds && roomIds.length > 0) {
-        navigate(`/room/${roomIds[0]}`);
-      } else {
-        navigate("/room");
-      }
-    } catch (err) {
-      console.error("Failed to fetch rooms, navigating to default:", err);
-      navigate("/room");
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
