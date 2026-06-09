@@ -91,7 +91,7 @@ export default function Navbar() {
           <img
             src="/logo-horizontal.png"
             alt="Anime Club NITH"
-            className="h-8 w-auto shrink-0 object-contain"
+            className="h-11 w-auto shrink-0 object-contain"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
         </Link>
