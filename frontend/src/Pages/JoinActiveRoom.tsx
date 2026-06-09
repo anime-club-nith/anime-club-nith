@@ -12,6 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/NavBar";
 import Footer from "../components/Footer";
+import AnimatedBackground from "../components/AnimatedBackground";
 
 interface Room {
   id: number;
@@ -156,9 +157,17 @@ const ChatRoomCard = ({ room }: { room: Room }) => {
   };
 
   return (
-    <div className="group relative flex flex-col justify-between h-full p-8 bg-white dark:bg-[#1e1f22] rounded-2xl border border-slate-200/60 dark:border-slate-700/40 shadow-lg hover:shadow-xl hover:shadow-pink-500/5 hover:-translate-y-1 transition-all duration-300">
+    <div className="group relative flex flex-col justify-between h-full p-8 bg-white dark:bg-[#1e1f22] rounded-2xl border border-slate-200/60 dark:border-slate-700/40 shadow-lg hover:shadow-xl hover:shadow-pink-500/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+      {/* Subtle background gradient overlay for depth */}
+      <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 via-transparent to-transparent pointer-events-none" />
+      
+      {/* Animated glow on hover */}
+      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 via-pink-400/5 to-pink-600/10 blur-sm" />
+      </div>
+
       {/* Content Section */}
-      <div className="space-y-4">
+      <div className="relative z-10 space-y-4">
         {/* Header with Icon */}
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-black uppercase text-black dark:text-white tracking-wide">
@@ -176,7 +185,7 @@ const ChatRoomCard = ({ room }: { room: Room }) => {
       </div>
 
       {/* Button Section */}
-      <div className="mt-8 space-y-2">
+      <div className="mt-8 space-y-2 relative z-10">
         <button
           onClick={() => {
             void handleJoinRoom(room.slug);
@@ -200,6 +209,7 @@ const JoinActiveRoom = () => {
   return (
     <div className="min-h-screen bg-[#f2f3f5] dark:bg-[#0c0d12] text-black dark:text-white font-sans selection:bg-pink-500/30 transition-colors relative overflow-hidden">
       <Navbar />
+      <AnimatedBackground />
 
       {/* Background glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-pink-500/5 dark:bg-pink-500/8 rounded-full blur-3xl pointer-events-none" />

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/NavBar";
+import AnimatedBackground from "../components/AnimatedBackground";
 
 // Extend Window type for Google Identity Services
 declare global {
@@ -232,6 +233,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#f2f3f5] dark:bg-[#0c0d12] text-black dark:text-white font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden selection:bg-pink-500/30 transition-colors">
       <Navbar />
+      <AnimatedBackground />
 
       {/* Background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-500/5 dark:bg-pink-500/8 rounded-full blur-3xl pointer-events-none" />
