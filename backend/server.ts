@@ -29,7 +29,18 @@ const server = createServer(app);
 const allowedOrigins = [
   "http://localhost:5173",
   "http://13.202.26.208",
-]
+];
+
+if (process.env.FRONTEND_URL) {
+  const formattedUrl = process.env.FRONTEND_URL.replace(/\/$/, "");
+  if (!allowedOrigins.includes(formattedUrl)) {
+    allowedOrigins.push(formattedUrl);
+  }
+  // Include the original just in case
+  if (!allowedOrigins.includes(process.env.FRONTEND_URL)) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+  }
+}
 
 const io = new Server(server, {
   cors: {
