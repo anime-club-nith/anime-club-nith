@@ -96,10 +96,8 @@ export default function DownloadPage() {
 
             {/* Mock QR Code Visual */}
             <div className="rounded-xl border border-slate-200/60 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-800/30 p-4 flex items-center justify-center gap-4 shadow-sm">
-              <div className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16 text-black dark:text-white">
-                  <path d="M0 0h6v6H0zm2 2v2h2V2zm0 6h4v1H5V9H2v3H0V8zm8-8h6v6H8zm2 2v2h2V2zm-2 6h3v1h1V8h2v1H9v3H8zm8-8h6v6h-6zm2 2v2h2V2zm-2 6h2v1h-2zm4 0h2v1h-2zm-4 4h1v1h-1zm2 0h2v1h-2zm2 0h2v2h-1v-1h-1zM0 18h6v6H0zm2 2v2h2V2zm0-6h1v1H2zm1 1h1v1H3zm2-1h1v2H5zm3 2h1v1H8zm1 1h1v1H9zm-1 2h2v1H8zm4-4h2v1h-2zm1 2h1v2h-1z" />
-                </svg>
+              <div className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white">
+                <img src="/qr-code.png" alt="Expo QR Code" className="w-16 h-16 object-contain" />
               </div>
               <div className="flex-1 flex flex-col justify-center">
                 <span className="text-xs font-bold text-pink-600 dark:text-pink-400 flex items-center gap-1">
