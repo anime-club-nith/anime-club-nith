@@ -31,15 +31,16 @@ const allowedOrigins = [
   "http://13.202.26.208",
 ];
 
-if (process.env.FRONTEND_URL) {
-  const formattedUrl = process.env.FRONTEND_URL.replace(/\/$/, "");
-  if (!allowedOrigins.includes(formattedUrl)) {
-    allowedOrigins.push(formattedUrl);
-  }
-  // Include the original just in case
-  if (!allowedOrigins.includes(process.env.FRONTEND_URL)) {
-    allowedOrigins.push(process.env.FRONTEND_URL);
-  }
+// Support both FRONTEND_URL and FRONTEND_PROD_URL env variable names
+const frontendUrls = [
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_PROD_URL,
+].filter(Boolean) as string[];
+
+for (const url of frontendUrls) {
+  const formatted = url.replace(/\/$/, "");
+  if (!allowedOrigins.includes(formatted)) allowedOrigins.push(formatted);
+  if (!allowedOrigins.includes(url)) allowedOrigins.push(url);
 }
 
 const io = new Server(server, {

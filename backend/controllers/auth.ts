@@ -44,7 +44,7 @@ export const handleUserSignUp = async (req: Request, res: Response) => {
         const token = generateToken(existingUser);
         res.cookie("token", token, {
           httpOnly: true,
-          secure: false,
+          secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
           maxAge: 30 * 24 * 60 * 60 * 1000,
         });
@@ -85,7 +85,7 @@ export const handleUserSignUp = async (req: Request, res: Response) => {
       const token = generateToken(newUser);
       res.cookie("token", token, {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
@@ -135,7 +135,7 @@ export const handleVerifyEmail = async (req: Request, res: Response) => {
     const token = generateToken(user);
     res.cookie("token", token, {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         maxAge: 30 * 24 * 60 * 60 * 1000,
     });
@@ -173,7 +173,7 @@ export const handleUserLogIn = async (req: Request, res: Response) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
@@ -380,7 +380,7 @@ export const handleGoogleLoginSuccess = async (req: Request, res: Response) => {
     const token = generateToken(user);
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
