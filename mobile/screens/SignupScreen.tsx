@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView, Modal } from 'react-native';
+import { Feather, FontAwesome } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 
 import client from '../services/client'; // Import the client
 import { useToast } from '../context/ToastContext';
 import { useTheme } from '../context/ThemeContext';
+import { syncPushToken } from '../services/notification';
 
 export default function SignupScreen({ navigation }: any) {
   const [name, setName] = useState('');
@@ -17,6 +19,35 @@ export default function SignupScreen({ navigation }: any) {
   const { showToast } = useToast();
   const { colors, theme } = useTheme();
   const styles = createStyles(colors);
+
+  const [showGoogleMockModal, setShowGoogleMockModal] = useState(false);
+
+  const handleMockGoogleLogin = async (mockToken: string) => {
+    setShowGoogleMockModal(false);
+    try {
+      console.log("Mock Google Logging in with token:", mockToken);
+      const response = await client.post('/api/auth/google-login-success', { accessToken: mockToken });
+      console.log('Google login successful:', response.data);
+
+      if (response.data.token) {
+        await AsyncStorage.setItem('token', response.data.token);
+      }
+      if (response.data.user && response.data.user._id) {
+        await AsyncStorage.setItem('userId', response.data.user._id);
+        await AsyncStorage.setItem('userName', response.data.user.name);
+      }
+
+      showToast('Logged in successfully with Google', 'success');
+      navigation.replace('Room');
+
+      // Sync push token
+      syncPushToken();
+    } catch (error: any) {
+      console.error('Google login error:', error);
+      const message = error.response?.data?.message || error.message || 'Google sign-in failed';
+      showToast(message, 'error');
+    }
+  };
 
   const handleSignup = async () => {
     if (!name || !email || !password || !confirmPassword) {
@@ -144,6 +175,15 @@ export default function SignupScreen({ navigation }: any) {
               <Text style={styles.signupButtonText}>Create Account</Text>
             </TouchableOpacity>
 
+            <TouchableOpacity 
+              style={styles.googleButton} 
+              onPress={() => setShowGoogleMockModal(true)} 
+              activeOpacity={0.85}
+            >
+              <FontAwesome name="google" size={18} color={colors.text} />
+              <Text style={styles.googleButtonText}>Continue with Google</Text>
+            </TouchableOpacity>
+
             {/* Footer Link */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Already have an account? </Text>
@@ -155,6 +195,49 @@ export default function SignupScreen({ navigation }: any) {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <Modal
+        visible={showGoogleMockModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowGoogleMockModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Sign in with Google</Text>
+            <Text style={styles.modalSubtitle}>Demo mode: select a sandbox Google account.</Text>
+
+            <View style={styles.accountsList}>
+              {[
+                { name: "Vismay Gawai", email: "vismay@nith.ac.in", token: "mock-access-token-otaku" },
+                { name: "Anime Fan", email: "fan@nith.ac.in", token: "mock-access-token-fan" },
+                { name: "Otaku Member", email: "otaku@nith.ac.in", token: "mock-access-token-otaku" },
+              ].map((acc) => (
+                <TouchableOpacity
+                  key={acc.email}
+                  onPress={() => handleMockGoogleLogin(acc.token)}
+                  style={styles.accountCard}
+                >
+                  <View style={styles.avatarCircle}>
+                    <Text style={styles.avatarText}>{acc.name[0]}</Text>
+                  </View>
+                  <View style={styles.accountInfo}>
+                    <Text style={styles.accountName}>{acc.name}</Text>
+                    <Text style={styles.accountEmail}>{acc.email}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <TouchableOpacity 
+              style={styles.modalCloseButton} 
+              onPress={() => setShowGoogleMockModal(false)}
+            >
+              <Text style={styles.modalCloseText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -283,6 +366,114 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   linkText: {
     color: '#E56DB1',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.cardBg,
+    borderRadius: 16,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginTop: 10,
+    gap: 8,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  googleButtonText: {
+    color: colors.text,
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  modalContent: {
+    width: '100%',
+    maxWidth: 340,
+    backgroundColor: colors.cardBg,
+    borderRadius: 24,
+    padding: 24,
+    borderWidth: 1,
+    borderColor: colors.border,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  modalSubtitle: {
+    fontSize: 13,
+    color: colors.subText,
+    marginBottom: 20,
+  },
+  accountsList: {
+    gap: 10,
+  },
+  accountCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 14,
+    padding: 12,
+    gap: 12,
+  },
+  avatarCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#E56DB1',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    color: '#ffffff',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  accountInfo: {
+    flex: 1,
+  },
+  accountName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  accountEmail: {
+    fontSize: 12,
+    color: colors.subText,
+    marginTop: 1,
+  },
+  modalCloseButton: {
+    marginTop: 20,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 14,
+  },
+  modalCloseText: {
+    color: colors.text,
     fontSize: 14,
     fontWeight: '600',
   },

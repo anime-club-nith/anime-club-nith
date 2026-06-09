@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.6:8000';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://anime-club-backend.onrender.com';
 
 const client = axios.create({
   baseURL: API_URL,

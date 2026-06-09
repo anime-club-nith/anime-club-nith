@@ -43,7 +43,7 @@ export default function ChatScreen({ navigation, route }: any) {
     const styles = createStyles(colors);
 
     const socketRef = useRef<Socket | null>(null);
-    const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://13.202.26.208:8000"; // Fallback or env
+    const API_URL = process.env.EXPO_PUBLIC_API_URL || "https://anime-club-backend.onrender.com"; // Fallback or env
 
     const fetchRoomInfo = async () => {
         try {

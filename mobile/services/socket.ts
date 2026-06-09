@@ -1,7 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 
 let socket: Socket | null = null;
-const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://13.202.26.208:8000";
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "https://anime-club-backend.onrender.com";
 
 export const initSocket = (): Socket => {
     if (!socket) {
